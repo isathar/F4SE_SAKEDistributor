@@ -1,4 +1,6 @@
 #include "SAKELoader.h"
+#include <vector>
+#include <Windows.h>
 
 
 // ---------------- FormID/Identifier Utilities:
@@ -157,6 +159,48 @@ namespace SAKEUtilities
 		return false;
 	}
 
+
+	// credit: stackoverflow user herohuyongtao:
+
+	std::vector<std::string> GetDirFileNames(const std::string folder)
+	{
+		std::vector<std::string> names;
+		std::string search_path = folder + "/*.*";
+		WIN32_FIND_DATA fd;
+		HANDLE hFind = ::FindFirstFile(search_path.c_str(), &fd);
+		if (hFind != INVALID_HANDLE_VALUE) {
+			do {
+				if (!(fd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)) {
+					names.push_back(fd.cFileName);
+				}
+			} while (::FindNextFile(hFind, &fd));
+			::FindClose(hFind);
+		}
+		return names;
+	}
+
+	std::vector<std::string> GetDirFolderNames(const std::string folder)
+	{
+		std::vector<std::string> names;
+		std::string search_path = folder + "/*.*";
+		WIN32_FIND_DATA fd;
+		std::string tempName;
+		std::size_t pos;
+		HANDLE hFind = ::FindFirstFile(search_path.c_str(), &fd);
+		if (hFind != INVALID_HANDLE_VALUE) {
+			do {
+				if (fd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) {
+					tempName = fd.cFileName;
+					pos = tempName.find_first_of(".");
+					if (pos != (std::size_t)0) {
+						names.push_back(fd.cFileName);
+					}
+				}
+			} while (::FindNextFile(hFind, &fd));
+			::FindClose(hFind);
+		}
+		return names;
+	}
 }
 
 
@@ -172,16 +216,7 @@ namespace SAKEData
 	bool bLoadArmors = false;
 
 	bool bShowDebugInfo = false;
-	bool bNPCsUseAmmo = false;
-
-	int iWeaponCount = 0;
-	int iRaceCount = 0;
-	int iArmorCount = 0;
-	int iActorCount = 0;
-
-	tArray<TESRace*> editedRaces;
-	tArray<TESObjectWEAP*> editedWeapons;
-	tArray<TESObjectARMO*> editedArmors;
+	bool bVerboseDebugInfo = false;
 
 
 	// loads weapon config data
@@ -207,6 +242,18 @@ namespace SAKEData
 						TESObjectWEAP::InstanceData *instanceData = &weaponBase->weapData;
 						if (instanceData) {
 							const char *keyID = "";
+							// -- Base Name
+							const char * sBaseName = iniWeap.GetValue(weapID, "sBaseName", "none");
+							if (sBaseName != "none") {
+								weaponBase->fullName.name = BSFixedString(sBaseName);
+							}
+
+							// -- instance naming rules
+							keyID = iniWeap.GetValue(weapID, "sNamingRules", "none");
+							BGSInstanceNamingRules * newNamingRules = (BGSInstanceNamingRules*)SAKEUtilities::GetFormFromIdentifier(keyID);
+							if (newNamingRules) {
+								weaponBase->namingRules.rules = newNamingRules;
+							}
 
 							// -- Damage
 							int iDamage = iniWeap.GetLongValue(weapID, "iBaseDamage", -1);
@@ -227,18 +274,17 @@ namespace SAKEData
 									for (; i != values.end(); ++i) {
 										TBO_InstanceData::DamageTypes tempDT;
 										if (SAKEUtilities::GetDamageTypeFromIdentifier(i->pItem, tempDT)) {
-											int iFound = -1;
+											bool bFound = tempDT.value != 0;
 											for (UInt16 j = 0; j < oldDTCount; j++) {
 												TBO_InstanceData::DamageTypes checkDT;
 												if (instanceData->damageTypes->GetNthItem(j, checkDT)) {
 													if (checkDT.damageType == tempDT.damageType) {
-														checkDT.value = tempDT.value;
-														iFound = j;
+														instanceData->damageTypes->Remove(j);
 														break;
 													}
 												}
 											}
-											if (iFound < 0) {
+											if (bFound) {
 												instanceData->damageTypes->Push(tempDT);
 											}
 										}
@@ -279,6 +325,18 @@ namespace SAKEData
 							float fOoRMult = iniWeap.GetDoubleValue(weapID, "fOutOfRangeMult", -1.0);
 							if (fOoRMult >= 0.0) {
 								instanceData->outOfRangeMultiplier = fOoRMult;
+							}
+
+							// -- Attack Delay
+							float fAttackDelay = iniWeap.GetDoubleValue(weapID, "fAttackDelay", -1.0);
+							if (fAttackDelay >= 0.0) {
+								instanceData->attackDelay = fAttackDelay;
+							}
+
+							// -- Speed Multiplier
+							float fSpeedMult = iniWeap.GetDoubleValue(weapID, "fSpeedMult", -1.0);
+							if (fSpeedMult >= 0.0) {
+								instanceData->speed = fSpeedMult;
 							}
 
 							// -- Melee Reach
@@ -329,7 +387,7 @@ namespace SAKEData
 										aimModel->Rec_HipMult = recoilHipMult;
 									}
 
-									// Min/Max Cone of Fire
+									// -- Min/Max Cone of Fire
 									float cofMin = iniWeap.GetDoubleValue(weapID, "fConeOfFireMin", -1.0);
 									if (cofMin >= 0.0) {
 										aimModel->CoF_MinAngle = cofMin;
@@ -371,16 +429,14 @@ namespace SAKEData
 								instanceData->unk58 = tempImpactData;
 							}
 
-							// ---- Flags:
+							// -- Flags:
 							if (instanceData->flags) {
 								// -- NPCsUseAmmo
-								if (bNPCsUseAmmo) {
-									bool bUseAmmo = iniWeap.GetBoolValue(weapID, "bNPCsUseAmmo", false);
-									if (bUseAmmo)
-										instanceData->flags |= wFlag_NPCsUseAmmo;
-									else
-										instanceData->flags &= wFlag_NPCsUseAmmo;
-								}
+								bool bUseAmmo = iniWeap.GetBoolValue(weapID, "bNPCsUseAmmo", false);
+								if (bUseAmmo)
+									instanceData->flags |= wFlag_NPCsUseAmmo;
+								else
+									instanceData->flags &= ~wFlag_NPCsUseAmmo;
 							}
 
 							// -- ActorValue Modifiers
@@ -419,45 +475,72 @@ namespace SAKEData
 							}
 							values.clear();
 
-							// -- Keywords
-							if (iniWeap.GetAllValues(weapID, "sKeywords", values)) {
-								int kwCount = values.size();
-								if (kwCount > 0) {
-									int baseKWCount = weaponBase->keyword.numKeywords;
-									tArray<BGSKeyword*> tempKWs;
-									for (UInt32 j = 0; j < baseKWCount; j++) {
-										if (weaponBase->keyword.keywords[j]) {
-											tempKWs.Push(weaponBase->keyword.keywords[j]);
-										}
-									}
+							// ---- Keywords:
+							tArray<BGSKeyword*> keywordsAdd, keywordsRemove;
 
+							// Keywords to Remove
+							if (iniWeap.GetAllValues(weapID, "sKeywordsRemove", values)) {
+								if (values.size() > 0) {
 									CSimpleIni::TNamesDepend::const_iterator i = values.begin();
 									for (; i != values.end(); ++i) {
 										keyID = i->pItem;
 										BGSKeyword *tempKW = (BGSKeyword*)SAKEUtilities::GetFormFromIdentifier(keyID);
 										if (tempKW) {
-											if (tempKWs.GetItemIndex(tempKW) > -1) {
-												tempKWs.Push(tempKW);
-											}
+											keywordsRemove.Push(tempKW);
 										}
 									}
-									values.clear();
-
-									kwCount = tempKWs.count;
-									if (kwCount > 0) {
-										weaponBase->keyword.numKeywords = kwCount;
-										weaponBase->keyword.keywords = new BGSKeyword*[kwCount];
-
-										for (UInt8 j = 0; j < baseKWCount; j++) {
-											weaponBase->keyword.keywords[j] = tempKWs[j];
-										}
-									}
-
 								}
 							}
 							values.clear();
+
+							// Keywords to Add
+							if (iniWeap.GetAllValues(weapID, "sKeywords", values)) {
+								if (values.size() > 0) {
+									CSimpleIni::TNamesDepend::const_iterator i = values.begin();
+									for (; i != values.end(); ++i) {
+										keyID = i->pItem;
+										BGSKeyword *tempKW = (BGSKeyword*)SAKEUtilities::GetFormFromIdentifier(keyID);
+										if (tempKW) {
+											if (keywordsAdd.GetItemIndex(tempKW) < 0) {
+												keywordsAdd.Push(tempKW);
+											}
+										}
+									}
+								}
+							}
+							values.clear();
+
+							// rebuild keywords list if needed
+							if (keywordsAdd.count > 0 || keywordsRemove.count > 0) {
+								int baseKWCount = weaponBase->keyword.numKeywords;
+								for (UInt32 j = 0; j < baseKWCount; j++) {
+									BGSKeyword * tempKW = weaponBase->keyword.keywords[j];
+									if (tempKW) {
+										if (keywordsAdd.GetItemIndex(tempKW) < 0) {
+											if (keywordsRemove.GetItemIndex(tempKW) < 0) {
+												keywordsAdd.Push(tempKW);
+											}
+										}
+									}
+								}
+
+								int kwCount = keywordsAdd.count;
+								if (kwCount > 0) {
+									weaponBase->keyword.numKeywords = kwCount;
+									weaponBase->keyword.keywords = new BGSKeyword*[kwCount];
+									for (UInt8 j = 0; j < kwCount; j++) {
+										weaponBase->keyword.keywords[j] = keywordsAdd[j];
+									}
+								}
+							}
+							keywordsAdd.Clear();
+							keywordsRemove.Clear();
+
+							if (bShowDebugInfo) {
+								_MESSAGE("      0x%08x - %s", weaponBase->formID, weaponBase->fullName.name.c_str());
+							}
+							
 						}
-						editedWeapons.Push(weaponBase);
 					}
 				}
 				return true;
@@ -482,14 +565,29 @@ namespace SAKEData
 			CSimpleIni::TNamesDepend armors, values;
 			iniArmor.GetAllSections(armors);
 			if (armors.size() > 0) {
+				tArray<BGSKeyword*> keywordsAdd, keywordsRemove;
 				CSimpleIni::TNamesDepend::const_iterator armor = armors.begin();
 				for (; armor != armors.end(); ++armor) {
 					const char *armorID = armor->pItem;
 					TESObjectARMO *armorBase = (TESObjectARMO*)SAKEUtilities::GetFormFromIdentifier(armorID);
-
 					if (armorBase) {
 						TESObjectARMO::InstanceData *instanceData = &armorBase->instanceData;
 						if (instanceData) {
+							const char * keyID = "";
+
+							// -- Base Name
+							const char * sBaseName = iniArmor.GetValue(armorID, "sBaseName", "none");
+							if (sBaseName != "none") {
+								armorBase->fullName.name = BSFixedString(sBaseName);
+							}
+
+							// -- instance naming rules
+							keyID = iniArmor.GetValue(armorID, "sNamingRules", "none");
+							BGSInstanceNamingRules * newNamingRules = (BGSInstanceNamingRules*)SAKEUtilities::GetFormFromIdentifier(keyID);
+							if (newNamingRules) {
+								armorBase->namingRules.rules = newNamingRules;
+							}
+
 							// -- Armor Rating (Phys Resistance)
 							int iArmorRating = iniArmor.GetLongValue(armorID, "iArmorRating", -1);
 							if (iArmorRating > -1) {
@@ -504,18 +602,20 @@ namespace SAKEData
 										instanceData->damageTypes = new tArray<TBO_InstanceData::DamageTypes>();
 									}
 									int oldDTCount = instanceData->damageTypes->count;
-
 									CSimpleIni::TNamesDepend::const_iterator i = values.begin();
 									for (; i != values.end(); ++i) {
 										TBO_InstanceData::DamageTypes tempDT;
 										if (SAKEUtilities::GetDamageTypeFromIdentifier(i->pItem, tempDT)) {
 											int iFound = -1;
+											bool bFound = false;
 											for (UInt16 j = 0; j < oldDTCount; j++) {
 												TBO_InstanceData::DamageTypes checkDT;
 												if (instanceData->damageTypes->GetNthItem(j, checkDT)) {
+													bFound = (checkDT.damageType == tempDT.damageType);
 													if (checkDT.damageType == tempDT.damageType) {
+
 														checkDT.value = tempDT.value;
-														iFound = j;
+														bFound = true;
 														break;
 													}
 												}
@@ -528,19 +628,17 @@ namespace SAKEData
 								}
 							}
 							values.clear();
-
+							
 							// -- Value
 							int iBaseValue = iniArmor.GetLongValue(armorID, "iBaseValue", -1);
 							if (iBaseValue > -1) {
 								instanceData->value = (UInt32)iBaseValue;
 							}
-
 							// -- weight
 							float fWeight = iniArmor.GetDoubleValue(armorID, "fBaseWeight", -1.0);
 							if (fWeight > -1.0) {
 								instanceData->weight = fWeight;
 							}
-
 							// -- health
 							int iHealth = iniArmor.GetLongValue(armorID, "iBaseHealth", -1);
 							if (iHealth > -1) {
@@ -548,47 +646,75 @@ namespace SAKEData
 							}
 
 							// -- Keywords
-							if (iniArmor.GetAllValues(armorID, "sKeywords", values)) {
-								int kwCount = values.size();
-								if (kwCount > 0) {
-									int baseKWCount = instanceData->keywords->numKeywords;
-									tArray<BGSKeyword*> tempKWs;
-									for (UInt32 j = 0; j < baseKWCount; j++) {
-										if (instanceData->keywords->keywords[j]) {
-											tempKWs.Push(instanceData->keywords->keywords[j]);
-										}
-									}
-
+							
+							// Keywords to Remove
+							if (iniArmor.GetAllValues(armorID, "sKeywordsRemove", values)) {
+								if (values.size() > 0) {
 									CSimpleIni::TNamesDepend::const_iterator i = values.begin();
 									for (; i != values.end(); ++i) {
-										const char * keyID = i->pItem;
+										keyID = i->pItem;
 										BGSKeyword *tempKW = (BGSKeyword*)SAKEUtilities::GetFormFromIdentifier(keyID);
 										if (tempKW) {
-											if (tempKWs.GetItemIndex(tempKW) > -1) {
-												tempKWs.Push(tempKW);
-											}
+											keywordsRemove.Push(tempKW);
 										}
 									}
-									values.clear();
-
-									kwCount = tempKWs.count;
-									if (kwCount > 0) {
-										instanceData->keywords->numKeywords = kwCount;
-										instanceData->keywords->keywords = new BGSKeyword*[kwCount];
-
-										for (UInt8 j = 0; j < baseKWCount; j++) {
-											instanceData->keywords->keywords[j] = tempKWs[j];
-										}
-									}
-
 								}
 							}
 							values.clear();
 
-							editedArmors.Push(armorBase);
+							// Keywords to Add
+							if (iniArmor.GetAllValues(armorID, "sKeywords", values)) {
+								if (values.size() > 0) {
+									CSimpleIni::TNamesDepend::const_iterator i = values.begin();
+									for (; i != values.end(); ++i) {
+										keyID = i->pItem;
+										BGSKeyword *tempKW = (BGSKeyword*)SAKEUtilities::GetFormFromIdentifier(keyID);
+										if (tempKW) {
+											if (keywordsAdd.GetItemIndex(tempKW) < 0) {
+												keywordsAdd.Push(tempKW);
+											}
+										}
+									}
+								}
+							}
+							values.clear();
+
+							// rebuild keywords list if needed
+							if (keywordsAdd.count > 0 || keywordsRemove.count > 0) {
+								int baseKWCount = armorBase->keywordForm.numKeywords;
+								for (UInt32 j = 0; j < baseKWCount; j++) {
+									BGSKeyword * tempKW = armorBase->keywordForm.keywords[j];
+									if (tempKW) {
+										if (keywordsAdd.GetItemIndex(tempKW) < 0) {
+											if (keywordsRemove.GetItemIndex(tempKW) < 0) {
+												keywordsAdd.Push(tempKW);
+											}
+										}
+									}
+								}
+								int kwCount = keywordsAdd.count;
+								if (kwCount > 0) {
+									armorBase->keywordForm.numKeywords = kwCount;
+									armorBase->keywordForm.keywords = new BGSKeyword*[kwCount];
+									for (UInt8 j = 0; j < kwCount; j++) {
+										armorBase->keywordForm.keywords[j] = keywordsAdd[j];
+									}
+								}
+							}
+							keywordsAdd.Clear();
+							keywordsRemove.Clear();
+
+
+							// debug log output
+							if (bShowDebugInfo) {
+								_MESSAGE("      0x%08x - %s", armorBase->formID, armorBase->fullName.name.c_str());
+							}
+							
 						}
 					}
 				}
+				armors.clear();
+				return true;
 			}
 		}
 		return false;
@@ -603,149 +729,317 @@ namespace SAKEData
 		iniRaces.SetMultiKey(true);
 
 		if (iniRaces.LoadFile(configDir.c_str()) > -1) {
-			CSimpleIni::TNamesDepend sections, abilities, actorvalues;
-			const char *spellID = "", *raceID = "", *avID = "";
+			CSimpleIni::TNamesDepend sections, abilities, actorvalues, keywords;
+			const char *spellID = "", *actorID = "", *avID = "", *kwID;
 			SpellItem * newSpell = nullptr;
 			TESRace * targetRace = nullptr;
 			UInt32 iNumSpells = 0;
 
 			iniRaces.GetAllSections(sections);
-			CSimpleIni::TNamesDepend::const_iterator p = sections.begin();
-			for (; p != sections.end(); ++p) {
-				raceID = p->pItem;
-				targetRace = (TESRace*)SAKEUtilities::GetFormFromIdentifier(raceID);
-				if (targetRace) {
-					if (!targetRace->spellList.unk08) {
-						// no spells set for this race by default - create new spellData
-						targetRace->spellList.unk08 = new ATSpellListEntries();
-					}
-					ATSpellListEntries * spellData = (ATSpellListEntries*)targetRace->spellList.unk08;
-					
-					if (spellData) {
-						iNumSpells = spellData->numSpells;
-						tArray<SpellItem*> tempSpells;
-						for (UInt32 i = 0; i < iNumSpells; i++) {
-							tempSpells.Push(spellData->spells[i]);
-						}
+			if (sections.size() > 0) {
+				tArray<SpellItem*> tempSpells;
+				tArray<BGSKeyword*> tempKeywords;
 
+				CSimpleIni::TNamesDepend::const_iterator p = sections.begin();
+				for (; p != sections.end(); ++p) {
+					actorID = p->pItem;
+					targetRace = (TESRace*)SAKEUtilities::GetFormFromIdentifier(actorID);
+					if (targetRace) {
 						// Abilities list:
-						if (iniRaces.GetAllValues(raceID, "sAbilities", abilities)) {
-							CSimpleIni::TNamesDepend::const_iterator k = abilities.begin();
-							for (; k != abilities.end(); ++k) {
-								spellID = k->pItem;
-								newSpell = (SpellItem*)SAKEUtilities::GetFormFromIdentifier(spellID);
-								if (newSpell) {
-									// make sure the spell isn't already in the list
-									if (tempSpells.GetItemIndex(newSpell) == -1) {
-										tempSpells.Push(newSpell);
+						if (iniRaces.GetAllValues(actorID, "sAbilities", abilities)) {
+							if (abilities.size() > 0) {
+								if (!targetRace->spellList.unk08) {
+									targetRace->spellList.unk08 = new ATSpellListEntries();
+								}
+								ATSpellListEntries * spellData = (ATSpellListEntries*)targetRace->spellList.unk08;
+								if (spellData) {
+									iNumSpells = spellData->numSpells;
+									for (UInt32 i = 0; i < iNumSpells; i++) {
+										tempSpells.Push(spellData->spells[i]);
+									}
+									CSimpleIni::TNamesDepend::const_iterator k = abilities.begin();
+									for (; k != abilities.end(); ++k) {
+										spellID = k->pItem;
+										newSpell = (SpellItem*)SAKEUtilities::GetFormFromIdentifier(spellID);
+										if (newSpell) {
+											// make sure the spell isn't already in the list
+											if (tempSpells.GetItemIndex(newSpell) == -1) {
+												tempSpells.Push(newSpell);
+											}
+										}
 									}
 								}
+								if (iNumSpells != tempSpells.count) {
+									iNumSpells = tempSpells.count;
+									spellData->numSpells = iNumSpells;
+									spellData->spells = new SpellItem*[iNumSpells];
+									for (UInt32 j = 0; j < iNumSpells; j++) {
+										spellData->spells[j] = tempSpells[j];
+									}
+								}
+								tempSpells.Clear();
 							}
 						}
 						abilities.clear();
 
-						if (iNumSpells != tempSpells.count) {
-							iNumSpells = tempSpells.count;
-							spellData->numSpells = iNumSpells;
-							spellData->spells = new SpellItem*[iNumSpells];
-							for (UInt32 j = 0; j < iNumSpells; j++) {
-								spellData->spells[j] = tempSpells[j];
-							}
-						}
-					}
-
-					// ActorValues:
-					if (targetRace->propertySheet.sheet) {
-						if (iniRaces.GetAllValues(raceID, "sActorValues", actorvalues)) {
-							CSimpleIni::TNamesDepend::const_iterator l = actorvalues.begin();
-							for (; l != actorvalues.end(); ++l) {
-								avID = l->pItem;
-								BGSPropertySheet::AVIFProperty newAVProp;
-								if (SAKEUtilities::GetAVPropertyFromIdentifer(avID, newAVProp)) {
-									// check if the AV is already in the list, replace value if it does
-									bool bFound = false;
-									for (UInt32 i = 0; i < targetRace->propertySheet.sheet->count; i++) {
-										BGSPropertySheet::AVIFProperty checkAVProp;
-										if (targetRace->propertySheet.sheet->GetNthItem(i, checkAVProp)) {
-											if (checkAVProp.actorValue == newAVProp.actorValue) {
-												bFound = true;
-												checkAVProp.value = newAVProp.value;
-												break;
+						// ActorValues:
+						if (targetRace->propertySheet.sheet) {
+							if (iniRaces.GetAllValues(actorID, "sActorValues", actorvalues)) {
+								if (actorvalues.size() > 0) {
+									CSimpleIni::TNamesDepend::const_iterator l = actorvalues.begin();
+									for (; l != actorvalues.end(); ++l) {
+										avID = l->pItem;
+										BGSPropertySheet::AVIFProperty newAVProp;
+										if (SAKEUtilities::GetAVPropertyFromIdentifer(avID, newAVProp)) {
+											bool bFound = false;
+											for (UInt32 i = 0; i < targetRace->propertySheet.sheet->count; i++) {
+												BGSPropertySheet::AVIFProperty checkAVProp;
+												if (targetRace->propertySheet.sheet->GetNthItem(i, checkAVProp)) {
+													if (checkAVProp.actorValue == newAVProp.actorValue) {
+														checkAVProp.value = newAVProp.value;
+														bFound = true;
+														break;
+													}
+												}
+											}
+											if (!bFound) {
+												targetRace->propertySheet.sheet->Push(newAVProp);
 											}
 										}
 									}
-									// new AV - add to the property sheet
-									if (!bFound) {
-										targetRace->propertySheet.sheet->Push(newAVProp);
+								}
+							}
+							actorvalues.clear();
+						}
+
+						// Keywords:
+						if (iniRaces.GetAllValues(actorID, "sKeywords", keywords)) {
+							if (keywords.size() > 0) {
+								if (targetRace->keywordForm.numKeywords > 0) {
+									for (UInt32 i = 0; i < targetRace->keywordForm.numKeywords; i++) {
+										if (targetRace->keywordForm.keywords[i]) {
+											tempKeywords.Push(targetRace->keywordForm.keywords[i]);
+										}
+									}
+								}
+								CSimpleIni::TNamesDepend::const_iterator k = keywords.begin();
+								for (; k != keywords.end(); ++k) {
+									kwID = k->pItem;
+									BGSKeyword * newKW = (BGSKeyword*)SAKEUtilities::GetFormFromIdentifier(kwID);
+									if (newKW) {
+										tempKeywords.Push(newKW);
+									}
+								}
+								int kwCount = tempKeywords.count;
+								if (kwCount > 0) {
+									targetRace->keywordForm.numKeywords = kwCount;
+									targetRace->keywordForm.keywords = new BGSKeyword*[kwCount];
+									for (UInt8 j = 0; j < kwCount; j++) {
+										targetRace->keywordForm.keywords[j] = tempKeywords[j];
+									}
+								}
+								tempKeywords.Clear();
+							}
+						}
+						keywords.clear();
+
+						// write debug info to log
+						if (bShowDebugInfo) {
+							if (bVerboseDebugInfo) {
+								_MESSAGE("\n      0x%08X - %s", targetRace->formID, targetRace->fullName.name.c_str());
+								ATSpellListEntries * spellData = (ATSpellListEntries*)targetRace->spellList.unk08;
+								if (spellData) {
+									int iNumSpells = spellData->numSpells;
+									_MESSAGE("        Abilities:");
+									for (UInt32 j = 0; j < iNumSpells; j++)
+										_MESSAGE("          %i: 0x%08X - %s", j, spellData->spells[j]->formID, spellData->spells[j]->name.name.c_str());
+								}
+								if (targetRace->propertySheet.sheet->count > 0) {
+									_MESSAGE("        ActorValues:");
+									BGSPropertySheet::AVIFProperty tempAVProp;
+									for (UInt32 j = 0; j < targetRace->propertySheet.sheet->count; j++) {
+										if (targetRace->propertySheet.sheet->GetNthItem(j, tempAVProp)) {
+											if (tempAVProp.actorValue)
+												_MESSAGE("          %i: 0x%08X - %s, %f", j, tempAVProp.actorValue->formID, tempAVProp.actorValue->avName, tempAVProp.value);
+											else
+												_MESSAGE("          %i: none, %f", j, tempAVProp.value);
+										}
 									}
 								}
 							}
-						}
-						actorvalues.clear();
-					}
-
-					// add the race to the log index if needed
-					if (bShowDebugInfo) {
-						if (editedRaces.GetItemIndex(targetRace) == -1) {
-							editedRaces.Push(targetRace);
+							else {
+								_MESSAGE("      0x%08X - %s", targetRace->formID, targetRace->fullName.name.c_str());
+							}
 						}
 					}
 				}
+				return true;
 			}
-			return true;
 		}
 		return false;
 	}
 
 
-	// TBD: loads ActorBase config data
+	// loads ActorBase config data
 	bool LoadData_Actors(const std::string & configDir)
 	{
+		CSimpleIniA iniActors;
+		iniActors.SetUnicode();
+		iniActors.SetMultiKey(true);
+
+		if (iniActors.LoadFile(configDir.c_str()) > -1) {
+			CSimpleIni::TNamesDepend sections, abilities, actorvalues, keywords;
+			const char *spellID = "", *raceID = "", *avID = "", *kwID;
+			SpellItem * newSpell = nullptr;
+			TESActorBase * targetActor = nullptr;
+			UInt32 iNumSpells = 0;
+
+			iniActors.GetAllSections(sections);
+			if (sections.size() > 0) {
+				tArray<BGSKeyword*> tempKeywords;
+				tArray<SpellItem*> tempSpells;
+				CSimpleIni::TNamesDepend::const_iterator p = sections.begin();
+				for (; p != sections.end(); ++p) {
+					raceID = p->pItem;
+					targetActor = (TESActorBase*)SAKEUtilities::GetFormFromIdentifier(raceID);
+					if (targetActor) {
+						// Spells/Abilities
+						if (iniActors.GetAllValues(raceID, "sAbilities", abilities)) {
+							if (abilities.size() > 0) {
+								if (!targetActor->spellList.unk08) {
+									targetActor->spellList.unk08 = new ATSpellListEntries();
+								}
+								ATSpellListEntries * spellData = (ATSpellListEntries*)targetActor->spellList.unk08;
+								if (spellData) {
+									iNumSpells = spellData->numSpells;
+									for (UInt32 i = 0; i < iNumSpells; i++) {
+										tempSpells.Push(spellData->spells[i]);
+									}
+									CSimpleIni::TNamesDepend::const_iterator k = abilities.begin();
+									for (; k != abilities.end(); ++k) {
+										spellID = k->pItem;
+										newSpell = (SpellItem*)SAKEUtilities::GetFormFromIdentifier(spellID);
+										if (newSpell) {
+											// make sure the spell isn't already in the list
+											if (tempSpells.GetItemIndex(newSpell) == -1) {
+												tempSpells.Push(newSpell);
+											}
+										}
+									}
+									if (iNumSpells != tempSpells.count) {
+										iNumSpells = tempSpells.count;
+										spellData->numSpells = iNumSpells;
+										spellData->spells = new SpellItem*[iNumSpells];
+										for (UInt32 j = 0; j < iNumSpells; j++) {
+											spellData->spells[j] = tempSpells[j];
+										}
+									}
+								}
+								tempSpells.Clear();
+							}
+							
+						}
+						abilities.clear();
+						
+						// ActorValues:
+						if (targetActor->propertySheet.sheet) {
+							if (iniActors.GetAllValues(raceID, "sActorValues", actorvalues)) {
+								if (actorvalues.size() > 0) {
+									CSimpleIni::TNamesDepend::const_iterator l = actorvalues.begin();
+									for (; l != actorvalues.end(); ++l) {
+										avID = l->pItem;
+										BGSPropertySheet::AVIFProperty newAVProp;
+										if (SAKEUtilities::GetAVPropertyFromIdentifer(avID, newAVProp)) {
+											bool bFound = false;
+											for (UInt32 i = 0; i < targetActor->propertySheet.sheet->count; i++) {
+												BGSPropertySheet::AVIFProperty checkAVProp;
+												if (targetActor->propertySheet.sheet->GetNthItem(i, checkAVProp)) {
+													if (checkAVProp.actorValue == newAVProp.actorValue) {
+														checkAVProp.value = newAVProp.value;
+														bFound = true;
+														break;
+													}
+												}
+											}
+											if (!bFound) {
+												targetActor->propertySheet.sheet->Push(newAVProp);
+											}
+										}
+									}
+								}
+							}
+							actorvalues.clear();
+						}
+						
+						// Keywords:
+						if (iniActors.GetAllValues(raceID, "sKeywords", keywords)) {
+							if (keywords.size() > 0) {
+								if (targetActor->keywords.numKeywords > 0) {
+									for (UInt32 i = 0; i < targetActor->keywords.numKeywords; i++) {
+										if (targetActor->keywords.keywords[i]) {
+											tempKeywords.Push(targetActor->keywords.keywords[i]);
+										}
+									}
+								}
+								CSimpleIni::TNamesDepend::const_iterator k = keywords.begin();
+								for (; k != keywords.end(); ++k) {
+									kwID = k->pItem;
+									BGSKeyword * newKW = (BGSKeyword*)SAKEUtilities::GetFormFromIdentifier(kwID);
+									if (newKW) {
+										tempKeywords.Push(newKW);
+									}
+								}
+								int kwCount = tempKeywords.count;
+								if (kwCount > 0) {
+									targetActor->keywords.numKeywords = kwCount;
+									targetActor->keywords.keywords = new BGSKeyword*[kwCount];
+									for (UInt8 j = 0; j < kwCount; j++) {
+										targetActor->keywords.keywords[j] = tempKeywords[j];
+									}
+								}
+								tempKeywords.Clear();
+							}
+						}
+						keywords.clear();
+
+
+						if (bShowDebugInfo) {
+							if (bVerboseDebugInfo) {
+								_MESSAGE("\n      0x%08X - %s", targetActor->formID, targetActor->fullName.name.c_str());
+								ATSpellListEntries * spellData = (ATSpellListEntries*)targetActor->spellList.unk08;
+								if (spellData) {
+									int iNumSpells = spellData->numSpells;
+									_MESSAGE("        Abilities:");
+									for (UInt32 j = 0; j < iNumSpells; j++)
+										_MESSAGE("          %i: 0x%08X - %s", j, spellData->spells[j]->formID, spellData->spells[j]->name.name.c_str());
+								}
+								if (targetActor->propertySheet.sheet->count > 0) {
+									_MESSAGE("        ActorValues:");
+									BGSPropertySheet::AVIFProperty tempAVProp;
+									for (UInt32 j = 0; j < targetActor->propertySheet.sheet->count; j++) {
+										if (targetActor->propertySheet.sheet->GetNthItem(j, tempAVProp)) {
+											if (tempAVProp.actorValue)
+												_MESSAGE("          %i: 0x%08X - %s, %f", j, tempAVProp.actorValue->formID, tempAVProp.actorValue->avName, tempAVProp.value);
+											else
+												_MESSAGE("          %i: none, %f", j, tempAVProp.value);
+										}
+									}
+								}
+							}
+							else {
+								_MESSAGE("      0x%08X - %s", targetActor->formID, targetActor->fullName.name.c_str());
+							}
+						}
+					}
+				}
+
+				
+				return true;
+			}
+		}
 		return false;
 	}
 
-
-
-	void LogDebugInfo()
-	{
-		_MESSAGE("\nRaces:");
-		for (UInt32 i = 0; i < editedRaces.count; i++) {
-			_MESSAGE("\n  %i: 0x%08X - %s", i, editedRaces[i]->formID, editedRaces[i]->fullName.name.c_str());
-
-			ATSpellListEntries * spellData = (ATSpellListEntries*)editedRaces[i]->spellList.unk08;
-			if (spellData) {
-				int iNumSpells = spellData->numSpells;
-
-				_MESSAGE("\n    Abilities:");
-				for (UInt32 j = 0; j < iNumSpells; j++)
-					_MESSAGE("        %i: 0x%08X - %s", j, spellData->spells[j]->formID, spellData->spells[j]->name.name.c_str());
-			}
-
-			if (editedRaces[i]->propertySheet.sheet->count > 0) {
-				_MESSAGE("\n    ActorValues:");
-				BGSPropertySheet::AVIFProperty tempAVProp;
-				for (UInt32 j = 0; j < editedRaces[i]->propertySheet.sheet->count; j++) {
-					if (editedRaces[i]->propertySheet.sheet->GetNthItem(j, tempAVProp)) {
-						if (tempAVProp.actorValue)
-							_MESSAGE("        %i: 0x%08X - %s, %f", j, tempAVProp.actorValue->formID, tempAVProp.actorValue->avName, tempAVProp.value);
-						else
-							_MESSAGE("        %i: none, %f", j, tempAVProp.value);
-					}
-				}
-			}
-		}
-
-		_MESSAGE("\nWeapons:");
-		for (UInt32 i = 0; i < editedWeapons.count; i++) {
-			_MESSAGE("  %i: %08x - %s", i, editedWeapons[i]->formID, editedWeapons[i]->fullName.name.c_str());
-		}
-
-		_MESSAGE("\nArmors:");
-		for (UInt32 i = 0; i < editedArmors.count; i++) {
-			_MESSAGE("  %i: %08x - %s", i, editedArmors[i]->formID, editedArmors[i]->fullName.name.c_str());
-		}
-
-	}
 }
 
 
@@ -756,109 +1050,71 @@ void SAKEData::LoadGameData()
 	iniMain.SetUnicode();
 	iniMain.SetMultiKey(true);
 
-	CSimpleIniA iniIndex;
-	iniIndex.SetUnicode();
-	iniIndex.SetMultiKey(true);
-
-	// load global config
 	if (iniMain.LoadFile(".\\Data\\F4SE\\Plugins\\SAKE.ini") > -1) {
 		const char *configDataPath = iniMain.GetValue("General", "sConfigFoldersPath", "");
 		if (configDataPath != "") {
-			bLoadWeapons = iniMain.GetBoolValue("General", "bLoadWeapons", false);
-			bLoadArmors = iniMain.GetBoolValue("General", "bLoadArmors", false);
-			bLoadRaces = iniMain.GetBoolValue("General", "bLoadRaces", false);
-			bLoadActors = iniMain.GetBoolValue("General", "bLoadActors", false);
+			std::vector<std::string> templateDirs = SAKEUtilities::GetDirFolderNames(configDataPath);
+			if (templateDirs.size() > 0) {
+				const char * dirName = "";
+				std::size_t tempZero = 0;
+				std::vector<std::string> templateFiles;
+				std::string tempDirStr, fileName, filePath;
 
-			bShowDebugInfo =	iniMain.GetBoolValue("General", "bShowDebugInfo", false);
-			bNPCsUseAmmo =		iniMain.GetBoolValue("General", "bNPCsUseAmmo", false);
-
-			std::string tempDirStr;
-			const char * templateToLoad = "";
-
-			CSimpleIni::TNamesDepend templates, configPaths;
-			if (iniMain.GetAllValues("General", "sTemplates", templates)) {
-				bool bWeapsLoaded = false, bRacesloaded = false, bArmorsLoaded = false;
-				std::string tempLoadPath;
-				const char * tempPath = "";
-
-				CSimpleIni::TNamesDepend::const_iterator i = templates.begin();
-				for (; i != templates.end(); ++i) {
-					templateToLoad = i->pItem;
-					tempDirStr.append(configDataPath);
-					tempDirStr.append(templateToLoad);
-					tempDirStr.append("\\_Index.ini");
-
-					if (iniIndex.LoadFile(tempDirStr.c_str()) > -1) {
-						bWeapsLoaded = false;
-						bRacesloaded = false;
-						bArmorsLoaded = false;
-
-						// weapon edits
-						if (bLoadWeapons) {
-							if (iniIndex.GetAllValues("Index", "sWeaponPaths", configPaths)) {
-								CSimpleIni::TNamesDepend::const_iterator j = configPaths.begin();
-								for (; j != configPaths.end(); ++j) {
-									tempPath = j->pItem;
-									tempLoadPath.append(configDataPath);
-									tempLoadPath.append(templateToLoad);
-									tempLoadPath.append("\\");
-									tempLoadPath.append(tempPath);
-
-									bWeapsLoaded = LoadData_Weapons(tempLoadPath);
-									tempLoadPath.clear();
-								}
-							}
-							configPaths.clear();
+				bShowDebugInfo = iniMain.GetBoolValue("General", "bShowDebugInfo", false);
+				bVerboseDebugInfo = iniMain.GetBoolValue("General", "bVerboseDebugLog", false);
+				
+				for (std::vector<std::string>::iterator itDir = templateDirs.begin(); itDir != templateDirs.end(); ++itDir) {
+					dirName = itDir->c_str();
+					tempDirStr = configDataPath;
+					tempDirStr.append(dirName);
+					tempDirStr.append("\\\\");
+					
+					templateFiles = SAKEUtilities::GetDirFileNames(tempDirStr.c_str());
+					if (templateFiles.size() > 0) {
+						if (bShowDebugInfo) {
+							_MESSAGE("\nLoading Template: %s", dirName);
 						}
+						for (std::vector<std::string>::iterator itFile = templateFiles.begin(); itFile != templateFiles.end(); ++itFile) {
+							fileName = itFile->c_str();
+							filePath = tempDirStr.c_str();
+							filePath.append(fileName);
 
-						// race abilities/avs
-						if (bLoadRaces) {
-							if (iniIndex.GetAllValues("Index", "sRacePaths", configPaths)) {
-								CSimpleIni::TNamesDepend::const_iterator j = configPaths.begin();
-								for (; j != configPaths.end(); ++j) {
-									tempPath = j->pItem;
-									tempLoadPath.append(configDataPath);
-									tempLoadPath.append(templateToLoad);
-									tempLoadPath.append("\\");
-									tempLoadPath.append(tempPath);
-
-									bRacesloaded = LoadData_Races(tempLoadPath);
-									tempLoadPath.clear();
-								}
+							if (bShowDebugInfo) {
+								_MESSAGE("\n    %s:", fileName.c_str());
+							}
+							if (fileName.find("Actors_") == tempZero) {
+								if (!LoadData_Actors(filePath.c_str()))
+									_MESSAGE("      Failed to load Actors from %s", filePath.c_str());
+							}
+							else if (fileName.find("Armors_") == tempZero) {
+								if (!LoadData_Armors(filePath.c_str()))
+									_MESSAGE("      Failed to load Armors from %s", filePath.c_str());
+							}
+							else if (fileName.find("Races_") == tempZero) {
+								if (!LoadData_Races(filePath.c_str()))
+									_MESSAGE("      Failed to load Races from %s", filePath.c_str());
+							}
+							else if (fileName.find("Weapons_") == tempZero) {
+								if (!LoadData_Weapons(filePath.c_str()))
+									_MESSAGE("      Failed to load Weapons from %s", filePath.c_str());
+							}
+							else {
+								_MESSAGE("      Not a valid config file: %s", tempDirStr.c_str());
 							}
 						}
-
-						if (bLoadArmors) {
-							if (iniIndex.GetAllValues("Index", "sArmorPaths", configPaths)) {
-								CSimpleIni::TNamesDepend::const_iterator j = configPaths.begin();
-								for (; j != configPaths.end(); ++j) {
-									tempPath = j->pItem;
-									tempLoadPath.append(configDataPath);
-									tempLoadPath.append(templateToLoad);
-									tempLoadPath.append("\\");
-									tempLoadPath.append(tempPath);
-
-									bArmorsLoaded = LoadData_Armors(tempLoadPath);
-									tempLoadPath.clear();
-								}
-							}
-						}
-
-						_MESSAGE("Loaded Template: %s...", templateToLoad);
-						
+						templateFiles.clear();
 					}
-					iniIndex.Reset();
-					tempDirStr.clear();
+					else {
+						_MESSAGE("\n    %s is empty", fileName.c_str());
+					}
 				}
-
-				if (bShowDebugInfo) {
-					LogDebugInfo();
-				}
-
-				editedRaces.Clear();
-				editedWeapons.Clear();
+				tempDirStr.clear();
+				fileName.clear();
+				filePath.clear();
 			}
-			templates.clear();
+			
+			templateDirs.clear();
+			iniMain.Reset();
 		}
 		else {
 			_MESSAGE("\n!!Unable to load config path.");
