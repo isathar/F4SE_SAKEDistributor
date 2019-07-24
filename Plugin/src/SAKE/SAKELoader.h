@@ -60,7 +60,7 @@ public:
 	SpellItem			** spells;				//00 - array of SpellItems
 	void				* unk08;				//08
 	void				* unk10;				//10
-	UInt32				numSpells;				//18 - length of spells - set manually
+	UInt32				numSpells;				//18 - length of the spells array - set manually
 };
 
 

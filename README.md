@@ -2,7 +2,8 @@ F4SE SAKE Distributor
 ======================
 
 
-- WIP plugin- and load-order independent patcher for Fallout 4's Races, Weapons, Armors, and Actors. Allows distributing Spells, ActorValues, Keywords, and Enchantments via ini files. Also allows editing base weapon and armor instance stats.
+- WIP plugin- and load-order independent patcher for Fallout 4's Races, Weapons, Armors, Actors, and leveled items. 
+- Allows distributing Spells, ActorValues, Keywords to actors and races via ini files. Also allows editing base weapon and armor instance stats and enchantments.
 - Could be used to make simple plugin-less mods and compatibility patches.
 - Created for AmmoTweaks 2.0. It will be included in AmmoTweaks, and also released separately.
 
@@ -29,7 +30,8 @@ Installing templates:
 - Templates are processed in alphanumerical order. Rename folders if you need a specific load order.
 
 
-Included WIP templates:
+Included Templates:
+- Note: None of these cover everything, and are very much still works in progress.
 
 *	AdditionalResistances			(no requirements)
 --		Distributes resistances to Fallout 4's neglected damage types to races, actors and armors.
@@ -38,9 +40,14 @@ Included WIP templates:
 --		Enables NPC ammo usage for the specified weapons.
 -- 		Starts with a z because it needs to load after any other weapon edits to make sure the flag is set.
 
+*	zReducedAmmoLoot				(no requirements)
+--		Reduces the amount of ammo found in base loot/vendor leveled lists.
+
 *	DTF_Default						(requires Damage Threshold Framework)
 -- 		Distributes DTF's damage threshold to races, actors and armors.
 --		Default version (do not use with AmmoTweaks)
+
+
 
 
 Custom templates:
@@ -63,6 +70,10 @@ Custom templates:
 		
 		DamageType String:					sDamageType = PluginName.esp|000000, 99
 		- FormID followed by , value
+		
+		LeveledItem String:					sLeveledItemX = PluginName.esp|000000, 1, 1
+		- item FormID followed by , level, count
+	
 	
 	
 	Template Types:
@@ -171,4 +182,17 @@ Custom templates:
 				- default keywords to remove
 			
 			
+	Leveled Items:
+	
+		- ini files with names beginning with "LeveledItems_"
+		- section names are Lveled Item FormIDs
+		
+		Available Variables:
 			
+			sLeveledItemsRep (LeveledItem string)
+			- destructive:
+			- replaces the existing base leveled item's list (with all sLeveledItemsRep entries)
+			
+			sLeveledItemsAdd (LeveledItem string)
+			- added to the existing base leveled list
+		

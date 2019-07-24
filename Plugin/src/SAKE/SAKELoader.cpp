@@ -159,6 +159,29 @@ namespace SAKEUtilities
 		return false;
 	}
 
+	// reads a TESLeveledList::Entry (Form, level, count) from the passed identifier string
+	bool GetLeveledItemFromIdentifier(const std::string & formIdentifier, TESLeveledList::Entry & tempEntry)
+	{
+		if (formIdentifier.c_str() != "none") {
+			std::size_t pos1 = formIdentifier.find_first_of(", ");
+			std::string liIdentifier = formIdentifier.substr(0, pos1);
+
+			std::string liTempStr = formIdentifier.substr(pos1 + 2);
+			std::size_t pos2 = liTempStr.find_first_of(", ");
+
+			std::string liLvlStr = liTempStr.substr(0, pos2);
+			std::string liCountStr = liTempStr.substr(pos2 + 2);
+
+			tempEntry.form = GetFormFromIdentifier(liIdentifier.c_str());
+			if (tempEntry.form) {
+				tempEntry.level = std::stoi(liLvlStr);
+				tempEntry.count = std::stoi(liCountStr);
+				return true;
+			}
+		}
+		return false;
+	}
+
 
 	// credit: stackoverflow user herohuyongtao:
 
@@ -645,6 +668,7 @@ namespace SAKEData
 								instanceData->health = (UInt32)iHealth;
 							}
 
+
 							// -- Keywords
 							
 							// Keywords to Remove
@@ -703,8 +727,7 @@ namespace SAKEData
 							}
 							keywordsAdd.Clear();
 							keywordsRemove.Clear();
-
-
+							
 							// debug log output
 							if (bShowDebugInfo) {
 								_MESSAGE("      0x%08x - %s", armorBase->formID, armorBase->fullName.name.c_str());
@@ -783,6 +806,9 @@ namespace SAKEData
 						abilities.clear();
 
 						// ActorValues:
+						if (!targetRace->propertySheet.sheet) {
+							targetRace->propertySheet.sheet = new tArray<BGSPropertySheet::AVIFProperty>();
+						}
 						if (targetRace->propertySheet.sheet) {
 							if (iniRaces.GetAllValues(actorID, "sActorValues", actorvalues)) {
 								if (actorvalues.size() > 0) {
@@ -796,15 +822,12 @@ namespace SAKEData
 												BGSPropertySheet::AVIFProperty checkAVProp;
 												if (targetRace->propertySheet.sheet->GetNthItem(i, checkAVProp)) {
 													if (checkAVProp.actorValue == newAVProp.actorValue) {
-														checkAVProp.value = newAVProp.value;
-														bFound = true;
+														targetRace->propertySheet.sheet->Remove(i);
 														break;
 													}
 												}
 											}
-											if (!bFound) {
-												targetRace->propertySheet.sheet->Push(newAVProp);
-											}
+											targetRace->propertySheet.sheet->Push(newAVProp);
 										}
 									}
 								}
@@ -873,6 +896,8 @@ namespace SAKEData
 						}
 					}
 				}
+
+
 				return true;
 			}
 		}
@@ -942,34 +967,20 @@ namespace SAKEData
 						abilities.clear();
 						
 						// ActorValues:
-						if (targetActor->propertySheet.sheet) {
-							if (iniActors.GetAllValues(raceID, "sActorValues", actorvalues)) {
-								if (actorvalues.size() > 0) {
-									CSimpleIni::TNamesDepend::const_iterator l = actorvalues.begin();
-									for (; l != actorvalues.end(); ++l) {
-										avID = l->pItem;
-										BGSPropertySheet::AVIFProperty newAVProp;
-										if (SAKEUtilities::GetAVPropertyFromIdentifer(avID, newAVProp)) {
-											bool bFound = false;
-											for (UInt32 i = 0; i < targetActor->propertySheet.sheet->count; i++) {
-												BGSPropertySheet::AVIFProperty checkAVProp;
-												if (targetActor->propertySheet.sheet->GetNthItem(i, checkAVProp)) {
-													if (checkAVProp.actorValue == newAVProp.actorValue) {
-														checkAVProp.value = newAVProp.value;
-														bFound = true;
-														break;
-													}
-												}
-											}
-											if (!bFound) {
-												targetActor->propertySheet.sheet->Push(newAVProp);
-											}
-										}
+						if (iniActors.GetAllValues(raceID, "sActorValues", actorvalues)) {
+							if (actorvalues.size() > 0) {
+								CSimpleIni::TNamesDepend::const_iterator l = actorvalues.begin();
+								for (; l != actorvalues.end(); ++l) {
+									avID = l->pItem;
+									BGSPropertySheet::AVIFProperty newAVProp;
+									if (SAKEUtilities::GetAVPropertyFromIdentifer(avID, newAVProp)) {
+										targetActor->actorValueOwner.SetBase(newAVProp.actorValue, newAVProp.value);
 									}
 								}
 							}
-							actorvalues.clear();
 						}
+						actorvalues.clear();
+						
 						
 						// Keywords:
 						if (iniActors.GetAllValues(raceID, "sKeywords", keywords)) {
@@ -1033,13 +1044,92 @@ namespace SAKEData
 					}
 				}
 
-				
 				return true;
 			}
 		}
 		return false;
 	}
 
+}
+
+
+bool LoadData_LeveledLists(const std::string & configDir)
+{
+	CSimpleIniA iniLevList;
+	iniLevList.SetUnicode();
+	iniLevList.SetMultiKey(true);
+
+	if (iniLevList.LoadFile(configDir.c_str()) > -1) {
+		const char *listIDStr = "", *itemIDStr = "";
+		CSimpleIni::TNamesDepend sections, llReplace;
+		iniLevList.GetAllSections(sections);
+		for (CSimpleIni::TNamesDepend::const_iterator s = sections.begin(); s != sections.end(); ++s) {
+			listIDStr = s->pItem;
+			TESLevItem * tempLList = (TESLevItem*)SAKEUtilities::GetFormFromIdentifier(listIDStr);
+			if (tempLList) {
+				bool bReplace = false;
+				tArray<TESLeveledList::Entry> newEntries;
+
+				_MESSAGE("Leveled List 0x%08X\n  Original:", tempLList->formID);
+				for (UInt32 i = 0; i < tempLList->leveledList.length; i++) {
+					_MESSAGE("    %i - 0x%08X, %i, %i", i, tempLList->leveledList.entries[i].form->formID, tempLList->leveledList.entries[i].level, tempLList->leveledList.entries[i].count);
+				}
+
+				// base leveled list replacement
+				if (iniLevList.GetAllValues(listIDStr, "sLeveledItemsRep", llReplace)) {
+					if (llReplace.size() > 0) {
+						for (CSimpleIni::TNamesDepend::const_iterator l = llReplace.begin(); l != llReplace.end(); ++l) {
+							TESLeveledList::Entry tempEntry;
+							if (SAKEUtilities::GetLeveledItemFromIdentifier(l->pItem, tempEntry)) {
+								newEntries.Push(tempEntry);
+							}
+						}
+						llReplace.clear();
+					}
+				}
+				else {
+					// no replacement, just copy the original
+					if (tempLList->leveledList.length > 0) {
+						for (UInt32 i = 0; i < tempLList->leveledList.length; i++) {
+							newEntries.Push(tempLList->leveledList.entries[i]);
+						}
+					}
+				}
+
+				// leveled list additions
+				if (iniLevList.GetAllValues(listIDStr, "sLeveledItemsAdd", llReplace)) {
+					if (llReplace.size() > 0) {
+						for (CSimpleIni::TNamesDepend::const_iterator l = llReplace.begin(); l != llReplace.end(); ++l) {
+							TESLeveledList::Entry tempEntry;
+							if (SAKEUtilities::GetLeveledItemFromIdentifier(l->pItem, tempEntry)) {
+								newEntries.Push(tempEntry);
+							}
+						}
+						llReplace.clear();
+					}
+				}
+
+				// rebuild the leveled list if needed
+				if (newEntries.count > 0) {
+					tempLList->leveledList.entries = new TESLeveledList::Entry[newEntries.count];
+					tempLList->leveledList.length = newEntries.count;
+					for (UInt32 i = 0; i < newEntries.count; i++) {
+						tempLList->leveledList.entries[i] = newEntries[i];
+					}
+					newEntries.Clear();
+
+					if (tempLList->leveledList.length > 0) {
+						_MESSAGE("  Edited:");
+						for (UInt32 i = 0; i < tempLList->leveledList.length; i++) {
+							_MESSAGE("    %i - 0x%08X, %i, %i", i, tempLList->leveledList.entries[i].form->formID, tempLList->leveledList.entries[i].level, tempLList->leveledList.entries[i].count);
+						}
+					}
+				}
+			}
+		}
+		return true;
+	}
+	return false;
 }
 
 
@@ -1056,12 +1146,15 @@ void SAKEData::LoadGameData()
 			std::vector<std::string> templateDirs = SAKEUtilities::GetDirFolderNames(configDataPath);
 			if (templateDirs.size() > 0) {
 				const char * dirName = "";
+				const char *loadPath = "";
 				std::size_t tempZero = 0;
 				std::vector<std::string> templateFiles;
 				std::string tempDirStr, fileName, filePath;
 
 				bShowDebugInfo = iniMain.GetBoolValue("General", "bShowDebugInfo", false);
 				bVerboseDebugInfo = iniMain.GetBoolValue("General", "bVerboseDebugLog", false);
+
+				std::vector<std::string> procActors, procRaces, procArmors, procWeapons, procLLIs;
 				
 				for (std::vector<std::string>::iterator itDir = templateDirs.begin(); itDir != templateDirs.end(); ++itDir) {
 					dirName = itDir->c_str();
@@ -1078,31 +1171,81 @@ void SAKEData::LoadGameData()
 							fileName = itFile->c_str();
 							filePath = tempDirStr.c_str();
 							filePath.append(fileName);
-
-							if (bShowDebugInfo) {
-								_MESSAGE("\n    %s:", fileName.c_str());
-							}
 							if (fileName.find("Actors_") == tempZero) {
-								if (!LoadData_Actors(filePath.c_str()))
-									_MESSAGE("      Failed to load Actors from %s", filePath.c_str());
+								procActors.push_back(filePath);
+								continue;
 							}
-							else if (fileName.find("Armors_") == tempZero) {
-								if (!LoadData_Armors(filePath.c_str()))
-									_MESSAGE("      Failed to load Armors from %s", filePath.c_str());
+							if (fileName.find("Armors_") == tempZero) {
+								procArmors.push_back(filePath);
+								continue;
 							}
-							else if (fileName.find("Races_") == tempZero) {
-								if (!LoadData_Races(filePath.c_str()))
-									_MESSAGE("      Failed to load Races from %s", filePath.c_str());
+							if (fileName.find("Races_") == tempZero) {
+								procRaces.push_back(filePath);
+								continue;
 							}
-							else if (fileName.find("Weapons_") == tempZero) {
-								if (!LoadData_Weapons(filePath.c_str()))
-									_MESSAGE("      Failed to load Weapons from %s", filePath.c_str());
+							if (fileName.find("Weapons_") == tempZero) {
+								procWeapons.push_back(filePath);
+								continue;
 							}
-							else {
-								_MESSAGE("      Not a valid config file: %s", tempDirStr.c_str());
+							if (fileName.find("LeveledItems_") == tempZero) {
+								procLLIs.push_back(filePath);
+								continue;
 							}
+							_MESSAGE("      Not a valid config file: %s", tempDirStr.c_str());
 						}
 						templateFiles.clear();
+
+
+						if (procRaces.size() > 0) {
+							for (std::vector<std::string>::iterator itPath = procRaces.begin(); itPath != procRaces.end(); ++itPath) {
+								loadPath = itPath->c_str();
+								if (!LoadData_Races(loadPath)) {
+									_MESSAGE("      Failed to load %s", itPath->c_str());
+								}
+							}
+							procRaces.clear();
+						}
+						
+						if (procActors.size() > 0) {
+							for (std::vector<std::string>::iterator itPath = procActors.begin(); itPath != procActors.end(); ++itPath) {
+								loadPath = itPath->c_str();
+								if (!LoadData_Actors(loadPath)) {
+									_MESSAGE("      Failed to load %s", itPath->c_str());
+								}
+							}
+							procActors.clear();
+						}
+
+						if (procWeapons.size() > 0) {
+							for (std::vector<std::string>::iterator itPath = procWeapons.begin(); itPath != procWeapons.end(); ++itPath) {
+								loadPath = itPath->c_str();
+								if (!LoadData_Weapons(loadPath)) {
+									_MESSAGE("      Failed to load %s", itPath->c_str());
+								}
+							}
+							procWeapons.clear();
+						}
+
+						if (procArmors.size() > 0) {
+							for (std::vector<std::string>::iterator itPath = procArmors.begin(); itPath != procArmors.end(); ++itPath) {
+								loadPath = itPath->c_str();
+								if (!LoadData_Armors(loadPath)) {
+									_MESSAGE("      Failed to load %s", itPath->c_str());
+								}
+							}
+							procArmors.clear();
+						}
+
+						if (procLLIs.size() > 0) {
+							for (std::vector<std::string>::iterator itPath = procLLIs.begin(); itPath != procLLIs.end(); ++itPath) {
+								loadPath = itPath->c_str();
+								if (!LoadData_LeveledLists(loadPath)) {
+									_MESSAGE("      Failed to load %s", itPath->c_str());
+								}
+							}
+							procLLIs.clear();
+						}
+
 					}
 					else {
 						_MESSAGE("\n    %s is empty", fileName.c_str());
