@@ -285,9 +285,13 @@ namespace SAKEData
 			return false;
 		}
 		
-		if (!damageTypes || clearExisting) {
+		if (!damageTypes) {
 			damageTypes = new tArray<TBO_InstanceData::DamageTypes>();
-			if (clearExisting) {
+		}
+		
+		if (clearExisting) {
+			if (damageTypes->count != 0) {
+				damageTypes->Clear();
 				if (iDebugLevel == 2) {
 					_MESSAGE("        Clearing damage types...");
 				}
@@ -296,6 +300,8 @@ namespace SAKEData
 
 		UInt32 dtID = 0;
 		json dtObj;
+		std::vector<TBO_InstanceData::DamageTypes> finalDamageTypes;
+
 		for (json::iterator itDT = damageTypeData.begin(); itDT != damageTypeData.end(); ++itDT) {
 			dtObj.clear();
 			dtObj = *itDT;
@@ -324,7 +330,6 @@ namespace SAKEData
 								if (iDebugLevel == 2) {
 									_MESSAGE("        Found existing damage type: %s, value: %i", dtIDStr.c_str(), checkDT.value);
 								}
-								damageTypes->Remove(j);
 								break;
 							}
 						}
@@ -339,12 +344,22 @@ namespace SAKEData
 						TBO_InstanceData::DamageTypes newDT;
 						newDT.damageType = tempDT;
 						newDT.value = (UInt32)finalDTVal;
-						damageTypes->Push(newDT);
+						finalDamageTypes.push_back(newDT);
 						if (iDebugLevel == 2) {
 							_MESSAGE("        Adding damage type: %s, set: %i, add: %i", dtIDStr.c_str(), iDTSet, iDTAdd);
 						}
 					}
 				}
+			}
+		}
+
+		if (damageTypes->count != 0) {
+			damageTypes->Clear();
+		}
+
+		if (!finalDamageTypes.empty()) {
+			for (UInt32 j = 0; j < finalDamageTypes.size(); j++) {
+				damageTypes->Push(finalDamageTypes[j]);
 			}
 		}
 
