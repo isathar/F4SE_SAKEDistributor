@@ -1,7 +1,6 @@
 {
 	"name": "Misc. Tweaks",
-	"description": "Test configuration for some overrides"
-	],
+	"description": "Test configuration for some overrides",
 	
 	"active": [
 		{"name": "Tweaks\\AdditionalDRTypes"},

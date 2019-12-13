@@ -313,7 +313,7 @@ namespace SAKEData
 
 				// check if the damageType is already in the list, remove it
 				if (damageTypes->count != 0) {
-					for (UInt32 j = damageTypes->count; j >= 0; j--) {
+					for (UInt32 j = 0; j < damageTypes->count; j++) {
 						TBO_InstanceData::DamageTypes checkDT;
 						if (damageTypes->GetNthItem(j, checkDT)) {
 							if (checkDT.damageType->formID == dtID) {
@@ -1804,11 +1804,13 @@ namespace SAKEFileReader
 			otFile.close();
 			return 1;
 		}
-		if (bIsFirstPass && !otObject["hasRaceEdits"].is_null()) {
-			bool bHasRaceEdits = otObject["hasRaceEdits"];
-			if (!bHasRaceEdits) {
-				_MESSAGE("    INFO: Skipping %s during first pass.", jsonPath.c_str());
-				return 5;
+		if (bIsFirstPass) {
+			if (!otObject["hasRaceEdits"].is_null()) {
+				bool bHasRaceEdits = otObject["hasRaceEdits"];
+				if (!bHasRaceEdits) {
+					_MESSAGE("    INFO: Skipping %s during first pass.", jsonPath.c_str());
+					return 5;
+				}
 			}
 		}
 
