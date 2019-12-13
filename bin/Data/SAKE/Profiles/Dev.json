@@ -3,6 +3,6 @@
 	"description": "Testing configuration.",
 	
 	"active": [
-		{"name": "Example"}
+		{"name": "Examples"}
 	]
 }
