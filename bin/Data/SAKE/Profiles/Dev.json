@@ -1,0 +1,8 @@
+{
+	"name": "Dev",
+	"description": "Testing configuration.",
+	
+	"active": [
+		{"name": "Example"}
+	]
+}

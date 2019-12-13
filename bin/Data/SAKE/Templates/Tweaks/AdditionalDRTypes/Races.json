@@ -1,0 +1,315 @@
+{
+	"name": "Extra Resistances Based on Race",
+	
+	"comment": [
+		"DamageResist - Fallout4.esm|2E3",
+		"EnergyResist - Fallout4.esm|2EB",
+		"ElectricResist - Fallout4.esm|2E6",
+		"FrostResist - Fallout4.esm|2E7",
+		"FireResist - Fallout4.esm|2E5",
+		"PoisonResist - Fallout4.esm|2E4"
+	],
+	
+	"hasRaceEdits": true,
+	
+	"overrides": [
+		{
+			"comment": "HumanRace", "formType": 2, "formID": "Fallout4.esm|13746",
+			"actorValues": [
+				{"formID": "Fallout4.esm|2E6", "set": 50.0, "comment": "ElectricResist"}
+			]
+		},
+		{
+			"comment": "GhoulRace", "formType": 2, "formID": "Fallout4.esm|EAFB6",
+			"actorValues": [
+				{"formID": "Fallout4.esm|2E6", "set": 50.0, "comment": "ElectricResist"},
+				{"formID": "Fallout4.esm|2E7", "set": 5.0, "comment": "FrostResist"}
+			]
+		},
+		{
+			"comment": "AlienRace", "formType": 2, "formID": "Fallout4.esm|184C4D",
+			"actorValues": [
+				{"formID": "Fallout4.esm|2E6", "set": 50.0, "comment": "ElectricResist"},
+				{"formID": "Fallout4.esm|2E7", "set": 5.0, "comment": "FrostResist"}
+			]
+		},
+		
+		{
+			"comment": "FeralGhoulRace", "formType": 2, "formID": "Fallout4.esm|6B4EC",
+			"actorValues": [
+				{"formID": "Fallout4.esm|2E6", "set": 50.0, "comment": "ElectricResist"},
+				{"formID": "Fallout4.esm|2E7", "set": 10.0, "comment": "FrostResist"}
+			]
+		},
+		{
+			"comment": "FeralGhoulGlowingRace", "formType": 2, "formID": "Fallout4.esm|A96BF",
+			"actorValues": [
+				{"formID": "Fallout4.esm|2E6", "set": 50.0, "comment": "ElectricResist"},
+				{"formID": "Fallout4.esm|2E7", "set": 20.0, "comment": "FrostResist"}
+			]
+		},
+		
+		{
+			"comment": "SuperMutantRace", "formType": 2, "formID": "Fallout4.esm|1A009",
+			"actorValues": [
+				{"formID": "Fallout4.esm|2E6", "set": 50.0, "comment": "ElectricResist"},
+				{"formID": "Fallout4.esm|2E5", "set": 15.0, "comment": "FireResist"},
+				{"formID": "Fallout4.esm|2E7", "set": 15.0, "comment": "FrostResist"},
+				{"formID": "Fallout4.esm|2E4", "set": 25.0, "comment": "PoisonResist"}
+			]
+		},
+		{
+			"comment": "SupermutantBehemothRace", "formType": 2, "formID": "Fallout4.esm|BB7D9",
+			"actorValues": [
+				{"formID": "Fallout4.esm|2E6", "set": 50.0, "comment": "ElectricResist"},
+				{"formID": "Fallout4.esm|2E5", "set": 25.0, "comment": "FireResist"},
+				{"formID": "Fallout4.esm|2E7", "set": 35.0, "comment": "FrostResist"},
+				{"formID": "Fallout4.esm|2E4", "set": 40.0, "comment": "PoisonResist"}
+			]
+		},
+		
+		{
+			"comment": "DogmeatRace", "formType": 2, "formID": "Fallout4.esm|1D698",
+			"actorValues": [
+				{"formID": "Fallout4.esm|2E6", "set": 50.0, "comment": "ElectricResist"},
+				{"formID": "Fallout4.esm|2E7", "set": 10.0, "comment": "FrostResist"}
+			]
+		},
+		{
+			"comment": "RaiderDogRace", "formType": 2, "formID": "Fallout4.esm|187AF9",
+			"actorValues": [
+				{"formID": "Fallout4.esm|2E6", "set": 50.0, "comment": "ElectricResist"},
+				{"formID": "Fallout4.esm|2E7", "set": 10.0, "comment": "FrostResist"}
+			]
+		},
+		{
+			"comment": "ViciousDogRace", "formType": 2, "formID": "Fallout4.esm|3578A",
+			"actorValues": [
+				{"formID": "Fallout4.esm|2E6", "set": 50.0, "comment": "ElectricResist"},
+				{"formID": "Fallout4.esm|2E7", "set": 10.0, "comment": "FrostResist"}
+			]
+		},
+		{
+			"comment": "FEVHoundRace", "formType": 2, "formID": "Fallout4.esm|90C33",
+			"actorValues": [
+				{"formID": "Fallout4.esm|2E6", "set": 50.0, "comment": "ElectricResist"},
+				{"formID": "Fallout4.esm|2E5", "set": 10.0, "comment": "FireResist"},
+				{"formID": "Fallout4.esm|2E7", "set": 10.0, "comment": "FrostResist"},
+				{"formID": "Fallout4.esm|2E4", "set": 20.0, "comment": "PoisonResist"}
+			]
+		},
+		
+		{
+			"comment": "GorillaRace", "formType": 2, "formID": "Fallout4.esm|D9804",
+			"actorValues": [
+				{"formID": "Fallout4.esm|2E6", "set": 50.0, "comment": "ElectricResist"},
+				{"formID": "Fallout4.esm|2E7", "set": 10.0, "comment": "FrostResist"}
+			]
+		},
+		
+		{
+			"comment": "MoleratRace", "formType": 2, "formID": "Fallout4.esm|1D810",
+			"actorValues": [
+				{"formID": "Fallout4.esm|2E6", "set": 50.0, "comment": "ElectricResist"},
+				{"formID": "Fallout4.esm|2E7", "set": 10.0, "comment": "FrostResist"},
+				{"formID": "Fallout4.esm|2E4", "set": 25.0, "comment": "PoisonResist"}
+			]
+		},
+		
+		{
+			"comment": "RadStagRace", "formType": 2, "formID": "Fallout4.esm|7ED1D",
+			"actorValues": [
+				{"formID": "Fallout4.esm|2E6", "set": 50.0, "comment": "ElectricResist"},
+				{"formID": "Fallout4.esm|2E7", "set": 15.0, "comment": "FrostResist"}
+			]
+		},
+		
+		{
+			"comment": "BrahminRace", "formType": 2, "formID": "Fallout4.esm|2047E",
+			"actorValues": [
+				{"formID": "Fallout4.esm|2E6", "set": 50.0, "comment": "ElectricResist"},
+				{"formID": "Fallout4.esm|2E7", "set": 15.0, "comment": "FrostResist"}
+			]
+		},
+		
+		{
+			"comment": "YaoGuaiRace", "formType": 2, "formID": "Fallout4.esm|A0F2F",
+			"actorValues": [
+				{"formID": "Fallout4.esm|2E6", "set": 50.0, "comment": "ElectricResist"},
+				{"formID": "Fallout4.esm|2E7", "set": 25.0, "comment": "FrostResist"}
+			]
+		},
+		
+		{
+			"comment": "DeathclawRace", "formType": 2, "formID": "Fallout4.esm|1DB4A",
+			"actorValues": [
+				{"formID": "Fallout4.esm|2E6", "set": 50.0, "comment": "ElectricResist"},
+				{"formID": "Fallout4.esm|2E5", "set": 25.0, "comment": "FireResist"},
+				{"formID": "Fallout4.esm|2E7", "set": 25.0, "comment": "FrostResist"}
+			]
+		},
+		
+		{
+			"comment": "RadRoachRace", "formType": 2, "formID": "Fallout4.esm|4716C",
+			"actorValues": [
+				{"formID": "Fallout4.esm|2E6", "set": 25.0, "comment": "ElectricResist"},
+				{"formID": "Fallout4.esm|2E7", "set": 15.0, "comment": "FrostResist"},
+				{"formID": "Fallout4.esm|2E4", "set": 20.0, "comment": "PoisonResist"}
+			]
+		},
+		{
+			"comment": "BloatflyRace", "formType": 2, "formID": "Fallout4.esm|29463",
+			"actorValues": [
+				{"formID": "Fallout4.esm|2E6", "set": 25.0, "comment": "ElectricResist"},
+				{"formID": "Fallout4.esm|2E7", "set": 15.0, "comment": "FrostResist"}
+			]
+		},
+		{
+			"comment": "BloodbugRace", "formType": 2, "formID": "Fallout4.esm|2456D",
+			"actorValues": [
+				{"formID": "Fallout4.esm|2E6", "set": 25.0, "comment": "ElectricResist"},
+				{"formID": "Fallout4.esm|2E7", "set": 15.0, "comment": "FrostResist"}
+			]
+		},
+		{
+			"comment": "StingwingRace", "formType": 2, "formID": "Fallout4.esm|5FBB1",
+			"actorValues": [
+				{"formID": "Fallout4.esm|2E6", "set": 30.0, "comment": "ElectricResist"},
+				{"formID": "Fallout4.esm|2E7", "set": 20.0, "comment": "FrostResist"}
+			]
+		},
+		{
+			"comment": "RadScorpionRace", "formType": 2, "formID": "Fallout4.esm|636AB",
+			"actorValues": [
+				{"formID": "Fallout4.esm|2E6", "set": 35.0, "comment": "ElectricResist"},
+				{"formID": "Fallout4.esm|2E7", "set": 25.0, "comment": "FrostResist"}
+			]
+		},
+		
+		{
+			"comment": "MirelurkRace", "formType": 2, "formID": "Fallout4.esm|23FFC",
+			"actorValues": [
+				{"formID": "Fallout4.esm|2E7", "set": 25.0, "comment": "FrostResist"},
+				{"formID": "Fallout4.esm|2E5", "set": 10.0, "comment": "FireResist"},
+				{"formID": "Fallout4.esm|2E4", "set": 25.0, "comment": "PoisonResist"}
+			]
+		},
+		{
+			"comment": "MirelurkHunterRace", "formType": 2, "formID": "Fallout4.esm|64C60",
+			"actorValues": [
+				{"formID": "Fallout4.esm|2E7", "set": 35.0, "comment": "FrostResist"},
+				{"formID": "Fallout4.esm|2E5", "set": 20.0, "comment": "FireResist"},
+				{"formID": "Fallout4.esm|2E4", "set": 35.0, "comment": "PoisonResist"}
+			]
+		},
+		{
+			"comment": "MirelurkKingRace", "formType": 2, "formID": "Fallout4.esm|B7F91",
+			"actorValues": [
+				{"formID": "Fallout4.esm|2E7", "set": 40.0, "comment": "FrostResist"},
+				{"formID": "Fallout4.esm|2E5", "set": 25.0, "comment": "FireResist"}
+			]
+		},
+		{
+			"comment": "MirelurkQueenRace", "formType": 2, "formID": "Fallout4.esm|E12A6",
+			"actorValues": [
+				{"formID": "Fallout4.esm|2E7", "set": 50.0, "comment": "FrostResist"},
+				{"formID": "Fallout4.esm|2E5", "set": 30.0, "comment": "FireResist"}
+			]
+		},
+		
+		{
+			"comment": "TurretBubbleRace", "formType": 2, "formID": "Fallout4.esm|B28D3",
+			"actorValues": [
+				{"formID": "Fallout4.esm|2E7", "set": 50.0, "comment": "FrostResist"},
+				{"formID": "Fallout4.esm|2E5", "set": 10.0, "comment": "FireResist"}
+			]
+		},
+		{
+			"comment": "TurretTripodRace", "formType": 2, "formID": "Fallout4.esm|B1F08",
+			"actorValues": [
+				{"formID": "Fallout4.esm|2E7", "set": 50.0, "comment": "FrostResist"},
+				{"formID": "Fallout4.esm|2E5", "set": 10.0, "comment": "FireResist"}
+			]
+		},
+		{
+			"comment": "TurretWorkshopRace", "formType": 2, "formID": "Fallout4.esm|1A6D64",
+			"actorValues": [
+				{"formID": "Fallout4.esm|2E7", "set": 50.0, "comment": "FrostResist"},
+				{"formID": "Fallout4.esm|2E5", "set": 10.0, "comment": "FireResist"}
+			]
+		},
+		
+		{
+			"comment": "VertibirdRace", "formType": 2, "formID": "Fallout4.esm|D77E3",
+			"actorValues": [
+				{"formID": "Fallout4.esm|2E3", "set": 100.0, "comment": "DamageResist"},
+				{"formID": "Fallout4.esm|2EB", "set": 50.0, "comment": "EnergyResist"},
+				{"formID": "Fallout4.esm|2E5", "set": 100.0, "comment": "FireResist"},
+				{"formID": "Fallout4.esm|2E7", "set": 100.0, "comment": "FrostResist"},
+				{"formID": "Fallout4.esm|2E6", "set": 50.0, "comment": "ElectricResist"}
+			]
+		},
+		
+		{
+			"comment": "EyeBotRace", "formType": 2, "formID": "Fallout4.esm|A563A",
+			"actorValues": [
+				{"formID": "Fallout4.esm|2E7", "set": 50.0, "comment": "FrostResist"},
+				{"formID": "Fallout4.esm|2E5", "set": 10.0, "comment": "FireResist"}
+			]
+		},
+		{
+			"comment": "HandyRace", "formType": 2, "formID": "Fallout4.esm|359F4",
+			"actorValues": [
+				{"formID": "Fallout4.esm|2E7", "set": 50.0, "comment": "FrostResist"},
+				{"formID": "Fallout4.esm|2E5", "set": 10.0, "comment": "FireResist"}
+			]
+		},
+		{
+			"comment": "ProtectronRace", "formType": 2, "formID": "Fallout4.esm|DFB33",
+			"actorValues": [
+				{"formID": "Fallout4.esm|2E7", "set": 50.0, "comment": "FrostResist"},
+				{"formID": "Fallout4.esm|2E5", "set": 25.0, "comment": "FireResist"}
+			]
+		},
+		{
+			"comment": "AssaultronRace", "formType": 2, "formID": "Fallout4.esm|D8417",
+			"actorValues": [
+				{"formID": "Fallout4.esm|2E7", "set": 50.0, "comment": "FrostResist"},
+				{"formID": "Fallout4.esm|2E5", "set": 35.0, "comment": "FireResist"}
+			]
+		},
+		{
+			"comment": "SentryBotRace", "formType": 2, "formID": "Fallout4.esm|AE0B7",
+			"actorValues": [
+				{"formID": "Fallout4.esm|2E7", "set": 50.0, "comment": "FrostResist"},
+				{"formID": "Fallout4.esm|2E5", "set": 50.0, "comment": "FireResist"},
+				{"formID": "Fallout4.esm|2E4", "set": 250.0, "comment": "PoisonResist"}
+			]
+		},
+		
+		{
+			"comment": "SynthGen1Race", "formType": 2, "formID": "Fallout4.esm|E8D09",
+			"actorValues": [
+				{"formID": "Fallout4.esm|2E7", "set": 50.0, "comment": "FrostResist"},
+				{"formID": "Fallout4.esm|2E5", "set": 35.0, "comment": "FireResist"},
+				{"formID": "Fallout4.esm|2E4", "set": 250.0, "comment": "PoisonResist"}
+			]
+		},
+		{
+			"comment": "SynthGen2Race", "formType": 2, "formID": "Fallout4.esm|10BD65",
+			"actorValues": [
+				{"formID": "Fallout4.esm|2E7", "set": 40.0, "comment": "FrostResist"},
+				{"formID": "Fallout4.esm|2E5", "set": 25.0, "comment": "FireResist"},
+				{"formID": "Fallout4.esm|2E4", "set": 250.0, "comment": "PoisonResist"}
+			]
+		},
+		{
+			"comment": "SynthGen2RaceValentine", "formType": 2, "formID": "Fallout4.esm|2261A4",
+			"actorValues": [
+				{"formID": "Fallout4.esm|2E7", "set": 40.0, "comment": "FrostResist"},
+				{"formID": "Fallout4.esm|2E5", "set": 25.0, "comment": "FireResist"},
+				{"formID": "Fallout4.esm|2E4", "set": 250.0, "comment": "PoisonResist"}
+			]
+		}
+	]
+}

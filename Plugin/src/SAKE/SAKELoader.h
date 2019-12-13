@@ -2,8 +2,7 @@
 #include "f4se/GameData.h"
 #include "f4se/GameFormComponents.h"
 #include "f4se/GameRTTI.h"
-#include "SimpleIni/SimpleIni.h"
-#include <string>
+
 
 
 

@@ -1,0 +1,10 @@
+{
+	"name": "NPCs Use Ammo - Thrown Weapons",
+	
+	"overrides": [
+		{
+			"comment": "Frag Grenade", "formType": 5, "formID": "Fallout4.esm|EEBED", 
+			"flags": {"npcsUseAmmo": true}
+		}
+	]
+}

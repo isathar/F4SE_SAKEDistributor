@@ -4,8 +4,8 @@
 //-----------------------
 // Plugin Information
 //-----------------------
-#define PLUGIN_VERSION				0x000901
-#define PLUGIN_VERSION_STRING		"0.9.1"
+#define PLUGIN_VERSION				0x000905
+#define PLUGIN_VERSION_STRING		"0.9.5"
 #define PLUGIN_NAME_SHORT			"SAKE"
 #define PLUGIN_NAME_LONG			"SAKE Distributor"
 #define SUPPORTED_RUNTIME_VERSION   CURRENT_RELEASE_RUNTIME

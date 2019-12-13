@@ -1,0 +1,23 @@
+{
+	"name": "Misc. Tweaks",
+	"description": "Test configuration for some overrides"
+	],
+	
+	"active": [
+		{"name": "Tweaks\\AdditionalDRTypes"},
+		
+		{"name": "Tweaks\\AddLuck_Actors_Humanoid.json", "includeIf": ["AmmoTweaks.esm"]},
+		{"name": "Tweaks\\AddCritChance_Actors_Humanoid.json", "excludeIf": ["AmmoTweaks.esm"]},
+		
+		{"name": "Mods\\DamageThreshold", "includeIf": ["DamageThreshold.esm"], "excludeIf": ["DamageThresholdFramework.esm"]},
+		{"name": "Mods\\DamageThresholdFramework", "includeIf": ["DamageThresholdFramework.esm"], "excludeIf": ["AmmoTweaks.esm", "DamageThreshold.esm"]},
+		
+		{"name": "Tweaks\\NPCsUseAmmo"},
+		
+		{"name": "Tweaks\\DLCToCommonwealth"},
+		
+		{"name": "Mods\\MoreSupermutantWeaponAnims", "excludeIf": ["SM More Weapon Level Lists.esp"]},
+		
+		{"name": "Tweaks\\LootMultiplier_Ammo_25Percent.json"}
+	]
+}

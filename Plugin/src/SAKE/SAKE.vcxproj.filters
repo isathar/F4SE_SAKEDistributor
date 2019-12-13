@@ -22,9 +22,6 @@
       <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
       <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
     </Filter>
-    <Filter Include="Resource Files\SimpleIni">
-      <UniqueIdentifier>{da9fbb24-e920-49fd-8a1e-c0aaf6ea37be}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\f4se\f4se\GameAPI.h">
@@ -69,9 +66,6 @@
     <ClInclude Include="..\f4se\f4se\GameData.h">
       <Filter>Resource Files\F4SEHeaders</Filter>
     </ClInclude>
-    <ClInclude Include="SimpleIni\SimpleIni.h">
-      <Filter>Resource Files\SimpleIni</Filter>
-    </ClInclude>
     <ClInclude Include="..\common\Utilities.h">
       <Filter>Resource Files\F4SEHeaders</Filter>
     </ClInclude>
@@ -83,6 +77,9 @@
     </ClInclude>
     <ClInclude Include="SAKELoader.h">
       <Filter>Plugin Files\Header</Filter>
+    </ClInclude>
+    <ClInclude Include="nlohmann\json.hpp">
+      <Filter>Resource Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

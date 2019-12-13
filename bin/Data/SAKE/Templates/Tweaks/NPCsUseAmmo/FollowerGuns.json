@@ -1,0 +1,42 @@
+{
+	"name": "NPCs Use Ammo - Follower Guns",
+	
+	"overrides": [
+		{
+			"comment": "Piper's 10mm Pistol", "formType": 5, "formID": "Fallout4.esm|5DF2D", 
+			"flags": {"npcsUseAmmo": true}
+		},
+		{
+			"comment": "Valentine's Pipe Revolver", "formType": 5, "formID": "Fallout4.esm|5BBA7", 
+			"flags": {"npcsUseAmmo": true}
+		},
+		{
+			"comment": "Cait's Double-Barreled Shotgun", "formType": 5, "formID": "Fallout4.esm|5DF30", 
+			"flags": {"npcsUseAmmo": true}
+		},
+		{
+			"comment": "Hancock's Double-Barreled Shotgun", "formType": 5, "formID": "Fallout4.esm|62AA4", 
+			"flags": {"npcsUseAmmo": true}
+		},
+		{
+			"comment": "McCready's Hunting Rifle", "formType": 5, "formID": "Fallout4.esm|5BBA4", 
+			"flags": {"npcsUseAmmo": true}
+		},
+		{
+			"comment": "Deacon's Hunting Rifle", "formType": 5, "formID": "Fallout4.esm|215CE3", 
+			"flags": {"npcsUseAmmo": true}
+		},
+		{
+			"comment": "Curie's Laser Gun", "formType": 5, "formID": "Fallout4.esm|22CC13", 
+			"flags": {"npcsUseAmmo": true}
+		},
+		{
+			"comment": "Danse's Laser Gun", "formType": 5, "formID": "Fallout4.esm|5BBA6", 
+			"flags": {"npcsUseAmmo": true}
+		},
+		{
+			"comment": "Ingram's Laser Gun", "formType": 5, "formID": "Fallout4.esm|249D38", 
+			"flags": {"npcsUseAmmo": true}
+		}
+	]
+}

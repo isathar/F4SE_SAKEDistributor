@@ -1,0 +1,7 @@
+{
+	"profilesPath": ".\\Data\\SAKE\\Profiles\\",
+	"templatesPath": ".\\Data\\SAKE\\Templates\\",
+	"debugLogLevel": 2,
+	
+	"activeProfile": "Dev"
+}

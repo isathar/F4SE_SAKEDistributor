@@ -1,0 +1,18 @@
+{
+	"name": "Test LeveledList Overrides",
+	
+	"description": "edits a couple of leveled lists for testing.",
+	
+	"overrides": [
+		{
+			"comment": "LeveledItem (Container_Loot_Mirror)", 
+			"formType": 1, "formID": "Fallout4.esm|24087F",
+			"add": [{"formID": "Fallout4.esm|23736", "level": 1, "count": 10, "comment": "Stimpack"}]
+		},
+		{
+			"comment": "LeveledActor (LCharBloatfly)", 
+			"formType": 1, "formID": "Fallout4.esm|33208",
+			"add": [{"formID": "Fallout4.esm|121D52", "level": 1, "count": 1, "comment": "EncAssaultron01Template"}]
+		}
+	]
+}
