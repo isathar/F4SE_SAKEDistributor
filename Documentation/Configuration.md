@@ -15,9 +15,8 @@
 		- If you need to add a comment somewhere, use variables named "comments", "documentation", or something like that.
 		- They won't be used in code, but are still loaded into memory, so don't overdo it.
 		- Multi-line comments are possible using arrays.
-	- You may have noticed that all edits to races are confined to separate files that are placed in Templates\\RaceEdits.
+	- Add "hasRaceEdits": true to an override file to process it before other overrides.
 		- **This is because any overrides to Race forms must be processed before Actors or ActorValues will reset.**
-		- Add "hasRaceEdits": true to an override file to process it before other overrides.
 
 - **FormID String Format**
 
@@ -73,7 +72,7 @@
 
 	- Folders in *templatesPath* that can contain multiple *Overrides*.
 	- Activated by adding the *Template's* name/path to the loaded *Profile's* *active* list.
-		- The Template's name used in the *active* list is it's path relative to *templatesPath*.
+		- The Template's name used in the *active* list is its path relative to *templatesPath*.
 	- Every JSON file at an active *Template's* path is loaded.
 		- Subdirectories are not loaded, and can be used to contain optional *Overrides* to load for different *Profiles*.
 
