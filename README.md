@@ -1,4 +1,4 @@
-# SAKE Distributor v0.9.5
+# SAKE Distributor v0.9.6
 
 An experimental dynamic patcher for Fallout 4 with the capability to edit various form types in memory.
 
