@@ -4,7 +4,7 @@
 	"overrides": [
 		{
 			"comment": "Raider Power Armor - Armor_Power_Raider_Torso - Raider Power Chest Piece",
-			"formType": 4, "formID": "Fallout4.esm|140C57",
+			"formID": "Fallout4.esm|140C57",
 			"damageResistances": [
 				{"formID": "Fallout4.esm|60A82", "set": 60, "comment": "dtFire"},
 				{"formID": "Fallout4.esm|60A80", "set": 30, "comment": "dtElectrical"},
@@ -13,7 +13,7 @@
 		},
 		{
 			"comment": "Armor_Power_Raider_Helm - Raider Power Helm",
-			"formType": 4, "formID": "Fallout4.esm|140C54",
+			"formID": "Fallout4.esm|140C54",
 			"damageResistances": [
 				{"formID": "Fallout4.esm|60A82", "set": 25, "comment": "dtFire"},
 				{"formID": "Fallout4.esm|60A80", "set": 10, "comment": "dtElectrical"},
@@ -22,7 +22,7 @@
 		},
 		{
 			"comment": "Armor_Power_Raider_ArmLeft - Raider Power Left Arm",
-			"formType": 4, "formID": "Fallout4.esm|140C52",
+			"formID": "Fallout4.esm|140C52",
 			"damageResistances": [
 				{"formID": "Fallout4.esm|60A82", "set": 10, "comment": "dtFire"},
 				{"formID": "Fallout4.esm|60A80", "set": 5, "comment": "dtElectrical"},
@@ -31,7 +31,7 @@
 		},
 		{
 			"comment": "Armor_Power_Raider_ArmRight - Raider Power Right Arm",
-			"formType": 4, "formID": "Fallout4.esm|140C53",
+			"formID": "Fallout4.esm|140C53",
 			"damageResistances": [
 				{"formID": "Fallout4.esm|60A82", "set": 10, "comment": "dtFire"},
 				{"formID": "Fallout4.esm|60A80", "set": 5, "comment": "dtElectrical"},
@@ -40,7 +40,7 @@
 		},
 		{
 			"comment": "Armor_Power_Raider_LegLeft - Raider Power Left Leg",
-			"formType": 4, "formID": "Fallout4.esm|140C55",
+			"formID": "Fallout4.esm|140C55",
 			"damageResistances": [
 				{"formID": "Fallout4.esm|60A82", "set": 10, "comment": "dtFire"},
 				{"formID": "Fallout4.esm|60A80", "set": 5, "comment": "dtElectrical"},
@@ -49,7 +49,7 @@
 		},
 		{
 			"comment": "Armor_Power_Raider_LegRight - Raider Power Right Leg",
-			"formType": 4, "formID": "Fallout4.esm|140C56",
+			"formID": "Fallout4.esm|140C56",
 			"damageResistances": [
 				{"formID": "Fallout4.esm|60A82", "set": 10, "comment": "dtFire"},
 				{"formID": "Fallout4.esm|60A80", "set": 5, "comment": "dtElectrical"},
@@ -59,7 +59,7 @@
 		
 		{
 			"comment": "T-45 Power Armor - Armor_Power_T45_Torso - T-45 Chest Piece",
-			"formType": 4, "formID": "Fallout4.esm|154AC2",
+			"formID": "Fallout4.esm|154AC2",
 			"damageResistances": [
 				{"formID": "Fallout4.esm|60A82", "set": 80, "comment": "dtFire"},
 				{"formID": "Fallout4.esm|60A80", "set": 60, "comment": "dtElectrical"},
@@ -68,7 +68,7 @@
 		},
 		{
 			"comment": "Armor_Power_T45_Helm - T-45 Helm",
-			"formType": 4, "formID": "Fallout4.esm|154ABF",
+			"formID": "Fallout4.esm|154ABF",
 			"damageResistances": [
 				{"formID": "Fallout4.esm|60A82", "set": 30, "comment": "dtFire"},
 				{"formID": "Fallout4.esm|60A80", "set": 20, "comment": "dtElectrical"},
@@ -77,7 +77,7 @@
 		},
 		{
 			"comment": "Armor_Power_T45_ArmLeft - T-45 Left Arm",
-			"formType": 4, "formID": "Fallout4.esm|154ABD",
+			"formID": "Fallout4.esm|154ABD",
 			"damageResistances": [
 				{"formID": "Fallout4.esm|60A82", "set": 15, "comment": "dtFire"},
 				{"formID": "Fallout4.esm|60A80", "set": 8, "comment": "dtElectrical"},
@@ -86,7 +86,7 @@
 		},
 		{
 			"comment": "Armor_Power_T45_ArmRight - T-45 Right Arm",
-			"formType": 4, "formID": "Fallout4.esm|154ABE",
+			"formID": "Fallout4.esm|154ABE",
 			"damageResistances": [
 				{"formID": "Fallout4.esm|60A82", "set": 15, "comment": "dtFire"},
 				{"formID": "Fallout4.esm|60A80", "set": 8, "comment": "dtElectrical"},
@@ -95,7 +95,7 @@
 		},
 		{
 			"comment": "Armor_Power_T45_LegLeft - T-45 Left Leg",
-			"formType": 4, "formID": "Fallout4.esm|154AC0",
+			"formID": "Fallout4.esm|154AC0",
 			"damageResistances": [
 				{"formID": "Fallout4.esm|60A82", "set": 15, "comment": "dtFire"},
 				{"formID": "Fallout4.esm|60A80", "set": 8, "comment": "dtElectrical"},
@@ -104,7 +104,7 @@
 		},
 		{
 			"comment": "Armor_Power_T45_LegRight - T-45 Right Leg",
-			"formType": 4, "formID": "Fallout4.esm|154AC1",
+			"formID": "Fallout4.esm|154AC1",
 			"damageResistances": [
 				{"formID": "Fallout4.esm|60A82", "set": 15, "comment": "dtFire"},
 				{"formID": "Fallout4.esm|60A80", "set": 8, "comment": "dtElectrical"},
@@ -114,7 +114,7 @@
 		
 		{
 			"comment": "T-51 Power Armor - Armor_Power_T51_Torso - T-51 Chest Piece",
-			"formType": 4, "formID": "Fallout4.esm|140C51",
+			"formID": "Fallout4.esm|140C51",
 			"damageResistances": [
 				{"formID": "Fallout4.esm|60A82", "set": 100, "comment": "dtFire"},
 				{"formID": "Fallout4.esm|60A80", "set": 80, "comment": "dtElectrical"},
@@ -123,7 +123,7 @@
 		},
 		{
 			"comment": "Armor_Power_T51_Helmet - T-51 Helmet",
-			"formType": 4, "formID": "Fallout4.esm|140C4E",
+			"formID": "Fallout4.esm|140C4E",
 			"damageResistances": [
 				{"formID": "Fallout4.esm|60A82", "set": 50, "comment": "dtFire"},
 				{"formID": "Fallout4.esm|60A80", "set": 30, "comment": "dtElectrical"},
@@ -132,7 +132,7 @@
 		},
 		{
 			"comment": "Armor_Power_T51_LeftArm - T-51 Left Arm",
-			"formType": 4, "formID": "Fallout4.esm|140C4C",
+			"formID": "Fallout4.esm|140C4C",
 			"damageResistances": [
 				{"formID": "Fallout4.esm|60A82", "set": 30, "comment": "dtFire"},
 				{"formID": "Fallout4.esm|60A80", "set": 12, "comment": "dtElectrical"},
@@ -141,7 +141,7 @@
 		},
 		{
 			"comment": "Armor_Power_T51_RightArm - T-51 Right Arm",
-			"formType": 4, "formID": "Fallout4.esm|140C4D",
+			"formID": "Fallout4.esm|140C4D",
 			"damageResistances": [
 				{"formID": "Fallout4.esm|60A82", "set": 30, "comment": "dtFire"},
 				{"formID": "Fallout4.esm|60A80", "set": 12, "comment": "dtElectrical"},
@@ -150,7 +150,7 @@
 		},
 		{
 			"comment": "Armor_Power_T51_LeftLeg - T-51 Left Leg",
-			"formType": 4, "formID": "Fallout4.esm|140C4F",
+			"formID": "Fallout4.esm|140C4F",
 			"damageResistances": [
 				{"formID": "Fallout4.esm|60A82", "set": 30, "comment": "dtFire"},
 				{"formID": "Fallout4.esm|60A80", "set": 12, "comment": "dtElectrical"},
@@ -159,7 +159,7 @@
 		},
 		{
 			"comment": "Armor_Power_T51_RightLeg - T-51 Right Leg",
-			"formType": 4, "formID": "Fallout4.esm|140C50",
+			"formID": "Fallout4.esm|140C50",
 			"damageResistances": [
 				{"formID": "Fallout4.esm|60A82", "set": 30, "comment": "dtFire"},
 				{"formID": "Fallout4.esm|60A80", "set": 12, "comment": "dtElectrical"},
@@ -169,7 +169,7 @@
 		
 		{
 			"comment": "T-60 Power Armor - Armor_Power_T60_Torso - T-60 Chest Piece",
-			"formType": 4, "formID": "Fallout4.esm|140C42",
+			"formID": "Fallout4.esm|140C42",
 			"damageResistances": [
 				{"formID": "Fallout4.esm|60A82", "set": 140, "comment": "dtFire"},
 				{"formID": "Fallout4.esm|60A80", "set": 100, "comment": "dtElectrical"},
@@ -178,7 +178,7 @@
 		},
 		{
 			"comment": "Armor_Power_T60_Helm - T-60 Helm",
-			"formType": 4, "formID": "Fallout4.esm|140C4A",
+			"formID": "Fallout4.esm|140C4A",
 			"damageResistances": [
 				{"formID": "Fallout4.esm|60A82", "set": 65, "comment": "dtFire"},
 				{"formID": "Fallout4.esm|60A80", "set": 40, "comment": "dtElectrical"},
@@ -187,7 +187,7 @@
 		},
 		{
 			"comment": "Armor_Power_T60_ArmLeft - T-60 Left Arm",
-			"formType": 4, "formID": "Fallout4.esm|140C3D",
+			"formID": "Fallout4.esm|140C3D",
 			"damageResistances": [
 				{"formID": "Fallout4.esm|60A82", "set": 45, "comment": "dtFire"},
 				{"formID": "Fallout4.esm|60A80", "set": 20, "comment": "dtElectrical"},
@@ -196,7 +196,7 @@
 		},
 		{
 			"comment": "Armor_Power_T60_ArmRight - T-60 Right Arm",
-			"formType": 4, "formID": "Fallout4.esm|140C45",
+			"formID": "Fallout4.esm|140C45",
 			"damageResistances": [
 				{"formID": "Fallout4.esm|60A82", "set": 45, "comment": "dtFire"},
 				{"formID": "Fallout4.esm|60A80", "set": 20, "comment": "dtElectrical"},
@@ -205,7 +205,7 @@
 		},
 		{
 			"comment": "Armor_Power_T60_LegLeft - T-60 Left Leg",
-			"formType": 4, "formID": "Fallout4.esm|140C49",
+			"formID": "Fallout4.esm|140C49",
 			"damageResistances": [
 				{"formID": "Fallout4.esm|60A82", "set": 45, "comment": "dtFire"},
 				{"formID": "Fallout4.esm|60A80", "set": 20, "comment": "dtElectrical"},
@@ -214,7 +214,7 @@
 		},
 		{
 			"comment": "Armor_Power_T60_LegRight - T-60 Right Leg",
-			"formType": 4, "formID": "Fallout4.esm|140C3F",
+			"formID": "Fallout4.esm|140C3F",
 			"damageResistances": [
 				{"formID": "Fallout4.esm|60A82", "set": 45, "comment": "dtFire"},
 				{"formID": "Fallout4.esm|60A80", "set": 20, "comment": "dtElectrical"},
@@ -224,7 +224,7 @@
 		
 		{
 			"comment": "X-01 Power Armor - Armor_Power_X01_Torso - X-01 Chest Piece",
-			"formType": 4, "formID": "Fallout4.esm|154AC8",
+			"formID": "Fallout4.esm|154AC8",
 			"damageResistances": [
 				{"formID": "Fallout4.esm|60A82", "set": 180, "comment": "dtFire"},
 				{"formID": "Fallout4.esm|60A80", "set": 140, "comment": "dtElectrical"},
@@ -233,7 +233,7 @@
 		},
 		{
 			"comment": "Armor_Power_X01_Helm - X-01 Helm",
-			"formType": 4, "formID": "Fallout4.esm|154AC5",
+			"formID": "Fallout4.esm|154AC5",
 			"damageResistances": [
 				{"formID": "Fallout4.esm|60A82", "set": 75, "comment": "dtFire"},
 				{"formID": "Fallout4.esm|60A80", "set": 50, "comment": "dtElectrical"},
@@ -242,7 +242,7 @@
 		},
 		{
 			"comment": "Armor_Power_X01_ArmLeft - X-01 Left Arm",
-			"formType": 4, "formID": "Fallout4.esm|154AC3",
+			"formID": "Fallout4.esm|154AC3",
 			"damageResistances": [
 				{"formID": "Fallout4.esm|60A82", "set": 60, "comment": "dtFire"},
 				{"formID": "Fallout4.esm|60A80", "set": 30, "comment": "dtElectrical"},
@@ -251,7 +251,7 @@
 		},
 		{
 			"comment": "Armor_Power_X01_ArmRight - X-01 Right Arm",
-			"formType": 4, "formID": "Fallout4.esm|154AC4",
+			"formID": "Fallout4.esm|154AC4",
 			"damageResistances": [
 				{"formID": "Fallout4.esm|60A82", "set": 60, "comment": "dtFire"},
 				{"formID": "Fallout4.esm|60A80", "set": 30, "comment": "dtElectrical"},
@@ -260,7 +260,7 @@
 		},
 		{
 			"comment": "Armor_Power_X01_LegLeft - X-01 Left Leg",
-			"formType": 4, "formID": "Fallout4.esm|154AC6",
+			"formID": "Fallout4.esm|154AC6",
 			"damageResistances": [
 				{"formID": "Fallout4.esm|60A82", "set": 60, "comment": "dtFire"},
 				{"formID": "Fallout4.esm|60A80", "set": 30, "comment": "dtElectrical"},
@@ -269,7 +269,7 @@
 		},
 		{
 			"comment": "Armor_Power_X01_LegRight - X-01 Right Leg",
-			"formType": 4, "formID": "Fallout4.esm|154AC7",
+			"formID": "Fallout4.esm|154AC7",
 			"damageResistances": [
 				{"formID": "Fallout4.esm|60A82", "set": 60, "comment": "dtFire"},
 				{"formID": "Fallout4.esm|60A80", "set": 30, "comment": "dtElectrical"},
@@ -279,7 +279,7 @@
 		
 		{
 			"comment": "Danse's T-60 Power Armor - Armor_Power_T60_Torso_Danse - T-60 Chest Piece",
-			"formType": 4, "formID": "Fallout4.esm|24984F",
+			"formID": "Fallout4.esm|24984F",
 			"damageResistances": [
 				{"formID": "Fallout4.esm|60A82", "set": 140, "comment": "dtFire"},
 				{"formID": "Fallout4.esm|60A80", "set": 100, "comment": "dtElectrical"},
@@ -288,7 +288,7 @@
 		},
 		{
 			"comment": "Armor_Power_T60_ArmLeft_Danse - T-60 Left Arm",
-			"formType": 4, "formID": "Fallout4.esm|24984B",
+			"formID": "Fallout4.esm|24984B",
 			"damageResistances": [
 				{"formID": "Fallout4.esm|60A82", "set": 45, "comment": "dtFire"},
 				{"formID": "Fallout4.esm|60A80", "set": 20, "comment": "dtElectrical"},
@@ -297,7 +297,7 @@
 		},
 		{
 			"comment": "Armor_Power_T60_ArmRight_Danse - T-60 Right Arm",
-			"formType": 4, "formID": "Fallout4.esm|24984C",
+			"formID": "Fallout4.esm|24984C",
 			"damageResistances": [
 				{"formID": "Fallout4.esm|60A82", "set": 45, "comment": "dtFire"},
 				{"formID": "Fallout4.esm|60A80", "set": 20, "comment": "dtElectrical"},
@@ -306,7 +306,7 @@
 		},
 		{
 			"comment": "Armor_Power_T60_LegLeft_Danse - T-60 Left Leg",
-			"formType": 4, "formID": "Fallout4.esm|24984D",
+			"formID": "Fallout4.esm|24984D",
 			"damageResistances": [
 				{"formID": "Fallout4.esm|60A82", "set": 45, "comment": "dtFire"},
 				{"formID": "Fallout4.esm|60A80", "set": 20, "comment": "dtElectrical"},
@@ -315,7 +315,7 @@
 		},
 		{
 			"comment": "Armor_Power_T60_LegRight_Danse - T-60 Right Leg",
-			"formType": 4, "formID": "Fallout4.esm|24984E",
+			"formID": "Fallout4.esm|24984E",
 			"damageResistances": [
 				{"formID": "Fallout4.esm|60A82", "set": 45, "comment": "dtFire"},
 				{"formID": "Fallout4.esm|60A80", "set": 20, "comment": "dtElectrical"},
@@ -325,7 +325,7 @@
 		
 		{
 			"comment": "Danse's X-01 Power Armor - Armor_Power_X01_Torso_Danse - X-01 Chest Piece",
-			"formType": 4, "formID": "Fallout4.esm|249854",
+			"formID": "Fallout4.esm|249854",
 			"damageResistances": [
 				{"formID": "Fallout4.esm|60A82", "set": 180, "comment": "dtFire"},
 				{"formID": "Fallout4.esm|60A80", "set": 140, "comment": "dtElectrical"},
@@ -334,7 +334,7 @@
 		},
 		{
 			"comment": "Armor_Power_X01_ArmLeft_Danse - X-01 Left Arm",
-			"formType": 4, "formID": "Fallout4.esm|249850",
+			"formID": "Fallout4.esm|249850",
 			"damageResistances": [
 				{"formID": "Fallout4.esm|60A82", "set": 60, "comment": "dtFire"},
 				{"formID": "Fallout4.esm|60A80", "set": 30, "comment": "dtElectrical"},
@@ -343,7 +343,7 @@
 		},
 		{
 			"comment": "Armor_Power_X01_ArmRight_Danse - X-01 Right Arm",
-			"formType": 4, "formID": "Fallout4.esm|249851",
+			"formID": "Fallout4.esm|249851",
 			"damageResistances": [
 				{"formID": "Fallout4.esm|60A82", "set": 60, "comment": "dtFire"},
 				{"formID": "Fallout4.esm|60A80", "set": 30, "comment": "dtElectrical"},
@@ -352,7 +352,7 @@
 		},
 		{
 			"comment": "Armor_Power_X01_LegLeft_Danse - X-01 Left Leg",
-			"formType": 4, "formID": "Fallout4.esm|249852",
+			"formID": "Fallout4.esm|249852",
 			"damageResistances": [
 				{"formID": "Fallout4.esm|60A82", "set": 60, "comment": "dtFire"},
 				{"formID": "Fallout4.esm|60A80", "set": 30, "comment": "dtElectrical"},
@@ -361,7 +361,7 @@
 		},
 		{
 			"comment": "Armor_Power_X01_LegRight_Danse - X-01 Right Leg",
-			"formType": 4, "formID": "Fallout4.esm|249853",
+			"formID": "Fallout4.esm|249853",
 			"damageResistances": [
 				{"formID": "Fallout4.esm|60A82", "set": 60, "comment": "dtFire"},
 				{"formID": "Fallout4.esm|60A80", "set": 30, "comment": "dtElectrical"},

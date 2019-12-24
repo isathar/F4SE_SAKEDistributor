@@ -1,0 +1,43 @@
+{
+	"name": "Test Armor Override",
+	"description": "Armor override examples",
+	
+	"overrides": [
+		{
+			"comment": "Armor (Vault 101 Suit) - Changes its base name to Vault Dweller's Uniform and removes its instance naming rules",
+			"formID": "Fallout4.esm|1EED7",
+			"name": "Vault Dweller's Uniform",
+			"instanceNamingRules": "none"
+		},
+		
+		{
+			"comment": "Armor (Gas Mask) - Adds 35 poison resistance and removes its existing radiation resistance",
+			"formID": "Fallout4.esm|1184C1",
+			"clearExistingDR": true,
+			"damageResistances": [{"formID": "Fallout4.esm|60A84", "set": 10, "add": 25, "comment": "35 dtPoison"}]
+			
+		},
+		
+		{
+			"comment": "Armor (X-01 Torso) - Increases its armor rating, weight, value, and health/condition",
+			"formID": "Fallout4.esm|154AC8",
+			"value": 650,
+			"weight": 35.0,
+			"health": 750,
+			"armorRating": 640
+		},
+		
+		{
+			"comment": "Armor (Cage Armor) - Makes it unscrappable",
+			"formID": "Fallout4.esm|B2D8E",
+			"keywords": {"add": ["Fallout4.esm|1CC46A"]}
+		},
+		
+		{
+			"comment": "Armor (Heavy Dog Armor) - Adds 35 armor rating",
+			"formID": "Fallout4.esm|1C32C7",
+			"armorRating": 35
+		}
+		
+	]
+}

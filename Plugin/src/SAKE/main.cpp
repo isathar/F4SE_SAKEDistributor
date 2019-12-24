@@ -1,7 +1,7 @@
 #include <shlobj.h>
 #include "f4se/PluginAPI.h"
 #include "Config.h"
-#include "SAKELoader.h"
+#include "SAKEShared.h"
 
 
 IDebugLog				gLog;
@@ -14,7 +14,7 @@ void F4SEMessageHandler(F4SEMessagingInterface::Message* msg)
 	if (msg->type == F4SEMessagingInterface::kMessage_GameDataReady) {
 		if (msg->data == (void*)true) {
 			// load extra data from config files
-			SAKEData::LoadGameData();
+			SAKEFileReader::LoadGameData();
 		}
 	}
 }

@@ -3,7 +3,7 @@
 	
 	"overrides": [
 		{
-			"comment": "Frag Grenade", "formType": 5, "formID": "Fallout4.esm|EEBED", 
+			"comment": "Frag Grenade", "formID": "Fallout4.esm|EEBED", 
 			"flags": {"npcsUseAmmo": true}
 		}
 	]

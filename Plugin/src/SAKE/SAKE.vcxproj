@@ -24,6 +24,8 @@
     <ClCompile Include="..\f4se\f4se\GameRTTI.cpp" />
     <ClCompile Include="..\f4se\f4se\GameTypes.cpp" />
     <ClCompile Include="..\f4se\f4se\GameUtilities.cpp" />
+    <ClCompile Include="SAKEShared.cpp" />
+    <ClCompile Include="SAKEData.cpp" />
     <ClCompile Include="SAKELoader.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
@@ -45,8 +47,10 @@
     <ClInclude Include="..\f4se\f4se\GameTypes.h" />
     <ClInclude Include="..\f4se\f4se\GameUtilities.h" />
     <ClInclude Include="nlohmann\json.hpp" />
-    <ClInclude Include="SAKELoader.h" />
     <ClInclude Include="Config.h" />
+    <ClInclude Include="SAKEShared.h" />
+    <ClInclude Include="SAKEData.h" />
+    <ClInclude Include="SAKELoader.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{A698FA2E-50D2-4898-B15E-8B14E710D9C5}</ProjectGuid>

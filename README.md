@@ -11,7 +11,8 @@ An experimental dynamic patcher for Fallout 4 with the capability to edit variou
 - Compatibility patches that allow different mods to work together are also possible.
 - Overrides are loaded after the game finishes loading all mods/forms, so they're independent of plugin load order.
 - Includes a profile system that allows loading different combinations of overrides depending on your loaded mods.
-- Supported Form types: LeveledLists, Races, Actors, Armors, Weapons, MiscItems, and Ammo.
+- Supported Form types: LeveledItems, LeveledCharacters, Races, Actors, Armors, Weapons, MiscItems, Ammo, and Ingestibles.
+- Also supports adding prefixes to item names for inventory sorting.
 - Overrides do not affect save games, and most of them should be safe to enable/disable at any time.
 - *Note: Templates and Overrides are very unfinished for now. More will be finished and added as I get to them over time.*
 
