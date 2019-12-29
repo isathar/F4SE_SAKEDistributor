@@ -161,7 +161,7 @@ namespace SAKEFileReader
 				otFile.close();
 				return 5;
 			}
-			if (otObject["overrides"].empty() || !otObject["overrides"].is_array()) {
+			if (otObject["namePrefixes"].empty() || !otObject["namePrefixes"].is_array()) {
 				_MESSAGE("    INFO: Name Prefixes found but empty.");
 				otObject.clear();
 				otFile.close();
