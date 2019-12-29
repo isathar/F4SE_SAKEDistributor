@@ -2,6 +2,8 @@
 
 #include "f4se/GameData.h"
 #include "f4se/GameFormComponents.h"
+#include "f4se/GameSettings.h"
+#include "f4se/GameTypes.h"
 #include "f4se/GameRTTI.h"
 
 #include "nlohmann/json.hpp"
@@ -126,8 +128,12 @@ namespace SAKEData
 	void LoadOverrides_Misc(TESObjectMISC * miscForm, json & miscOverride, UInt8 iDebugLevel = 0);
 	void LoadOverrides_Component(BGSComponent * compoForm, json & compoOverride, UInt8 iDebugLevel = 0);
 	void LoadOverrides_Ingestible(AlchemyItem * alchForm, json & alchOverride, UInt8 iDebugLevel = 0);
+	void LoadOverrides_EncounterZone(BGSEncounterZone * enczForm, json & enczOverride, UInt8 iDebugLevel = 0);
 
 	void LoadNamePrefix(TESForm * targetForm, const std::string & prefixStr, UInt8 iDebugLevel = 0);
+
+	void LoadGameSettings(json & settingOverrides, UInt8 iDebugLevel = 0);
+
 }
 
 

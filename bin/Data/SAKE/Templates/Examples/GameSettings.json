@@ -1,0 +1,38 @@
+{
+	"name": "GameSetting Overrides",
+	"description": "GameSetting override examples. Default values are not actually read",
+	
+	"comment": "used vars: name - valueFloat - valueInt - valueBool - valueString",
+	
+	"gameSettings": [
+		{"name": "iHoursToRespawnCell", 			"valueInt": 720, "default": 168},
+		{"name": "iHoursToRespawnCellCleared", 		"valueInt": 2160, "default": 480},
+		{"name": "iHoursToClearCorpses", 			"valueInt": 72, "default": 24},
+		
+		{"name": "iRemoveExcessDeadCount", 			"valueInt": 60, "default": 15},
+		{"name": "iRemoveExcessDeadTotalActorCount", "valueInt": 80, "default": 20},
+		{"name": "iRemoveExcessDeadComplexCount", 	"valueInt": 12, "default": 3},
+		{"name": "iRemoveExcessDeadComplexTotalActorCount", "valueInt": 80, "default": 20},
+		
+		{"name": "iAINumberActorsComplexScene", 	"valueInt": 40, "default": 20},
+		{"name": "iNumberActorsInCombatPlayer", 	"valueInt": 40, "default": 20},
+		
+		{"name": "iDebrisMaxCount",					"valueInt": 100, "default": 25},
+		{"name": "fGunShellLifeTime", 				"valueFloat": 300.0, "default": 5.0},
+		{"name": "fGunShellCameraDistance", 		"valueFloat": 2048.0, "default": 512.0},
+		{"name": "fGunDecalCameraDistance", 		"valueFloat": 4096.0, "default": 2048.0},
+		{"name": "fAttachedArrowAgeMax", 			"valueFloat": 30.0, "default": 10.0},
+		
+		{"name": "iArrowInventoryChance", 			"valueInt": 0, "default": 3},
+		{"name": "iProjectileMaxRefCount", 			"valueInt": 31, "default": 15},
+		
+		{"name": "iWorkshopSettlerPopulationMax", 	"valueInt": 20, "default": 10},
+		{"name": "fWorkshopWireMaxLength", 			"valueFloat": 2800.0, "default": 1100.0},
+		
+		{"name": "fWorkshopExperienceBase", 		"valueFloat": 1.0, "default": 2.0},
+		{"name": "fWorkshopExperienceMax", 			"valueFloat": 10.0, "default": 25.0},
+		{"name": "fWorkshopRepairComponentMult", 	"valueFloat": 0.2, "default": 0.1}
+		
+	]
+	
+}

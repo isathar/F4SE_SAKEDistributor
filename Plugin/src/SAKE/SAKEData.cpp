@@ -3,7 +3,7 @@
 
 namespace SAKEData
 {
-	// **** adds a list of spells to Actor/Race spellLists
+	// adds a list of spells to Actor/Race spellLists
 	inline void LoadData_Spells(std::vector<SpellItem*> & spellsIn, TESRace * targetRace, TESActorBase * targetActor, UInt8 iDebugLevel)
 	{
 		// redundant checks just to be safe
@@ -62,7 +62,7 @@ namespace SAKEData
 		}
 	}
 
-	// **** Modifies Keyword lists used by most Forms
+	// Modifies Keyword lists used by most Forms
 	inline void LoadData_KeywordForm(BGSKeywordForm * keywordForm, json & keywordData, UInt8 iDebugLevel)
 	{
 		if (!keywordForm) {
@@ -145,7 +145,7 @@ namespace SAKEData
 		}
 	}
 
-	// **** Modifies DamageTypes lists used by Weapons and Armors
+	// Modifies DamageTypes lists used by Weapons and Armors
 	inline void LoadData_DamageTypes(tArray<TBO_InstanceData::DamageTypes> * damageTypes, json & damageTypeData, bool clearExisting, UInt8 iDebugLevel)
 	{
 		if (damageTypeData.empty()) {
@@ -231,7 +231,7 @@ namespace SAKEData
 	}
 
 
-	// ---- name editing funtions:
+	// ---- name editing funtions to avoid defining variables in switch
 
 	inline void EditName_Armor(TESObjectARMO * armorForm, const std::string & newName)
 	{
@@ -273,7 +273,7 @@ namespace SAKEData
 
 
 
-// ******** Weapon Form Overrides ********
+// Weapon Form Overrides
 void SAKEData::LoadOverrides_Weapon(TESObjectWEAP * weapForm, json & weaponOverride, UInt8 iDebugLevel)
 {
 	if (!weapForm) {
@@ -854,7 +854,7 @@ void SAKEData::LoadOverrides_Weapon(TESObjectWEAP * weapForm, json & weaponOverr
 }
 
 
-// ******** Armor Form Overrides ********
+// Armor Form Overrides
 void SAKEData::LoadOverrides_Armor(TESObjectARMO * armorForm, json & armorOverride, UInt8 iDebugLevel)
 {
 	if (!armorForm) {
@@ -973,7 +973,7 @@ void SAKEData::LoadOverrides_Armor(TESObjectARMO * armorForm, json & armorOverri
 }
 
 
-// ******** Race Form Overrides ********
+// Race Form Overrides
 void SAKEData::LoadOverrides_Race(TESRace * raceForm, json & raceOverride, UInt8 iDebugLevel)
 {
 	if (!raceForm) {
@@ -1091,7 +1091,7 @@ void SAKEData::LoadOverrides_Race(TESRace * raceForm, json & raceOverride, UInt8
 }
 
 
-// ******** Actor Form Overrides ********
+// Actor Form Overrides
 void SAKEData::LoadOverrides_Actor(TESNPC * actorForm, json & actorOverride, UInt8 iDebugLevel)
 {
 	if (!actorForm) {
@@ -1100,6 +1100,13 @@ void SAKEData::LoadOverrides_Actor(TESNPC * actorForm, json & actorOverride, UIn
 	}
 	if (iDebugLevel != 0) {
 		_MESSAGE("\n      Editing Actor - 0x%08X (%s)", actorForm->formID, actorForm->GetFullName());
+	}
+
+	// ---- Name
+	if (!actorOverride["name"].is_null()) {
+		std::string actorName = actorOverride["name"];
+		actorForm->fullName.name = BSFixedString(actorName.c_str());
+		_MESSAGE("        Edited name:  %s", actorForm->GetFullName());
 	}
 
 	// ---- ActorValues
@@ -1178,10 +1185,50 @@ void SAKEData::LoadOverrides_Actor(TESNPC * actorForm, json & actorOverride, UIn
 			}
 		}
 	}
+
+	// -- Class
+	if (!actorOverride["npcClass"].is_null()) {
+		std::string classFormID = actorOverride["npcClass"];
+		TESClass * newClassForm = (TESClass*)SAKEUtilities::GetFormFromIdentifier(classFormID.c_str());
+		if (newClassForm) {
+			actorForm->npcClass = newClassForm;
+			_MESSAGE("        Edited NPC Class : %s", classFormID.c_str());
+		}
+	}
+
+	// -- CombatStyle
+	if (!actorOverride["combatStyle"].is_null()) {
+		std::string csFormID = actorOverride["combatStyle"];
+		TESCombatStyle * newCSForm = (TESCombatStyle*)SAKEUtilities::GetFormFromIdentifier(csFormID.c_str());
+		if (newCSForm) {
+			actorForm->combatStyle = newCSForm;
+			_MESSAGE("        Edited Combat Style : %s", csFormID.c_str());
+		}
+	}
+
+	// -- Default Outfit
+	if (!actorOverride["outfitDefault"].is_null()) {
+		std::string outfit1FormID = actorOverride["outfitDefault"];
+		BGSOutfit * newOutfitDef = (BGSOutfit*)SAKEUtilities::GetFormFromIdentifier(outfit1FormID.c_str());
+		if (newOutfitDef) {
+			actorForm->outfit[0] = newOutfitDef;
+			_MESSAGE("        Edited Default Outfit : 0x%08X", newOutfitDef->formID);
+		}
+	}
+
+	// -- Sleep Outfit
+	if (!actorOverride["outfitSleep"].is_null()) {
+		std::string outfit2FormID = actorOverride["outfitSleep"];
+		BGSOutfit * newOutfitSlp = (BGSOutfit*)SAKEUtilities::GetFormFromIdentifier(outfit2FormID.c_str());
+		if (newOutfitSlp) {
+			actorForm->outfit[1] = newOutfitSlp;
+			_MESSAGE("        Edited Sleep Outfit : 0x%08X", newOutfitSlp->formID);
+		}
+	}
 }
 
 
-// ******** LeveledItem Form Overrides ********
+// LeveledItem Form Overrides
 void SAKEData::LoadOverrides_LeveledItem(TESLevItem * lliForm, json & llOverride, UInt8 iDebugLevel)
 {
 	//		LeveledItem.leveledList.unk08 = UseGlobal
@@ -1363,7 +1410,7 @@ void SAKEData::LoadOverrides_LeveledItem(TESLevItem * lliForm, json & llOverride
 	}
 }
 
-// ******** LeveledActor Form Overrides ********
+// LeveledActor Form Overrides
 void SAKEData::LoadOverrides_LeveledActor(TESLevCharacter * llcForm, json & llOverride, UInt8 iDebugLevel)
 {
 	if (!llcForm) {
@@ -1502,7 +1549,7 @@ void SAKEData::LoadOverrides_LeveledActor(TESLevCharacter * llcForm, json & llOv
 }
 
 
-// ******** Ammo Form Overrides ********
+// Ammo Form Overrides
 void SAKEData::LoadOverrides_Ammo(TESAmmo * ammoForm, json & ammoOverride, UInt8 iDebugLevel)
 {
 	//	TESAmmo::unk160 -
@@ -1572,6 +1619,7 @@ void SAKEData::LoadOverrides_Ammo(TESAmmo * ammoForm, json & ammoOverride, UInt8
 		int ammoHealth = ammoOverride["health"];
 		if (ammoHealth > 0) {
 			ammoForm->unk160[1] = (UInt64)ammoHealth;
+			_MESSAGE("        Edited Health: %i", ammoForm->unk160[1]);
 		}
 	}
 	// ---- damage
@@ -1579,12 +1627,13 @@ void SAKEData::LoadOverrides_Ammo(TESAmmo * ammoForm, json & ammoOverride, UInt8
 		float ammoDamage = ammoOverride["damage"];
 		if (ammoDamage >= 0.0) {
 			ammoForm->unk160[2] = (UInt64)ammoDamage;
+			_MESSAGE("        Edited Damage: %.04f", (float)ammoForm->unk160[2]);
 		}
 	}
 }
 
 
-// ******** MiscItem/Junk Form Overrides ********
+// MiscItem/Junk Form Overrides
 void SAKEData::LoadOverrides_Misc(TESObjectMISC * miscForm, json & miscOverride, UInt8 iDebugLevel)
 {
 	if (!miscForm) {
@@ -1783,7 +1832,7 @@ void SAKEData::LoadOverrides_Misc(TESObjectMISC * miscForm, json & miscOverride,
 }
 
 
-// ******** Crafting Component Form Overrides ********
+// Crafting Component Form Overrides
 void SAKEData::LoadOverrides_Component(BGSComponent * compoForm, json & compoOverride, UInt8 iDebugLevel)
 {
 	if (!compoForm) {
@@ -1837,7 +1886,7 @@ void SAKEData::LoadOverrides_Component(BGSComponent * compoForm, json & compoOve
 }
 
 
-// ******** Ingestible (Chem/Food/Drink) Form Overrides ********
+// Ingestible (Chem/Food/Drink) Form Overrides
 void SAKEData::LoadOverrides_Ingestible(AlchemyItem * alchForm, json & alchOverride, UInt8 iDebugLevel)
 {
 	if (!alchForm) {
@@ -1880,11 +1929,39 @@ void SAKEData::LoadOverrides_Ingestible(AlchemyItem * alchForm, json & alchOverr
 }
 
 
+// EncounterZone Form Overrides
+void SAKEData::LoadOverrides_EncounterZone(BGSEncounterZone * enczForm, json & enczOverride, UInt8 iDebugLevel)
+{
+	if (!enczForm) {
+		_MESSAGE("        ERROR: No EncounterZone Form! dump: %s", enczOverride.dump().c_str());
+		return;
+	}
+	if (iDebugLevel != 0) {
+		_MESSAGE("\n      Editing EncounterZone - 0x%08X (%s)", enczForm->formID, enczForm->GetFullName());
+	}
+	
+	int levelMin = enczForm->minLevel, levelMax = enczForm->maxLevel;
+	if (!enczOverride["levelMin"].is_null()) {
+		levelMin = enczOverride["levelMin"];
+	}
+	if (!enczOverride["levelMax"].is_null()) {
+		levelMax = enczOverride["levelMax"];
+	}
+	if (levelMax < levelMin) {
+		levelMax = levelMin;
+	}
 
-// ******** Name Prefixes (any supported Forms) ********
+	if ((levelMin != (int)enczForm->minLevel) || (levelMax != (int)enczForm->maxLevel)) {
+		enczForm->minLevel = (UInt8)levelMin;
+		enczForm->maxLevel = (UInt8)levelMax;
+		if (iDebugLevel == 2) {
+			_MESSAGE("        Edited Min-Max Levels: %i - %i", enczForm->minLevel, enczForm->maxLevel);
+		}
+	}
+}
 
 
-
+// Name Prefixes (any supported Forms)
 void SAKEData::LoadNamePrefix(TESForm * targetForm, const std::string & prefixStr, UInt8 iDebugLevel)
 {
 	if (!targetForm || prefixStr.empty()) {
@@ -1926,3 +2003,65 @@ void SAKEData::LoadNamePrefix(TESForm * targetForm, const std::string & prefixSt
 		_MESSAGE("    Edited Name: %s", targetForm->GetFullName());
 	}
 }
+
+
+// Game Settings
+void SAKEData::LoadGameSettings(json & settingOverrides, UInt8 iDebugLevel)
+{
+	if (settingOverrides.empty() || !settingOverrides.is_array()) {
+		return;
+	}
+	
+	_MESSAGE("\n      Editing GameSettings:");
+	json curOverride;
+	for (json::iterator itSettings = settingOverrides.begin(); itSettings != settingOverrides.end(); ++itSettings) {
+		curOverride.clear();
+		curOverride = *itSettings;
+		if (!curOverride["name"].is_null()) {
+			std::string settingName = curOverride["name"];
+			Setting * curSetting = GetGameSetting(settingName.c_str());
+			if (curSetting) {
+				UInt32 settingType = curSetting->GetType();
+				if (settingType == Setting::kType_Float) {
+					if (!curOverride["valueFloat"].is_null()) {
+						float newFloatVal = curOverride["valueFloat"];
+						curSetting->data.f32 = newFloatVal;
+						_MESSAGE("\n          %s: %.04f", settingName.c_str(), curSetting->data.f32);
+					}
+					continue;
+				}
+				if (settingType == Setting::kType_Integer) {
+					if (!curOverride["valueInt"].is_null()) {
+						int newIntVal = curOverride["valueInt"];
+						curSetting->data.u32 = (UInt32)newIntVal;
+						_MESSAGE("\n          %s: %i", settingName.c_str(), curSetting->data.u32);
+					}
+					continue;
+				}
+				if (settingType == Setting::kType_Bool) {
+					if (!curOverride["valueBool"].is_null()) {
+						bool newBoolVal = curOverride["valueBool"];
+						curSetting->data.u8 = (UInt8)newBoolVal;
+						_MESSAGE("\n          %s: %i", settingName.c_str(), curSetting->data.u8);
+					}
+					continue;
+				}
+				if (settingType == Setting::kType_String) {
+					if (!curOverride["valueString"].is_null()) {
+						std::string newStringVal = curOverride["valueString"];
+						if (curSetting->SetString(newStringVal.c_str())) {
+							_MESSAGE("\n          %s: %s", settingName.c_str(), curSetting->data.s);
+						}
+						else {
+							_MESSAGE("\n          WARNING: Failed to set new string value for %s!", settingName.c_str());
+						}
+					}
+					continue;
+				}
+				_MESSAGE("\n          WARNING: Invalid or missing setting type - %s!", settingName.c_str());
+			}
+		}
+	}
+	
+}
+

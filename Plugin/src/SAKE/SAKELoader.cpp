@@ -60,7 +60,7 @@ namespace SAKEFileReader
 
 		// check the pass number
 		if (iPassCount == 0) {
-			// pass 0 - Races
+			// pass 0 - Race Overrides
 			if (otObject["raceOverrides"].is_null()) {
 				otObject.clear();
 				otFile.close();
@@ -68,7 +68,7 @@ namespace SAKEFileReader
 				return 5;
 			}
 			else {
-				if (!otObject["raceOverrides"].is_array() || otObject["raceOverrides"].empty()) {
+				if (otObject["raceOverrides"].empty() || !otObject["raceOverrides"].is_array()) {
 					otObject.clear();
 					otFile.close();
 					return 1;
@@ -89,14 +89,18 @@ namespace SAKEFileReader
 			}
 		}
 		else if (iPassCount == 1) {
-			// pass 1 - forms besides Races
+			// pass 1 - GameSettings + Form Overrides
+			if (!otObject["gameSettings"].is_null()) {
+				SAKEData::LoadGameSettings(otObject["gameSettings"], iDebugLevel);
+			}
+
 			if (otObject["overrides"].is_null()) {
 				otObject.clear();
 				otFile.close();
 				return 2;
 			}
 			else {
-				if (!otObject["overrides"].is_array() || otObject["overrides"].empty()) {
+				if (otObject["overrides"].empty() || !otObject["overrides"].is_array()) {
 					otObject.clear();
 					otFile.close();
 					return 1;
@@ -139,6 +143,9 @@ namespace SAKEFileReader
 						case kFormType_ALCH:
 							SAKEData::LoadOverrides_Ingestible((AlchemyItem*)curForm, curOverride, iDebugLevel);
 							break;
+						case kFormType_ECZN:
+							SAKEData::LoadOverrides_EncounterZone((BGSEncounterZone*)curForm, curOverride, iDebugLevel);
+							break;
 
 						default:
 							_MESSAGE("    WARNING: Form 0x%08X has invalid formType %i", curForm->formID, curForm->formType);
@@ -148,6 +155,19 @@ namespace SAKEFileReader
 		}
 		else {
 			// pass 2 - name prefixes
+			if (otObject["namePrefixes"].is_null()) {
+				_MESSAGE("    INFO: No Name Prefixes found.");
+				otObject.clear();
+				otFile.close();
+				return 5;
+			}
+			if (otObject["overrides"].empty() || !otObject["overrides"].is_array()) {
+				_MESSAGE("    INFO: Name Prefixes found but empty.");
+				otObject.clear();
+				otFile.close();
+				return 5;
+			}
+
 			for (json::iterator itOverride = otObject["namePrefixes"].begin(); itOverride != otObject["namePrefixes"].end(); ++itOverride) {
 				curOverride.clear();
 				curOverride = *itOverride;
@@ -162,6 +182,7 @@ namespace SAKEFileReader
 					}
 				}
 			}
+			
 		}
 
 		otObject.clear();
@@ -378,6 +399,8 @@ void TestingStuff()
 	for (UInt8 i = 0; i < 10; i++) {
 		_MESSAGE("  unk160[%i] = 0x%016X", i, testAmmo->unk160[i]);
 	}
+	//TESFullName tempNameForm = *(TESFullName*)testAmmo->unk160[3];
+	//_MESSAGE("  unk160[3] = %s", tempNameForm.name.c_str());
 
 	// ammo: AmmoBloodBug "Blood Spray" [AMMO:00031FB7]
 	TESAmmo * testAmmo2 = (TESAmmo*)SAKEUtilities::GetFormFromIdentifier("Fallout4.esm|31FB7");
@@ -456,6 +479,6 @@ void SAKEFileReader::LoadGameData()
 	cf.close();
 
 	
-	//TestingStuff();
+	TestingStuff();
 }
 

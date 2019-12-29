@@ -21,7 +21,9 @@
     <ClCompile Include="..\f4se\f4se\GameExtraData.cpp" />
     <ClCompile Include="..\f4se\f4se\GameForms.cpp" />
     <ClCompile Include="..\f4se\f4se\GameFormComponents.cpp" />
+	<ClCompile Include="..\f4se\f4se\GameReferences.cpp" />
     <ClCompile Include="..\f4se\f4se\GameRTTI.cpp" />
+	<ClCompile Include="..\f4se\f4se\GameSettings.cpp" />
     <ClCompile Include="..\f4se\f4se\GameTypes.cpp" />
     <ClCompile Include="..\f4se\f4se\GameUtilities.cpp" />
     <ClCompile Include="SAKEShared.cpp" />
@@ -43,7 +45,9 @@
     <ClInclude Include="..\f4se\f4se\GameExtraData.h" />
     <ClInclude Include="..\f4se\f4se\GameForms.h" />
     <ClInclude Include="..\f4se\f4se\GameFormComponents.h" />
+	<ClInclude Include="..\f4se\f4se\GameReferences.h" />
     <ClInclude Include="..\f4se\f4se\GameRTTI.h" />
+	<ClInclude Include="..\f4se\f4se\GameSettings.h" />
     <ClInclude Include="..\f4se\f4se\GameTypes.h" />
     <ClInclude Include="..\f4se\f4se\GameUtilities.h" />
     <ClInclude Include="nlohmann\json.hpp" />

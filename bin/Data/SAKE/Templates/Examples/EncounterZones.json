@@ -1,0 +1,9 @@
+{
+	"name": "EncounterZone Overrides",
+	"description": "EncounterZone override examples",
+	
+	"overrides": [
+		{"formID": "Fallout4.esm|22CD52", "levelMin": 1, "levelMax": 20, "comment": "increase Sanctuary max level to 20"}
+	]
+	
+}
