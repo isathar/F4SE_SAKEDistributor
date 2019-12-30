@@ -1,8 +1,8 @@
 {
-	"name": "GameSetting Overrides",
-	"description": "GameSetting override examples. Default values are not actually read",
+	"menuName": "GameSetting Overrides",
+	"menuDescription": "GameSetting override examples. Default values are not actually read",
 	
-	"comment": "used vars: name - valueFloat - valueInt - valueBool - valueString",
+	"comment": ["used vars: name - valueFloat - valueInt - valueBool - valueString"],
 	
 	"gameSettings": [
 		{"name": "iHoursToRespawnCell", 			"valueInt": 720, "default": 168},

@@ -1,10 +1,10 @@
 {
-	"name": "Item Name Prefixes Example",
-	"description": "Examples for adding prefixes to item names for inventory sorting",
+	"menuName": "Item Name Prefixes Example",
+	"menuDescription": "Examples for adding prefixes to item names for inventory sorting",
 	
 	"namePrefixes": [
 		{
-			"comment": "Crafting component scrap item name edits",
+			"comment": ["Crafting component scrap item name edits"],
 			"prefix": "(Component) ",
 			"forms": [
 				"Fallout4.esm|1BF72D", "Fallout4.esm|1BF72E", "Fallout4.esm|6907A", "Fallout4.esm|AEC5B", "Fallout4.esm|1BF72F",
@@ -18,7 +18,7 @@
 		},
 		
 		{
-			"comment": "Crafting component name edits",
+			"comment": ["Crafting component name edits"],
 			"prefix": "(Component) ",
 			"forms": [
 				"Fallout4.esm|3D294", "Fallout4.esm|1FABD"
@@ -26,7 +26,7 @@
 		},
 		
 		{
-			"comment": "Chem name edits",
+			"comment": ["Chem name edits"],
 			"prefix": "(Chem) ",
 			"forms": [
 				"Fallout4.esm|33778", "Fallout4.esm|366C5"
@@ -34,7 +34,7 @@
 		},
 		
 		{
-			"comment": "Ammo name edits",
+			"comment": ["Ammo name edits"],
 			"prefix": "(Ammo) ",
 			"forms": [
 				"Fallout4.esm|1F276"
@@ -42,7 +42,7 @@
 		},
 		
 		{
-			"comment": "Grenade name edits",
+			"comment": ["Grenade name edits"],
 			"prefix": "(Grenade) ",
 			"forms": [
 				"Fallout4.esm|EEBED"
@@ -50,7 +50,7 @@
 		},
 		
 		{
-			"comment": "Mine name edits",
+			"comment": ["Mine name edits"],
 			"prefix": "(Mine) ",
 			"forms": [
 				"Fallout4.esm|E56C2"
@@ -58,7 +58,7 @@
 		},
 		
 		{
-			"comment": "Junk name edits",
+			"comment": ["Junk name edits"],
 			"prefix": "(Junk) ",
 			"forms": [
 				"Fallout4.esm|1F905"

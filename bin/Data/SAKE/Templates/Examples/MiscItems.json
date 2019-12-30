@@ -1,37 +1,37 @@
 {
-	"name": "MiscItem Overrides",
-	"description": "MiscItem/Junk override examples",
+	"menuName": "MiscItem Overrides",
+	"menuDescription": "MiscItem/Junk override examples",
 	
 	"overrides": [
 		{
-			"comment": "MiscItem (Desk Fan) - Removes 1 steel and adds 2 screws to its components list",
+			"comment": ["MiscItem (Desk Fan) - Removes 1 steel and adds 2 screws to its components list"],
 			"formID": "Fallout4.esm|1F905",
 			"components": {
 				"clearList": false,
 				"add": [
-					{"formID": "Fallout4.esm|3D294", "count": 2, "comment": "screws"}
+					{"formID": "Fallout4.esm|3D294", "count": 2, "comment": ["screws"]}
 				],
 				"remove": [
-					{"formID": "Fallout4.esm|1FABD", "count": 1, "comment": "steel"}
+					{"formID": "Fallout4.esm|1FABD", "count": 1, "comment": ["steel"]}
 				]
 			}
 		},
 		
 		{
-			"comment": "MiscItem (Fuse) - Disables use as Junk Jet ammo (adds the NotJunkJetAmmo keyword)",
+			"comment": ["MiscItem (Fuse) - Disables use as Junk Jet ammo (adds the NotJunkJetAmmo keyword)"],
 			"formID": "Fallout4.esm|59ACC",
 			"keywords": {"add": ["Fallout4.esm|E9447"]}
 		},
 		
 		{
-			"comment": "MiscItem (Wakemaster Alarm Clock) - Increases weight and value",
+			"comment": ["MiscItem (Wakemaster Alarm Clock) - Increases weight and value"],
 			"formID": "Fallout4.esm|1C9E92",
 			"value": 20,
 			"weight": 2.0
 		},
 		
 		{
-			"comment": "MiscItem (Adhesive) - Name edit example",
+			"comment": ["MiscItem (Adhesive) - Name edit example"],
 			"formID": "Fallout4.esm|1BF72E",
 			"name": "Glue"
 		}

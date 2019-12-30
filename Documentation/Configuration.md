@@ -40,9 +40,9 @@
 ## Overrides
 
 - **JSON files containing the actual form edits.**
-- **name** *(String) - optional*
+- **menuName** *(String) - optional*
 	- For documentation and eventual display in a menu.
-- **description** *(String) - optional*
+- **menuDescription** *(String) - optional*
 	- For documentation and eventual display in a menu.
 - **requirements** *(Array(String)) - optional*
 	- List of mods (plugin names) that need to be enabled to load this *Override* file.

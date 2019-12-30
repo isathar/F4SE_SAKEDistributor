@@ -1,22 +1,22 @@
 {
-	"name": "Chem Overrides",
-	"description": "Ingestible/Chem override examples",
+	"menuName": "Chem Overrides",
+	"menuDescription": "Ingestible/Chem override examples",
 	
 	"overrides": [
 		{
-			"comment": "Ingestible (Jet) - Name Edit example",
+			"comment": ["Ingestible (Jet) - Name Edit example"],
 			"formID": "Fallout4.esm|366C5",
 			"name": "Not Fallout 2 Jet"
 		},
 		
 		{
-			"comment": "Ingestible (Deathclaw Meat) - Makes it heavier",
+			"comment": ["Ingestible (Deathclaw Meat) - Makes it heavier"],
 			"formID": "Fallout4.esm|74D0E",
 			"weight": 2.0
 		},
 		
 		{
-			"comment": "Ingestible (Melon Blossom) - Makes it usable as food in Survival mode",
+			"comment": ["Ingestible (Melon Blossom) - Makes it usable as food in Survival mode"],
 			"formID": "Fallout4.esm|1C4010",
 			"keywords": {"remove": ["Fallout4.esm|249F52"]}
 		}
