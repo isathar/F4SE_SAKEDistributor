@@ -1,69 +1,69 @@
 {
-	"name": "NPC Luck Distribution",
+	"menuName": "NPC Luck Distribution",
 	
-	"comments": [
+	"comment": [
 		"Distributes Luck to various NPCs to allow AmmoTweaks critical chance calculations to affect them. ",
 		"Probably has no effect by default."
 	],
 	
 	"overrides": [
 		{
-			"comment": "Gunner - Base Template - 2 Luck",
+			"comment": ["Gunner - Base Template - 2 Luck"],
 			"formID": "Fallout4.esm|FD39B",
 			"actorValues": [{"formID": "Fallout4.esm|2C8", "add": 2.0}]
 		},
 		{
-			"comment": "Gunner Boss - Base Template - 4 Luck",
+			"comment": ["Gunner Boss - Base Template - 4 Luck"],
 			"formID": "Fallout4.esm|247553",
 			"actorValues": [{"formID": "Fallout4.esm|2C8", "add": 4.0}]
 		},
 		{
-			"comment": "Raider - Base Template - 1 Luck",
+			"comment": ["Raider - Base Template - 1 Luck"],
 			"formID": "Fallout4.esm|3183A",
 			"actorValues": [{"formID": "Fallout4.esm|2C8", "add": 1.0}]
 		},
 		{
-			"comment": "Raider Boss - 1 Luck from Raider Template - 3 Luck",
+			"comment": ["Raider Boss - 1 Luck from Raider Template - 3 Luck"],
 			"formID": "Fallout4.esm|19567",
 			"actorValues": [{"formID": "Fallout4.esm|2C8", "add": 2.0}]
 		},
 		{
-			"comment": "Triggerman - Base Template - 2 Luck",
+			"comment": ["Triggerman - Base Template - 2 Luck"],
 			"formID": "Fallout4.esm|83ACF",
 			"actorValues": [{"formID": "Fallout4.esm|2C8", "add": 2.0}]
 		},
 		{
-			"comment": "BoS Soldier - Base Template - 2 Luck",
+			"comment": ["BoS Soldier - Base Template - 2 Luck"],
 			"formID": "Fallout4.esm|76A0A",
 			"actorValues": [{"formID": "Fallout4.esm|2C8", "add": 2.0}]
 		},
 		{
-			"comment": "BoS Scribe - Base Template - 4 Luck",
+			"comment": ["BoS Scribe - Base Template - 4 Luck"],
 			"formID": "Fallout4.esm|76A0B",
 			"actorValues": [{"formID": "Fallout4.esm|2C8", "add": 4.0}]
 		},
 		{
-			"comment": "BoS Pilot - Base Template - 1 Luck",
+			"comment": ["BoS Pilot - Base Template - 1 Luck"],
 			"formID": "Fallout4.esm|12BC97",
 			"actorValues": [{"formID": "Fallout4.esm|2C8", "add": 1.0}]
 		},
 		{
-			"comment": "Railroad Agent - Base Template - 2 Luck",
+			"comment": ["Railroad Agent - Base Template - 2 Luck"],
 			"formID": "Fallout4.esm|17FCE9",
 			"actorValues": [{"formID": "Fallout4.esm|2C8", "add": 2.0}]
 		},
 		{
-			"comment": "Synth - Base Template - 3 Luck",
+			"comment": ["Synth - Base Template - 3 Luck"],
 			"formID": "Fallout4.esm|E6B41",
 			"actorValues": [{"formID": "Fallout4.esm|2C8", "add": 3.0}]
 		},
 		{
-			"comment": "Synth Courser - Base Template - 5 Luck",
+			"comment": ["Synth Courser - Base Template - 5 Luck"],
 			"formID": "Fallout4.esm|BE184",
 			"actorValues": [{"formID": "Fallout4.esm|2C8", "add": 5.0}]
 		},
 		{
-			"comment": "Supermutant - Base Template - 1 Luck",
+			"comment": ["Supermutant - Base Template - 1 Luck"],
 			"formID": "Fallout4.esm|1A00C",
 			"actorValues": [{"formID": "Fallout4.esm|2C8", "add": 1.0}]
 		}

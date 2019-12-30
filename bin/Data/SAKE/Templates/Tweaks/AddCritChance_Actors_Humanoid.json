@@ -1,66 +1,65 @@
 {
-	"name": "Humanoid NPC Crit Chance ",
-	
-	"description": "Distributes critical hit chance to various actor templates. Not for use with AmmoTweaks.",
+	"menuName": "Humanoid NPC Crit Chance ",
+	"menuDescription": "Distributes critical hit chance to various actor templates. Not for use with AmmoTweaks.",
 	
 	"overrides": [
 		{
-			"comment": "Gunner - Base Template - 2 percent Crit Chance ",
+			"comment": ["Gunner - Base Template - 2 percent Crit Chance"],
 			"formID": "Fallout4.esm|FD39B",
 			"actorValues": [{"formID": "Fallout4.esm|2DD", "add": 2.0}]
 		},
 		{
-			"comment": "Gunner Boss - Base Template - 4 percent Crit Chance ",
+			"comment": ["Gunner Boss - Base Template - 4 percent Crit Chance"],
 			"formID": "Fallout4.esm|247553",
 			"actorValues": [{"formID": "Fallout4.esm|2DD", "add": 4.0}]
 		},
 		{
-			"comment": "Raider - Base Template - 1 percent Crit Chance ",
+			"comment": ["Raider - Base Template - 1 percent Crit Chance"],
 			"formID": "Fallout4.esm|3183A",
 			"actorValues": [{"formID": "Fallout4.esm|2DD", "add": 1.0}]
 		},
 		{
-			"comment": "Raider Boss - 1 Luck from Raider Template - 3 percent Crit Chance ",
+			"comment": ["Raider Boss - 1 Luck from Raider Template - 3 percent Crit Chance"],
 			"formID": "Fallout4.esm|19567",
 			"actorValues": [{"formID": "Fallout4.esm|2DD", "add": 2.0}]
 		},
 		{
-			"comment": "Triggerman - Base Template - 2 percent Crit Chance ",
+			"comment": ["Triggerman - Base Template - 2 percent Crit Chance"],
 			"formID": "Fallout4.esm|83ACF",
 			"actorValues": [{"formID": "Fallout4.esm|2DD", "add": 2.0}]
 		},
 		{
-			"comment": "BoS Soldier - Base Template - 2 percent Crit Chance ",
+			"comment": ["BoS Soldier - Base Template - 2 percent Crit Chance"],
 			"formID": "Fallout4.esm|76A0A",
 			"actorValues": [{"formID": "Fallout4.esm|2DD", "add": 2.0}]
 		},
 		{
-			"comment": "BoS Scribe - Base Template - 4 percent Crit Chance ",
+			"comment": ["BoS Scribe - Base Template - 4 percent Crit Chance"],
 			"formID": "Fallout4.esm|76A0B",
 			"actorValues": [{"formID": "Fallout4.esm|2DD", "add": 4.0}]
 		},
 		{
-			"comment": "BoS Pilot - Base Template - 1 percent Crit Chance ",
+			"comment": ["BoS Pilot - Base Template - 1 percent Crit Chance"],
 			"formID": "Fallout4.esm|12BC97",
 			"actorValues": [{"formID": "Fallout4.esm|2DD", "add": 1.0}]
 		},
 		{
-			"comment": "Railroad Agent - Base Template - 2 percent Crit Chance ",
+			"comment": ["Railroad Agent - Base Template - 2 percent Crit Chance"],
 			"formID": "Fallout4.esm|17FCE9",
 			"actorValues": [{"formID": "Fallout4.esm|2DD", "add": 2.0}]
 		},
 		{
-			"comment": "Synth - Base Template - 3 percent Crit Chance ",
+			"comment": ["Synth - Base Template - 3 percent Crit Chance"],
 			"formID": "Fallout4.esm|E6B41",
 			"actorValues": [{"formID": "Fallout4.esm|2DD", "add": 3.0}]
 		},
 		{
-			"comment": "Synth Courser - Base Template - 5 percent Crit Chance ",
+			"comment": ["Synth Courser - Base Template - 5 percent Crit Chance"],
 			"formID": "Fallout4.esm|BE184",
 			"actorValues": [{"formID": "Fallout4.esm|2DD", "add": 5.0}]
 		},
 		{
-			"comment": "Supermutant - Base Template - 1 percent Crit Chance ",
+			"comment": ["Supermutant - Base Template - 1 percent Crit Chance"],
 			"formID": "Fallout4.esm|1A00C",
 			"actorValues": [{"formID": "Fallout4.esm|2DD", "add": 1.0}]
 		}
