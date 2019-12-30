@@ -1685,7 +1685,7 @@ void SAKEData::LoadOverrides_Misc(TESObjectMISC * miscForm, json & miscOverride,
 	// -- components
 	if (!miscOverride["components"].is_null()) {
 		json composObj = miscOverride["components"];
-		if (!composObj["clearList"].is_null()) {
+		if (!composObj["clear"].is_null()) {
 			bool clearCompos = composObj["clearList"];
 			if (clearCompos && miscForm->components) {
 				if (iDebugLevel == 2) {

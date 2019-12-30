@@ -28,7 +28,7 @@
 		- Room for comments.
 - **actorValues** *(Array(Object)) - optional*
 	- List of ActorValues to modify.
-	- Used for Races and Actors.
+	- Used for Races and Actors. NOTE: See Weapons definition for the differences compared to weapon ActorValues.
 	- **Variables:**
 		- **formID** *(FormID String) - required*
 		- **set** *(float) - optional*
@@ -145,6 +145,15 @@
 		- **formID** *(FormID String) - optional*
 			- Enchantment FormID.
 		- Room for comments.
+- **actorvalues** *(Array(Object) - optional*
+	- The list of ActorValue modifiers
+	- Works the same way as actorValues variables on Races and Actors, except using integers instead of floats.
+	- **Variables:**
+		- **formID** *(FormID String) - required*
+		- **set** *(int) - optional*
+			- the amount to replace this AV modifier's value with.
+		- **add** *(int) - optional*
+			- The amount to add to this AV modifier.
 - **aimModel** *(Object) - optional*
 	- **Variables:**
 		- **formID** *(FormID String) - optional*
@@ -218,7 +227,7 @@
 - **components** *(Object) - optional*
 	- The list of components to add/remove.
 	- **Variables:**
-		- **clearList** *(bool) - optional*
+		- **clear** *(bool) - optional*
 			- Whether or not to remove all existing components.
 		- **add/remove** *(array(Object)) - both optional*
 			- *formID (FormID String) - required*

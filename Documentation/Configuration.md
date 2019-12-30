@@ -13,6 +13,7 @@
 	- If you need to add a comment somewhere, use variables named "comment/s" (or any unused variable names).
 	- They won't be used in code, but are still loaded into memory, so don't overdo it.
 	- Multi-line comments are possible using arrays.
+- A User-Defined Language file for Notepad++ is included in the nppUDL folder to make editing the json configuration files easier.
 - **FormID String Format**
 	- "PluginName.esp|000000"
 	- Replace the first byte of the *FormID* with its plugin name and extension.
