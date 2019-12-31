@@ -7,7 +7,7 @@
 			"comment": [
 				"Component (Oil)",
 				"- sets name to Lubricant, edits value, changes the scrap scalar global to ModScrapScalar_Rare, sets scrap misc item to the same it was"
-			]
+			],
 			"formID": "Fallout4.esm|3D294",
 			"name": "Lubricant", "value": 18, 
 			"scrapScalarGlobal": "Fallout4.esm|2074A6",
