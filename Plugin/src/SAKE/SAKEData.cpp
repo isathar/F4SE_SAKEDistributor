@@ -313,7 +313,7 @@ void SAKEData::LoadOverrides_Weapon(TESObjectWEAP * weapForm, json & weaponOverr
 		if ((iDebugLevel == 2) && (weapForm->keyword.numKeywords != 0)) {
 			_MESSAGE("        Final Keywords list:");
 			for (UInt32 j = 0; j < weapForm->keyword.numKeywords; j++) {
-				_MESSAGE("          %i: 0x%08X", j, weapForm->keyword.keywords[j]->formID);
+				_MESSAGE("          %i: 0x%08X (%s)", j, weapForm->keyword.keywords[j]->formID, weapForm->keyword.keywords[j]->keyword.c_str());
 			}
 		}
 	}
@@ -893,7 +893,7 @@ void SAKEData::LoadOverrides_Armor(TESObjectARMO * armorForm, json & armorOverri
 		if ((iDebugLevel == 2) && (armorForm->keywordForm.numKeywords != 0)) {
 			_MESSAGE("        Final Keywords list:");
 			for (UInt32 j = 0; j < armorForm->keywordForm.numKeywords; j++) {
-				_MESSAGE("          %i: 0x%08X", j, armorForm->keywordForm.keywords[j]->formID);
+				_MESSAGE("          %i: 0x%08X (%s)", j, armorForm->keywordForm.keywords[j]->formID, armorForm->keywordForm.keywords[j]->keyword.c_str());
 			}
 		}
 	}
@@ -1084,7 +1084,7 @@ void SAKEData::LoadOverrides_Race(TESRace * raceForm, json & raceOverride, UInt8
 		if ((iDebugLevel == 2) && (raceForm->keywordForm.numKeywords != 0)) {
 			_MESSAGE("        Final Keywords list:");
 			for (UInt32 j = 0; j < raceForm->keywordForm.numKeywords; j++) {
-				_MESSAGE("          %i: 0x%08X", j, raceForm->keywordForm.keywords[j]->formID);
+				_MESSAGE("          %i: 0x%08X (%s)", j, raceForm->keywordForm.keywords[j]->formID, raceForm->keywordForm.keywords[j]->keyword.c_str());
 			}
 		}
 	}
@@ -1181,7 +1181,7 @@ void SAKEData::LoadOverrides_Actor(TESNPC * actorForm, json & actorOverride, UIn
 		if ((iDebugLevel == 2) && (actorForm->keywords.numKeywords != 0)) {
 			_MESSAGE("        Final Keywords list:");
 			for (UInt32 j = 0; j < actorForm->keywords.numKeywords; j++) {
-				_MESSAGE("          %i: 0x%08X", j, actorForm->keywords.keywords[j]->formID);
+				_MESSAGE("          %i: 0x%08X (%s)", j, actorForm->keywords.keywords[j]->formID, actorForm->keywords.keywords[j]->keyword.c_str());
 			}
 		}
 	}
@@ -1600,7 +1600,7 @@ void SAKEData::LoadOverrides_Ammo(TESAmmo * ammoForm, json & ammoOverride, UInt8
 		if ((iDebugLevel == 2) && (ammoForm->keywordForm.numKeywords != 0)) {
 			_MESSAGE("        Final Keywords list:");
 			for (UInt32 j = 0; j < ammoForm->keywordForm.numKeywords; j++) {
-				_MESSAGE("          %i: 0x%08X", j, ammoForm->keywordForm.keywords[j]->formID);
+				_MESSAGE("          %i: 0x%08X (%s)", j, ammoForm->keywordForm.keywords[j]->formID, ammoForm->keywordForm.keywords[j]->keyword.c_str());
 			}
 		}
 	}
@@ -1678,7 +1678,7 @@ void SAKEData::LoadOverrides_Misc(TESObjectMISC * miscForm, json & miscOverride,
 		if ((iDebugLevel == 2) && (miscForm->keywordForm.numKeywords != 0)) {
 			_MESSAGE("        Final Keywords list:");
 			for (UInt32 j = 0; j < miscForm->keywordForm.numKeywords; j++) {
-				_MESSAGE("          %i: 0x%08X", j, miscForm->keywordForm.keywords[j]->formID);
+				_MESSAGE("          %i: 0x%08X (%s)", j, miscForm->keywordForm.keywords[j]->formID, miscForm->keywordForm.keywords[j]->keyword.c_str());
 			}
 		}
 	}
@@ -1922,7 +1922,7 @@ void SAKEData::LoadOverrides_Ingestible(AlchemyItem * alchForm, json & alchOverr
 		if ((iDebugLevel == 2) && (alchForm->keywordForm.numKeywords != 0)) {
 			_MESSAGE("        Final Keywords list:");
 			for (UInt32 j = 0; j < alchForm->keywordForm.numKeywords; j++) {
-				_MESSAGE("          %i: 0x%08X", j, alchForm->keywordForm.keywords[j]->formID);
+				_MESSAGE("          %i: 0x%08X (%s)", j, alchForm->keywordForm.keywords[j]->formID, alchForm->keywordForm.keywords[j]->keyword.c_str());
 			}
 		}
 	}

@@ -31,8 +31,9 @@ namespace SAKEFileReader
 		json otObject;
 		std::ifstream otFile(jsonPath.c_str());
 		otFile >> otObject;
+		otFile.close();
+
 		if (otObject.is_null() || otObject.empty()) {
-			otFile.close();
 			return 3;
 		}
 		
@@ -49,8 +50,6 @@ namespace SAKEFileReader
 				}
 			}
 			if (!bHasReqs) {
-				otObject.clear();
-				otFile.close();
 				return 0;
 			}
 		}
@@ -62,15 +61,11 @@ namespace SAKEFileReader
 		if (iPassCount == 0) {
 			// pass 0 - Race Overrides
 			if (otObject["raceOverrides"].is_null()) {
-				otObject.clear();
-				otFile.close();
 				_MESSAGE("    INFO: Skipping file during first pass.");
 				return 5;
 			}
 			else {
 				if (otObject["raceOverrides"].empty() || !otObject["raceOverrides"].is_array()) {
-					otObject.clear();
-					otFile.close();
 					return 1;
 				}
 				for (json::iterator itOverride = otObject["raceOverrides"].begin(); itOverride != otObject["raceOverrides"].end(); ++itOverride) {
@@ -95,14 +90,10 @@ namespace SAKEFileReader
 			}
 
 			if (otObject["overrides"].is_null()) {
-				otObject.clear();
-				otFile.close();
 				return 2;
 			}
 			else {
 				if (otObject["overrides"].empty() || !otObject["overrides"].is_array()) {
-					otObject.clear();
-					otFile.close();
 					return 1;
 				}
 				for (json::iterator itOverride = otObject["overrides"].begin(); itOverride != otObject["overrides"].end(); ++itOverride) {
@@ -157,14 +148,10 @@ namespace SAKEFileReader
 			// pass 2 - name prefixes
 			if (otObject["namePrefixes"].is_null()) {
 				_MESSAGE("    INFO: No Name Prefixes found.");
-				otObject.clear();
-				otFile.close();
 				return 5;
 			}
 			if (otObject["namePrefixes"].empty() || !otObject["namePrefixes"].is_array()) {
 				_MESSAGE("    INFO: Name Prefixes found but empty.");
-				otObject.clear();
-				otFile.close();
 				return 5;
 			}
 
@@ -185,8 +172,6 @@ namespace SAKEFileReader
 			
 		}
 
-		otObject.clear();
-		otFile.close();
 		return -1;
 	}
 
@@ -251,6 +236,8 @@ namespace SAKEFileReader
 		json profileObject;
 		std::ifstream profileFile(curProfile.c_str());
 		profileFile >> profileObject;
+		profileFile.close();
+
 		if (profileObject.is_null() || profileObject["active"].is_null()) {
 			return 2;
 		}
@@ -267,9 +254,6 @@ namespace SAKEFileReader
 		for (; iPassCount < 3; iPassCount++) {
 			_MESSAGE("\n\nStarting pass %i", iPassCount);
 			for (json::iterator itDir = overridesList.begin(); itDir != overridesList.end(); ++itDir) {
-				includeObj.clear();
-				excludeObj.clear();
-				templateObj.clear();
 				templateObj = *itDir;
 
 				if (templateObj["name"].is_null()) {
@@ -351,12 +335,13 @@ namespace SAKEFileReader
 				}
 			}
 		}
-		profileObject.clear();
-		profileFile.close();
 		return -1;
 	}
 
 }
+
+
+
 
 
 // temp form decoding + dev stuff
@@ -428,10 +413,10 @@ void SAKEFileReader::LoadGameData()
 	json mainConfig;
 	std::ifstream cf(".\\Data\\F4SE\\Plugins\\SAKE.json");
 	cf >> mainConfig;
+	cf.close();
 
 	if (mainConfig.is_null()) {
 		_MESSAGE("\n\nERROR: Unable to load main config file!");
-		cf.close();
 		return;
 	}
 
@@ -475,10 +460,6 @@ void SAKEFileReader::LoadGameData()
 			break;
 	}
 	
-	mainConfig.clear();
-	cf.close();
-
-	
-	TestingStuff();
+	//TestingStuff();
 }
 

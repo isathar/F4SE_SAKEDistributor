@@ -102,7 +102,10 @@ TESForm * SAKEUtilities::GetFormFromIdentifier(const std::string & formIdentifie
 // returns true if the passed mod is loaded
 bool SAKEUtilities::IsModLoaded(const std::string & modName)
 {
-	return ((*g_dataHandler)->GetLoadedModIndex(modName.c_str()) != (UInt8)-1);
+	if ((*g_dataHandler)->GetLoadedModIndex(modName.c_str()) != (UInt8)-1) {
+		return true;
+	}
+	return ((*g_dataHandler)->GetLoadedLightModIndex(modName.c_str()) != (UInt16)-1);
 }
 
 

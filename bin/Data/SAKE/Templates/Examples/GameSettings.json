@@ -31,8 +31,10 @@
 		
 		{"name": "fWorkshopExperienceBase", 		"valueFloat": 1.0, "default": 2.0},
 		{"name": "fWorkshopExperienceMax", 			"valueFloat": 10.0, "default": 25.0},
-		{"name": "fWorkshopRepairComponentMult", 	"valueFloat": 0.2, "default": 0.1}
+		{"name": "fWorkshopRepairComponentMult", 	"valueFloat": 0.2, "default": 0.1},
 		
+		{"name": "fSandboxCylinderTop", 			"valueFloat": 576.0, "default": 150.0},
+		{"name": "fSandboxCylinderBottom", 			"valueFloat": -576.0, "default": -50.0}
 	]
 	
 }
