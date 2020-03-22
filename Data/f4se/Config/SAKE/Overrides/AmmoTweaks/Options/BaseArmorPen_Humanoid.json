@@ -1,0 +1,31 @@
+{
+	"menuName": "AmmoTweaks - Unarmed DR Modifiers - Humanoid Races",
+	
+	"comment": ["AV - Unarmed Target DR Mult - AmmoTweaks.esm|1C30"],
+	
+	"requirements": ["AmmoTweaks.esm"],
+	
+	"raceOverrides": [
+		{"comment": ["HumanRace"], "formID": "Fallout4.esm|13746",
+			"actorValues": [{"formID": "AmmoTweaks.esm|1C30", "add": 2.0}]
+		},
+		{"comment": ["GhoulRace"], "formID": "Fallout4.esm|EAFB6",
+			"actorValues": [{"formID": "AmmoTweaks.esm|1C30", "add": 2.0}]
+		},
+		{"comment": ["PowerArmorRace"], "formID": "Fallout4.esm|1D31E",
+			"actorValues": [{"formID": "AmmoTweaks.esm|1C30", "add": 0.75}]
+		},
+		{"comment": ["SuperMutantRace"], "formID": "Fallout4.esm|1A009",
+			"actorValues": [{"formID": "AmmoTweaks.esm|1C30", "add": 1.0}]
+		},
+		{"comment": ["SynthGen1Race"], "formID": "Fallout4.esm|E8D09",
+			"actorValues": [{"formID": "AmmoTweaks.esm|1C30", "add": 0.75}]
+		},
+		{"comment": ["SynthGen2Race"], "formID": "Fallout4.esm|10BD65",
+			"actorValues": [{"formID": "AmmoTweaks.esm|1C30", "add": 1.5}]
+		},
+		{"comment": ["SynthGen2RaceValentine"], "formID": "Fallout4.esm|2261A4",
+			"actorValues": [{"formID": "AmmoTweaks.esm|1C30", "add": 1.5}]
+		}
+	]
+}

@@ -1,0 +1,166 @@
+{
+	"menuName": "AmmoTweaks - Charge Based Ammo",
+	"menuDescription": "Makes energy ammo types charge-based like Fusion Cores and edits their Leveled Lists.",
+	
+	"requirements": ["AmmoTweaks.esm"],
+	
+	"overrides": [
+		{"comment": ["Ammo - AmmoFusionCell"],
+			"formID": "Fallout4.esm|C1897",
+			"weight": 0.9, "health": 32, "value": 50
+		},
+		{"comment": ["Ammo - at_Ammo_FusionCell_Bulk"],
+			"formID": "AmmoTweaks.esm|1380",
+			"weight": 0.9, "health": 24, "value": 30
+		},
+		{"comment": ["Ammo - at_Ammo_FusionCell_OPT"],
+			"formID": "AmmoTweaks.esm|815",
+			"weight": 0.8, "health": 40, "value": 60
+		},
+		{"comment": ["Ammo - at_Ammo_FusionCell_OC"],
+			"formID": "AmmoTweaks.esm|822",
+			"weight": 1.0, "health": 48, "value": 80
+		},
+		
+		{"comment": ["Ammo - at_Ammo_SmallEnergyCell_Std"],
+			"formID": "AmmoTweaks.esm|6169",
+			"weight": 0.5, "health": 16, "value": 30
+		},
+		{"comment": ["Ammo - at_Ammo_SmallEnergyCell_Bulk"],
+			"formID": "AmmoTweaks.esm|616D",
+			"weight": 0.5, "health": 12, "value": 20
+		},
+		{"comment": ["Ammo - at_Ammo_SmallEnergyCell_OPT"],
+			"formID": "AmmoTweaks.esm|616C",
+			"weight": 0.4, "health": 24, "value": 40
+		},
+		{"comment": ["Ammo - at_Ammo_SmallEnergyCell_OC"],
+			"formID": "AmmoTweaks.esm|616B",
+			"weight": 0.6, "health": 32, "value": 50
+		},
+		
+		{"comment": ["Ammo - AmmoPlasmaCartridge"],
+			"formID": "Fallout4.esm|1DBB7",
+			"weight": 1.2, "health": 24, "value": 60
+		},
+		
+		{"comment": ["Ammo - AmmoGammaCell"],
+			"formID": "Fallout4.esm|DF279",
+			"weight": 0.25, "health": 8, "value": 40
+		},
+		
+		{"comment": ["Ammo - AmmoAlienBlaster"],
+			"formID": "Fallout4.esm|1025AA",
+			"weight": 0.1, "health": 42, "value": 84
+		},
+		
+		{"comment": ["Ammo - AmmoFlamerFuel"],
+			"formID": "Fallout4.esm|CAC78",
+			"weight": 2.0, "health": 100, "value": 50
+		},
+		
+		{"comment": ["Ammo - AmmoCryoCell"],
+			"formID": "Fallout4.esm|18ABE2",
+			"weight": 0.5, "health": 25, "value": 60
+		},
+		
+		{"comment": ["Ammo - Ammo2mmEC"],
+			"formID": "Fallout4.esm|18ABDF",
+			"weight": 0.8, "health": 5, "value": 25
+		},
+		
+		{"comment": ["LeveledItem - LL_at_AmmoLoot_2mmEC"],
+			"formID": "AmmoTweaks.esm|E57",
+			"clear": true,
+			"add": [
+				{"formID": "Fallout4.esm|18ABDF", "level": 1, "count": 1, "comment": ["Ammo2mmEC"]},
+				{"formID": "Fallout4.esm|18ABDF", "level": 26, "count": 2, "comment": ["Ammo2mmEC"]},
+				{"formID": "AmmoTweaks.esm|819", "level": 26, "count": 1, "comment": ["at_Ammo_2mmEC_RAD"]},
+				{"formID": "Fallout4.esm|18ABDF", "level": 32, "count": 1, "comment": ["Ammo2mmEC"]},
+				{"formID": "Fallout4.esm|18ABDF", "level": 32, "count": 2, "comment": ["Ammo2mmEC"]},
+				{"formID": "AmmoTweaks.esm|A33", "level": 32, "count": 1, "comment": ["at_Ammo_2mmEC_Charged"]}
+			]
+		},
+		{"comment": ["LeveledItem - LL_at_AmmoLoot_AlienCell"],
+			"formID": "AmmoTweaks.esm|EAB",
+			"clear": true,
+			"add": [{"formID": "Fallout4.esm|1025AA", "level": 1, "count": 8, "comment": ["AmmoAlienBlaster"]}]
+		},
+		{"comment": ["LeveledItem - LL_at_AmmoLoot_CryoCell"],
+			"formID": "AmmoTweaks.esm|EB3",
+			"clear": true,
+			"add": [
+				{"formID": "Fallout4.esm|18ABE2", "level": 1, "count": 1, "comment": ["AmmoCryoCell"]},
+				{"formID": "Fallout4.esm|18ABE2", "level": 12, "count": 2, "comment": ["AmmoCryoCell"]},
+				{"formID": "AmmoTweaks.esm|81E", "level": 12, "count": 1, "comment": ["at_Ammo_CryoCell_Unstable"]},
+				{"formID": "Fallout4.esm|18ABE2", "level": 16, "count": 2, "comment": ["AmmoCryoCell"]},
+				{"formID": "AmmoTweaks.esm|81E", "level": 16, "count": 2, "comment": ["at_Ammo_CryoCell_Unstable"]},
+				{"formID": "AmmoTweaks.esm|81F", "level": 16, "count": 1, "comment": ["at_Ammo_CryoCell_OPT"]}
+			]
+		},
+		{"comment": ["LeveledItem - LL_at_AmmoLoot_FlamerFuel"],
+			"formID": "AmmoTweaks.esm|EBA",
+			"clear": true,
+			"add": [
+				{"formID": "Fallout4.esm|CAC78", "level": 1, "count": 1, "comment": ["AmmoFlamerFuel"]},
+				{"formID": "Fallout4.esm|CAC78", "level": 12, "count": 1, "comment": ["AmmoFlamerFuel"]},
+				{"formID": "Fallout4.esm|CAC78", "level": 12, "count": 2, "comment": ["AmmoFlamerFuel"]},
+				{"formID": "AmmoTweaks.esm|822", "level": 12, "count": 1, "comment": ["at_Ammo_FlamerFuel_HomeMade"]},
+				{"formID": "Fallout4.esm|CAC78", "level": 20, "count": 2, "comment": ["AmmoFlamerFuel"]},
+				{"formID": "AmmoTweaks.esm|822", "level": 20, "count": 2, "comment": ["at_Ammo_FlamerFuel_HomeMade"]},
+				{"formID": "AmmoTweaks.esm|823", "level": 20, "count": 1, "comment": ["at_Ammo_FlamerFuel_Napalm"]}
+			]
+		},
+		{"comment": ["LeveledItem - LL_at_AmmoLoot_FusionCell"],
+			"formID": "AmmoTweaks.esm|EBF",
+			"clear": true,
+			"add": [
+				{"formID": "Fallout4.esm|C1897", "level": 1, "count": 1, "comment": ["AmmoFusionCell"]},
+				{"formID": "Fallout4.esm|C1897", "level": 12, "count": 1, "comment": ["AmmoFusionCell"]},
+				{"formID": "AmmoTweaks.esm|815", "level": 12, "count": 1, "comment": ["at_Ammo_FusionCell_OPT"]},
+				{"formID": "AmmoTweaks.esm|1380", "level": 12, "count": 2, "comment": ["at_Ammo_FusionCell_Bulk"]},
+				{"formID": "Fallout4.esm|C1897", "level": 24, "count": 2, "comment": ["AmmoFusionCell"]},
+				{"formID": "AmmoTweaks.esm|822", "level": 24, "count": 1, "comment": ["at_Ammo_FusionCell_OC"]},
+				{"formID": "AmmoTweaks.esm|1380", "level": 24, "count": 3, "comment": ["at_Ammo_FusionCell_Bulk"]}
+			]
+		},
+		{"comment": ["LeveledItem - LL_at_AmmoLoot_GammaCell"],
+			"formID": "AmmoTweaks.esm|EC3",
+			"clear": true,
+			"add": [
+				{"formID": "Fallout4.esm|DF279", "level": 1, "count": 1, "comment": ["AmmoGammaCell"]},
+				{"formID": "Fallout4.esm|DF279", "level": 12, "count": 2, "comment": ["AmmoGammaCell"]},
+				{"formID": "AmmoTweaks.esm|824", "level": 12, "count": 1, "comment": ["at_Ammo_GammaCell_HY"]},
+				{"formID": "Fallout4.esm|DF279", "level": 18, "count": 2, "comment": ["AmmoGammaCell"]},
+				{"formID": "AmmoTweaks.esm|824", "level": 18, "count": 2, "comment": ["at_Ammo_GammaCell_HY"]},
+				{"formID": "AmmoTweaks.esm|825", "level": 18, "count": 1, "comment": ["at_Ammo_GammaCell_OPT"]}
+			]
+		},
+		{"comment": ["LeveledItem - LL_at_AmmoLoot_PlasmaCart"],
+			"formID": "AmmoTweaks.esm|ED7",
+			"clear": true,
+			"add": [
+				{"formID": "Fallout4.esm|1DBB7", "level": 1, "count": 1, "comment": ["AmmoPlasmaCartridge"]},
+				{"formID": "Fallout4.esm|1DBB7", "level": 12, "count": 2, "comment": ["AmmoPlasmaCartridge"]},
+				{"formID": "AmmoTweaks.esm|828", "level": 12, "count": 1, "comment": ["at_Ammo_PlasmaCart_Unstable"]},
+				{"formID": "Fallout4.esm|1DBB7", "level": 28, "count": 2, "comment": ["AmmoPlasmaCartridge"]},
+				{"formID": "AmmoTweaks.esm|828", "level": 28, "count": 2, "comment": ["at_Ammo_PlasmaCart_Unstable"]},
+				{"formID": "AmmoTweaks.esm|829", "level": 28, "count": 1, "comment": ["at_Ammo_PlasmaCart_Charged"]}
+			]
+		},
+		{"comment": ["LeveledItem - LL_at_AmmoLoot_SmallEnergyCell"],
+			"formID": "AmmoTweaks.esm|70F5",
+			"clear": true,
+			"add": [
+				{"formID": "AmmoTweaks.esm|616D", "level": 1, "count": 1, "comment": ["at_Ammo_SmallEnergyCell_Bulk"]},
+				{"formID": "AmmoTweaks.esm|6169", "level": 1, "count": 1, "comment": ["at_Ammo_SmallEnergyCell_Std"]},
+				{"formID": "AmmoTweaks.esm|616D", "level": 18, "count": 2, "comment": ["at_Ammo_SmallEnergyCell_Bulk"]},
+				{"formID": "AmmoTweaks.esm|6169", "level": 18, "count": 2, "comment": ["at_Ammo_SmallEnergyCell_Std"]},
+				{"formID": "AmmoTweaks.esm|616C", "level": 18, "count": 1, "comment": ["at_Ammo_SmallEnergyCell_OPT"]},
+				{"formID": "AmmoTweaks.esm|616D", "level": 24, "count": 2, "comment": ["at_Ammo_SmallEnergyCell_Bulk"]},
+				{"formID": "AmmoTweaks.esm|6169", "level": 24, "count": 2, "comment": ["at_Ammo_SmallEnergyCell_Std"]},
+				{"formID": "AmmoTweaks.esm|616B", "level": 24, "count": 1, "comment": ["at_Ammo_SmallEnergyCell_OC"]}
+			]
+		}
+	]
+}

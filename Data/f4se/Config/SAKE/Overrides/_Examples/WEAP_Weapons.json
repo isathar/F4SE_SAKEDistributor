@@ -1,0 +1,131 @@
+{
+	"menuName": "Weapon Test",
+	"menuDescription": "Weapon override examples",
+	
+	"overrides": [
+		{
+			"comment": [
+				"Weapon (10mm Pistol)",
+				"- Changes the base name to N99 Pistol, increases its value, and enables NPCs depleting its ammo"
+			],
+			"formID": "Fallout4.esm|4822",
+			"name": "N99",
+			"value": 250,
+			"flags": {"npcsUseAmmo": true}
+		},
+		
+		{
+			"comment": [
+				"Weapon (.44 Revolver)",
+				"- Removes its Instance Naming Rules, changes its name to Revolver, and increases its bash damage"
+			],
+			"formID": "Fallout4.esm|CE97D",
+			"name": "Revolver",
+			"instanceNamingRules": "none",
+			"secondaryDamage": 25.0
+		},
+		
+		{
+			"comment": ["Weapon (Broadsider) - Decreases impact damage and makes it use Mininukes"],
+			"formID": "Fallout4.esm|FD11B",
+			"damage": 10,
+			"ammo": "Fallout4.esm|E6B2E",
+			"npcAmmoLeveledList": "Fallout4.esm|1C6C0F"
+		},
+		
+		{
+			"comment": ["Weapon (Assault Rifle) - Decreases weight and makes random edits to its AimModel"],
+			"formID": "Fallout4.esm|463F",
+			"weight": 5.00,
+			"aimModel": {
+				"formID": "none",
+				"coneOfFire": {
+					"minAngle": 1.0,
+					"maxAngle": 14.0,
+					"increasePerShot": 0.7,
+					"decreasePerSec": 5.0,
+					"decreaseDelayMS": 150,
+					"sneakMult": 0.8,
+					"ironSightsMult": 0.4
+				},
+				"recoil": {
+					"arcDegrees": 20.0,
+					"arcRotate": 180.0,
+					"diminishSpringForce": 2.0,
+					"diminishSightsMult": 0.5,
+					"maxPerShot": 3.5,
+					"minPerShot": 1.5,
+					"hipMult": 2.0
+				},
+				"runawayRecoilShots": 3,
+				"baseStability": 0.5
+			}
+		},
+		
+		{
+			"comment": [
+				"Weapon (Boxing Gloves)",
+				"- Adds 10 fire damage, increases AP cost, and makes hit targets catch on fire"
+			],
+			"formID": "Fallout4.esm|16498F",
+			"apCost": 35.0,
+			"damageTypes": [{"formID": "Fallout4.esm|60A82", "set": 5, "add": 5, "comment": ["dtFire"]}],
+			"enchantments": [{"formID": "Fallout4.esm|3F488", "comment": ["dtFireEnchFlameChanceAlways"]}]
+		},
+		
+		{
+			"comment": [
+				"Weapon (Hunting Rifle)",
+				"- Increases range, out of range damage, critical damage and critical charge bonus, adds Unscrappable keyword"
+			],
+			"formID": "Fallout4.esm|4F46A",
+			"rangeMin": 10000.0,
+			"rangeMax": 20000.0,
+			"outOfRangeMult": 0.75,
+			"critChargeMult": 4.0,
+			"critDamageMult": 8.0,
+			"keywords": {"add": ["Fallout4.esm|1CC46A"]}
+		},
+		
+		{
+			"comment": [
+				"Weapon (Combat Rifle)",
+				"- Decreases attack delay, gives it 10 percent base armor penetration, and changes its ammo to 5.56"
+			],
+			"formID": "Fallout4.esm|DF42E",
+			"ammo": "Fallout4.esm|1F278",
+			"npcAmmoLeveledList": "Fallout4.esm|67385",
+			"attackDelay": 0.1667,
+			"actorValues": [{"formID": "Fallout4.esm|97341", "set": 5, "add": 5, "comment": ["ArmorPenetration"]}],
+			"enchantments": [{"formID": "Fallout4.esm|1F4425", "comment": ["enchModArmorPenetration"]}]
+		},
+		
+		{
+			"comment": [
+				"Weapon (Submachine Gun)",
+				"- Increases animation/firing speed",
+				"(NOTE - this triggers the looping firing sound bug because the s_30_Auto keyword isn't removed from its mods)"
+			],
+			"formID": "Fallout4.esm|15B043",
+			"speedMult": 1.8
+		},
+		
+		{
+			"comment": [
+				"Weapon (Pipe Gun)",
+				"- Changes projectile to Bloatfly maggots and its impacts to explosion scorch marks"
+			],
+			"formID": "Fallout4.esm|24F55",
+			"projectileOverride": "Fallout4.esm|314EB",
+			"impactDataSet": "Fallout4.esm|1F5B0"
+		},
+		
+		{
+			"comment": ["Weapon (Pool Cue) - Increases reach and stagger amount"],
+			"formID": "Fallout4.esm|FA3E8",
+			"reach": 1.2,
+			"stagger": 3
+		}
+		
+	]
+}

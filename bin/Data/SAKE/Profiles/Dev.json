@@ -1,8 +1,0 @@
-{
-	"name": "Dev",
-	"description": "Testing configuration.",
-	
-	"active": [
-		{"name": "Examples"}
-	]
-}

@@ -1,0 +1,133 @@
+{
+	"menuName": "Damage Thresholds - Races",
+	"menuDescription": "Distributes ActorValues for DT by Race.",
+	
+	"requirements": ["F4TweaksFramework.esm"],
+	
+	"raceOverrides": [
+		{"comment": ["SuperMutantRace"], "formID": "Fallout4.esm|1A009",
+			"actorValues": [
+				{"formID": "F4TweaksFramework.esm|814", "add": 16.0, "comment": ["Physical DT"]},
+				{"formID": "F4TweaksFramework.esm|80F", "add": 12.0, "comment": ["Energy DT"]},
+				{"formID": "F4TweaksFramework.esm|80E", "add": 16.0, "comment": ["Electrical DT"]}
+			]
+		},
+		{"comment": ["SupermutantBehemothRace"], "formID": "Fallout4.esm|BB7D9",
+			"actorValues": [
+				{"formID": "F4TweaksFramework.esm|814", "add": 36.0, "comment": ["Physical DT"]},
+				{"formID": "F4TweaksFramework.esm|80F", "add": 28.0, "comment": ["Energy DT"]},
+				{"formID": "F4TweaksFramework.esm|80E", "add": 32.0, "comment": ["Electrical DT"]}
+			]
+		},
+		{"comment": ["FEVHoundRace"], "formID": "Fallout4.esm|90C33",
+			"actorValues": [
+				{"formID": "F4TweaksFramework.esm|814", "add": 8.0, "comment": ["Physical DT"]},
+				{"formID": "F4TweaksFramework.esm|80F", "add": 6.0, "comment": ["Energy DT"]},
+				{"formID": "F4TweaksFramework.esm|80E", "add": 8.0, "comment": ["Electrical DT"]}
+			]
+		},
+		
+		{"comment": ["DeathclawRace"], "formID": "Fallout4.esm|1DB4A",
+			"actorValues": [
+				{"formID": "F4TweaksFramework.esm|814", "add": 26.0, "comment": ["Physical DT"]},
+				{"formID": "F4TweaksFramework.esm|80F", "add": 18.0, "comment": ["Energy DT"]},
+				{"formID": "F4TweaksFramework.esm|811", "add": 16.0, "comment": ["Fire DT"]},
+				{"formID": "F4TweaksFramework.esm|80E", "add": 20.0, "comment": ["Electrical DT"]}
+			]
+		},
+		
+		{"comment": ["RadScorpionRace"], "formID": "Fallout4.esm|636AB",
+			"actorValues": [
+				{"formID": "F4TweaksFramework.esm|814", "add": 12.0, "comment": ["Physical DT"]},
+				{"formID": "F4TweaksFramework.esm|80F", "add": 18.0, "comment": ["Energy DT"]},
+				{"formID": "F4TweaksFramework.esm|811", "add": 8.0, "comment": ["Fire DT"]},
+				{"formID": "F4TweaksFramework.esm|80E", "add": 20.0, "comment": ["Electrical DT"]}
+			]
+		},
+		
+		{"comment": ["VertibirdRace"], "formID": "Fallout4.esm|D77E3",
+			"actorValues": [
+				{"formID": "F4TweaksFramework.esm|814", "add": 60.0, "comment": ["Physical DT"]},
+				{"formID": "F4TweaksFramework.esm|80F", "add": 48.0, "comment": ["Energy DT"]},
+				{"formID": "F4TweaksFramework.esm|811", "add": 60.0, "comment": ["Fire DT"]},
+				{"formID": "F4TweaksFramework.esm|80E", "add": 32.0, "comment": ["Electrical DT"]}
+			]
+		},
+		
+		{"comment": ["MirelurkQueenRace"], "formID": "Fallout4.esm|E12A6",
+			"actorValues": [
+				{"formID": "F4TweaksFramework.esm|814", "add": 42.0, "comment": ["Physical DT"]},
+				{"formID": "F4TweaksFramework.esm|80F", "add": 34.0, "comment": ["Energy DT"]},
+				{"formID": "F4TweaksFramework.esm|811", "add": 18.0, "comment": ["Fire DT"]},
+				{"formID": "F4TweaksFramework.esm|80E", "add": 28.0, "comment": ["Electrical DT"]}
+			]
+		},
+		
+		{"comment": ["TurretBubbleRace"], "formID": "Fallout4.esm|B28D3",
+			"actorValues": [
+				{"formID": "F4TweaksFramework.esm|814", "add": 12.0, "comment": ["Physical DT"]},
+				{"formID": "F4TweaksFramework.esm|80F", "add": 10.0, "comment": ["Energy DT"]},
+				{"formID": "F4TweaksFramework.esm|811", "add": 16.0, "comment": ["Fire DT"]},
+				{"formID": "F4TweaksFramework.esm|80E", "add": 6.0, "comment": ["Electrical DT"]}
+			]
+		},
+		{"comment": ["TurretTripodRace"], "formID": "Fallout4.esm|B1F08",
+			"actorValues": [
+				{"formID": "F4TweaksFramework.esm|814", "add": 12.0, "comment": ["Physical DT"]},
+				{"formID": "F4TweaksFramework.esm|80F", "add": 10.0, "comment": ["Energy DT"]},
+				{"formID": "F4TweaksFramework.esm|811", "add": 16.0, "comment": ["Fire DT"]},
+				{"formID": "F4TweaksFramework.esm|80E", "add": 6.0, "comment": ["Electrical DT"]}
+			]
+		},
+		{"comment": ["TurretWorkshopRace"], "formID": "Fallout4.esm|1A6D64",
+			"actorValues": [
+				{"formID": "F4TweaksFramework.esm|814", "add": 16.0, "comment": ["Physical DT"]},
+				{"formID": "F4TweaksFramework.esm|80F", "add": 12.0, "comment": ["Energy DT"]},
+				{"formID": "F4TweaksFramework.esm|811", "add": 18.0, "comment": ["Fire DT"]},
+				{"formID": "F4TweaksFramework.esm|80E", "add": 8.0, "comment": ["Electrical DT"]}
+			]
+		},
+		
+		{"comment": ["EyeBotRace"], "formID": "Fallout4.esm|A563A",
+			"actorValues": [
+				{"formID": "F4TweaksFramework.esm|814", "add": 8.0, "comment": ["Physical DT"]},
+				{"formID": "F4TweaksFramework.esm|80F", "add": 12.0, "comment": ["Energy DT"]},
+				{"formID": "F4TweaksFramework.esm|811", "add": 12.0, "comment": ["Fire DT"]},
+				{"formID": "F4TweaksFramework.esm|80E", "add": 4.0, "comment": ["Electrical DT"]}
+			]
+		},
+		{"comment": ["HandyRace"], "formID": "Fallout4.esm|359F4",
+			"actorValues": [
+				{"formID": "F4TweaksFramework.esm|814", "add": 12.0, "comment": ["Physical DT"]},
+				{"formID": "F4TweaksFramework.esm|80F", "add": 16.0, "comment": ["Energy DT"]},
+				{"formID": "F4TweaksFramework.esm|811", "add": 16.0, "comment": ["Fire DT"]},
+				{"formID": "F4TweaksFramework.esm|80E", "add": 6.0, "comment": ["Electrical DT"]}
+			]
+		},
+		{"comment": ["ProtectronRace"], "formID": "Fallout4.esm|DFB33",
+			"actorValues": [
+				{"formID": "F4TweaksFramework.esm|814", "add": 18.0, "comment": ["Physical DT"]},
+				{"formID": "F4TweaksFramework.esm|80F", "add": 20.0, "comment": ["Energy DT"]},
+				{"formID": "F4TweaksFramework.esm|811", "add": 20.0, "comment": ["Fire DT"]},
+				{"formID": "F4TweaksFramework.esm|80E", "add": 8.0, "comment": ["Electrical DT"]}
+			]
+		},
+		{"comment": ["AssaultronRace"], "formID": "Fallout4.esm|D8417",
+			"actorValues": [
+				{"formID": "F4TweaksFramework.esm|814", "add": 22.0, "comment": ["Physical DT"]},
+				{"formID": "F4TweaksFramework.esm|80F", "add": 26.0, "comment": ["Energy DT"]},
+				{"formID": "F4TweaksFramework.esm|811", "add": 26.0, "comment": ["Fire DT"]},
+				{"formID": "F4TweaksFramework.esm|80E", "add": 10.0, "comment": ["Electrical DT"]}
+			]
+		},
+		{"comment": ["SentryBotRace"], "formID": "Fallout4.esm|AE0B7",
+			"actorValues": [
+				{"formID": "F4TweaksFramework.esm|814", "add": 28.0, "comment": ["Physical DT"]},
+				{"formID": "F4TweaksFramework.esm|80F", "add": 32.0, "comment": ["Energy DT"]},
+				{"formID": "F4TweaksFramework.esm|811", "add": 32.0, "comment": ["Fire DT"]},
+				{"formID": "F4TweaksFramework.esm|80E", "add": 12.0, "comment": ["Electrical DT"]}
+			]
+		}
+		
+	]
+}

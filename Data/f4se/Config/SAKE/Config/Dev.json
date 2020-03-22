@@ -1,0 +1,21 @@
+{
+	"name": "Dev/Testing Overrides",
+	
+	"active": [
+		{"name": "DamageTweaks\\DamageThreshold", "includeIf": ["F4TweaksFramework.esm"]},
+		
+		{"name": "DamageTweaks\\WeaponDmgTypeOverrides.json", "includeIf": ["F4TweaksFramework.esm"]},
+		
+		{"name": "DamageTweaks\\ArmorCondition", "includeIf": ["F4TweaksFramework.esm"]},
+		{"name": "DamageTweaks\\ArmorCondition\\Enable\\AllCharacters.json", "includeIf": ["F4TweaksFramework.esm"]},
+		
+		{"name": "DamageTweaks\\CritTableChecker.json", "includeIf": ["F4TweaksFramework.esm"]},
+		{"name": "DamageTweaks\\UnarmedArmorPen.json", "includeIf": ["F4TweaksFramework.esm"]},
+		
+		{"name": "AmmoTweaks\\AddSpell_WeaponManager.json", "includeIf": ["F4TweaksFramework.esm", "AmmoTweaks.esm"]},
+		
+		{"name": "_Examples\\KEYM_Keys.json"},
+		{"name": "_Examples\\_NamePrefixes.json"}
+		
+	]
+}

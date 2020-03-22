@@ -1,0 +1,70 @@
+{
+	"menuName": "Armor Condition - Sets",
+	"menuDescription": "Distributes armor health.",
+	
+	"overrides": [
+		{"comment": ["Armor_Leather_Torso"], "formID": "Fallout4.esm|7B9C6", "health": 70},
+		{"comment": ["Armor_Leather_ArmLeft"], "formID": "Fallout4.esm|7B9C7", "health": 40},
+		{"comment": ["Armor_Leather_ArmRight"], "formID": "Fallout4.esm|7B9C3", "health": 40},
+		{"comment": ["Armor_Leather_LegLeft"], "formID": "Fallout4.esm|7B9C4", "health": 40},
+		{"comment": ["Armor_Leather_LegRight"], "formID": "Fallout4.esm|7B9C5", "health": 40},
+		
+		{"comment": ["Armor_RaiderMod_Torso"], "formID": "Fallout4.esm|18E415", "health": 60},
+		{"comment": ["Armor_RaiderMod_ArmLeft"], "formID": "Fallout4.esm|18E411", "health": 30},
+		{"comment": ["Armor_RaiderMod_ArmRight"], "formID": "Fallout4.esm|18E413", "health": 30},
+		{"comment": ["Armor_RaiderMod_LegLeft"], "formID": "Fallout4.esm|18E40F", "health": 30},
+		{"comment": ["Armor_RaiderMod_LegRight"], "formID": "Fallout4.esm|18E40D", "health": 30},
+		
+		{"comment": ["Armor_Combat_Torso"], "formID": "Fallout4.esm|11D3C3", "health": 90},
+		{"comment": ["Armor_Combat_ArmLeft"], "formID": "Fallout4.esm|11D3C7", "health": 50},
+		{"comment": ["Armor_Combat_ArmRight"], "formID": "Fallout4.esm|11D3C6", "health": 50},
+		{"comment": ["Armor_Combat_LegLeft"], "formID": "Fallout4.esm|11D3C5", "health": 50},
+		{"comment": ["Armor_Combat_LegRight"], "formID": "Fallout4.esm|11D3C4", "health": 30},
+		
+		{"comment": ["Armor_Metal_Helmet"], "formID": "Fallout4.esm|787D3", "health": 80},
+		{"comment": ["Armor_Metal_Torso"], "formID": "Fallout4.esm|536C4", "health": 120},
+		{"comment": ["Armor_Metal_ArmLeft"], "formID": "Fallout4.esm|4B933", "health": 70},
+		{"comment": ["Armor_Metal_ArmRight"], "formID": "Fallout4.esm|536C1", "health": 70},
+		{"comment": ["Armor_Metal_LegLeft"], "formID": "Fallout4.esm|536C2", "health": 70},
+		{"comment": ["Armor_Metal_LegRight"], "formID": "Fallout4.esm|536C3", "health": 70},
+		
+		{"comment": ["Armor_Synth_Torso"], "formID": "Fallout4.esm|187974", "health": 100},
+		{"comment": ["Armor_Synth_ArmLeft"], "formID": "Fallout4.esm|18796C", "health": 60},
+		{"comment": ["Armor_Synth_ArmRight"], "formID": "Fallout4.esm|18796E", "health": 60},
+		{"comment": ["Armor_Synth_LegLeft"], "formID": "Fallout4.esm|187972", "health": 60},
+		{"comment": ["Armor_Synth_LegRight"], "formID": "Fallout4.esm|187970", "health": 60},
+		{"comment": ["Armor_Synth_Helmet_Open"], "formID": "Fallout4.esm|187976", "health": 70},
+		{"comment": ["Armor_Synth_Helmet_Closed"], "formID": "Fallout4.esm|18796A", "health": 70},
+		
+		{"comment": ["Armor_DCGuard_Helmet01"], "formID": "Fallout4.esm|AF0F6", "health": 50},
+		{"comment": ["Armor_DCGuard_Helmet02"], "formID": "Fallout4.esm|AF0F7", "health": 50},
+		{"comment": ["Armor_DCGuard_TorsoArmor"], "formID": "Fallout4.esm|AF0EE", "health": 80},
+		{"comment": ["Armor_DCGuard_LArm"], "formID": "Fallout4.esm|AF0F1", "health": 40},
+		{"comment": ["Armor_DCGuard_RArm"], "formID": "Fallout4.esm|AF0F2", "health": 40},
+		{"comment": ["Armor_DCGuard_LArmLower"], "formID": "Fallout4.esm|AF0EB", "health": 20},
+		{"comment": ["Armor_DCGuard_RArmLower"], "formID": "Fallout4.esm|AF0EC", "health": 20},
+		{"comment": ["Armor_DCGuard_LArmUpper"], "formID": "Fallout4.esm|AF0EA", "health": 20},
+		{"comment": ["Armor_DCGuard_RLArmUpper"], "formID": "Fallout4.esm|AF0ED", "health": 20},
+		
+		{"comment": ["Armor_VaultTecSecurityHelmet"], "formID": "Fallout4.esm|821B6", "health": 50},
+		{"comment": ["Armor_VaultTecSecurityHelmet_Clean"], "formID": "Fallout4.esm|1D8853", "health": 60},
+		{"comment": ["Armor_VaultTecSecurityHelmetCovenant"], "formID": "Fallout4.esm|156C0B", "health": 60},
+		{"comment": ["Armor_VaultTecSecurity111"], "formID": "Fallout4.esm|821B4", "health": 80},
+		{"comment": ["Armor_VaultTecSecurity111_Clean"], "formID": "Fallout4.esm|1D884F", "health": 90},
+		{"comment": ["Armor_VaultTecSecurity81"], "formID": "Fallout4.esm|154F10", "health": 80},
+		{"comment": ["Armor_VaultTecSecurityCovenant"], "formID": "Fallout4.esm|156C0D", "health": 90},
+		
+		{"comment": ["Armor_Vault101_Underwear"], "formID": "Fallout4.esm|976B3", "health": 90},
+		{"comment": ["Armor_Vault101_UnderwearClean"], "formID": "Fallout4.esm|22DA6A", "health": 100},
+		{"comment": ["Armor_Vault111_Underwear"], "formID": "Fallout4.esm|1EED7", "health": 90},
+		{"comment": ["Armor_Vault111Clean_Underwear"], "formID": "Fallout4.esm|976B7", "health": 100},
+		{"comment": ["Armor_Vault114_Underwear"], "formID": "Fallout4.esm|976B5", "health": 90},
+		{"comment": ["Armor_Vault114_UnderwearClean"], "formID": "Fallout4.esm|22DA68", "health": 100},
+		{"comment": ["Armor_Vault75_Underwear"], "formID": "Fallout4.esm|225F7E", "health": 90},
+		{"comment": ["Armor_Vault75_UnderwearClean"], "formID": "Fallout4.esm|22DA67", "health": 100},
+		{"comment": ["Armor_Vault81_Underwear"], "formID": "Fallout4.esm|1103A4", "health": 90},
+		{"comment": ["Armor_Vault81_UnderwearClean"], "formID": "Fallout4.esm|22DA69", "health": 100},
+		{"comment": ["Armor_Vault95_Underwear"], "formID": "Fallout4.esm|22DA73", "health": 90},
+		{"comment": ["Armor_Vault95_UnderwearClean"], "formID": "Fallout4.esm|22DA66", "health": 100}
+	]
+}

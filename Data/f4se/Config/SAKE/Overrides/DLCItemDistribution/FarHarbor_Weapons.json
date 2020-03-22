@@ -1,0 +1,18 @@
+{
+	"menuName": "DLC Item Distribution - Far Harbor - Weapons",
+	
+	"overrides": [
+		{"comment": ["LL_Weapons_Guns_Raider_Long"], "formID": "Fallout4.esm|18DFE3",
+			"add": [{"formID": "DLCCoast.esm|42E71", "level": 18, "count": 1, "comment": ["DLC03_LL_LeverGun"]}]
+		},
+		
+		{"comment": ["LLC_DCShopWeapons"], "formID": "Fallout4.esm|18F651",
+			"add": [{"formID": "DLCCoast.esm|42E71", "level": 16, "count": 1, "comment": ["DLC03_LL_LeverGun"]}]
+		},
+		
+		{"comment": ["LL_Minutemen_Weapons_NonAuto"], "formID": "Fallout4.esm|1BF0B8",
+			"add": [{"formID": "DLCCoast.esm|42E71", "level": 18, "count": 1, "comment": ["DLC03_LL_LeverGun"]}]
+		}
+		
+	]
+}

@@ -1,0 +1,58 @@
+{
+	"menuName": "Armor Penetration/Target DR Mult for Creatures and Unarmed Weapons",
+	"menuDescription": "Distributes ArmorPenetration AV by Race.",
+	
+	"requirements": ["F4TweaksFramework.esm"],
+	
+	"raceOverrides": [
+		{"comment": ["SupermutantBehemothRace"], "formID": "Fallout4.esm|BB7D9",
+			"actorValues": [{"formID": "Fallout4.esm|97341", "add": 50.0}]
+		},
+		{"comment": ["FEVHoundRace"], "formID": "Fallout4.esm|90C33",
+			"actorValues": [{"formID": "Fallout4.esm|97341", "add": -50.0}]
+		},
+		
+		{"comment": ["DeathclawRace"], "formID": "Fallout4.esm|1DB4A",
+			"actorValues": [{"formID": "Fallout4.esm|97341", "add": 50.0}]
+		},
+		
+		{"comment": ["MirelurkQueenRace"], "formID": "Fallout4.esm|E12A6",
+			"actorValues": [{"formID": "Fallout4.esm|97341", "add": 75.0}]
+		},
+		
+		{"comment": ["DogmeatRace"], "formID": "Fallout4.esm|1D698",
+			"actorValues": [{"formID": "Fallout4.esm|97341", "add": -75.0}]
+		},
+		{"comment": ["RaiderDogRace"], "formID": "Fallout4.esm|187AF9",
+			"actorValues": [{"formID": "Fallout4.esm|97341", "add": -75.0}]
+		},
+		{"comment": ["ViciousDogRace"], "formID": "Fallout4.esm|3578A",
+			"actorValues": [{"formID": "Fallout4.esm|97341", "add": -75.0}]
+		},
+		
+		{"comment": ["MoleratRace"], "formID": "Fallout4.esm|1D810",
+			"actorValues": [{"formID": "Fallout4.esm|97341", "add": -50.0}]
+		},
+		
+		{"comment": ["FeralGhoulRace"], "formID": "Fallout4.esm|6B4EC",
+			"actorValues": [{"formID": "Fallout4.esm|97341", "add": -100.0}]
+		},
+		{"comment": ["FeralGhoulGlowingRace"], "formID": "Fallout4.esm|A96BF",
+			"actorValues": [{"formID": "Fallout4.esm|97341", "add": -75.0}]
+		},
+		
+		{"comment": ["RadroachRace"], "formID": "Fallout4.esm|4716C",
+			"actorValues": [{"formID": "Fallout4.esm|97341", "add": -200.0}]
+		},
+		{"comment": ["BloatflyRace"], "formID": "Fallout4.esm|29463",
+			"actorValues": [{"formID": "Fallout4.esm|97341", "add": -100.0}]
+		},
+		{"comment": ["BloodbugRace"], "formID": "Fallout4.esm|2456D",
+			"actorValues": [{"formID": "Fallout4.esm|97341", "add": -50.0}]
+		},
+		{"comment": ["RadScorpionRace"], "formID": "Fallout4.esm|636AB",
+			"actorValues": [{"formID": "Fallout4.esm|97341", "add": 25.0}]
+		}
+		
+	]
+}

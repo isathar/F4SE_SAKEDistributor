@@ -1,0 +1,162 @@
+{
+	"menuName": "AmmoTweaks - Ammo Leveled List Chances",
+	
+	"overrides": [
+		{"comment": ["LL_at_AmmoLoot_10mm"], "formID": "AmmoTweaks.esm|E46", "chanceNone": 66},
+		{"comment": ["LLS_Perk_Scrounger_10mm"], "formID": "Fallout4.esm|249F04", "chanceNone": 66},
+		
+		{"comment": ["LL_at_AmmoLoot_45ACP"], "formID": "AmmoTweaks.esm|E74", "chanceNone": 55},
+		{"comment": ["LLS_Perk_Scrounger_45Caliber"], "formID": "Fallout4.esm|5859D", "chanceNone": 55},
+		
+		{"comment": ["LL_at_AmmoLoot_22LR"], "formID": "AmmoTweaks.esm|96A", "chanceNone": 45},
+		{"comment": ["LL_at_AmmoScrounger_22LR"], "formID": "AmmoTweaks.esm|1F18", "chanceNone": 45},
+		
+		{"comment": ["LL_at_AmmoLoot_32ACP"], "formID": "AmmoTweaks.esm|63B6", "chanceNone": 68},
+		{"comment": ["LL_at_AmmoScrounger_32ACP"], "formID": "AmmoTweaks.esm|1F16", "chanceNone": 68},
+		
+		{"comment": ["LL_at_AmmoLoot_380ACP"], "formID": "AmmoTweaks.esm|E68", "chanceNone": 58},
+		{"comment": ["LL_at_AmmoScrounger_380ACP"], "formID": "AmmoTweaks.esm|1F14", "chanceNone": 58},
+		
+		{"comment": ["LL_at_AmmoLoot_38Super"], "formID": "AmmoTweaks.esm|4C5C", "chanceNone": 52},
+		{"comment": ["LLS_Perk_Scrounger_38Caliber"], "formID": "Fallout4.esm|5859E", "chanceNone": 52},
+		
+		{"comment": ["LL_at_AmmoLoot_40SW"], "formID": "AmmoTweaks.esm|1FAB", "chanceNone": 63},
+		{"comment": ["LL_at_AmmoScrounger_40SW"], "formID": "AmmoTweaks.esm|288B", "chanceNone": 63},
+		
+		{"comment": ["LL_at_AmmoLoot_50AE"], "formID": "AmmoTweaks.esm|E50", "chanceNone": 87},
+		{"comment": ["LL_at_AmmoScrounger_50AE"], "formID": "AmmoTweaks.esm|FBE", "chanceNone": 87},
+		
+		{"comment": ["LL_at_AmmoLoot_9x18mm"], "formID": "AmmoTweaks.esm|63B8", "chanceNone": 68},
+		{"comment": ["LL_at_AmmoScrounger_9x18mm"], "formID": "AmmoTweaks.esm|1F13", "chanceNone": 68},
+		
+		{"comment": ["LL_at_AmmoLoot_9x19mm"], "formID": "AmmoTweaks.esm|E91", "chanceNone": 49},
+		{"comment": ["LL_at_AmmoScrounger_9x19mm"], "formID": "AmmoTweaks.esm|FB8", "chanceNone": 49},
+		
+		
+		{"comment": ["LL_at_AmmoLoot_357Mag"], "formID": "AmmoTweaks.esm|E63", "chanceNone": 65},
+		{"comment": ["LL_at_AmmoScrounger_357Mag"], "formID": "AmmoTweaks.esm|FB9", "chanceNone": 65},
+		
+		{"comment": ["LL_at_AmmoLoot_38Special"], "formID": "AmmoTweaks.esm|E64", "chanceNone": 48},
+		{"comment": ["LL_at_AmmoScrounger_38Spc"], "formID": "AmmoTweaks.esm|288E", "chanceNone": 48},
+		
+		{"comment": ["LL_at_AmmoLoot_44Mag"], "formID": "AmmoTweaks.esm|E6C", "chanceNone": 74},
+		{"comment": ["LLS_Perk_Scrounger_44"], "formID": "Fallout4.esm|249F05", "chanceNone": 74},
+		
+		{"comment": ["LL_at_AmmoLoot_44Special"], "formID": "AmmoTweaks.esm|E6D", "chanceNone": 63},
+		{"comment": ["LL_at_AmmoScrounger_44Spc"], "formID": "AmmoTweaks.esm|288F", "chanceNone": 63},
+		
+		{"comment": ["LL_at_AmmoLoot_45LC"], "formID": "AmmoTweaks.esm|E78", "chanceNone": 62},
+		{"comment": ["LL_at_AmmoScrounger_45LC"], "formID": "AmmoTweaks.esm|FBF", "chanceNone": 62},
+		
+		{"comment": ["LL_at_AmmoLoot_45-70"], "formID": "AmmoTweaks.esm|E71", "chanceNone": 84},
+		{"comment": ["LL_at_AmmoScrounger_45-70"], "formID": "AmmoTweaks.esm|FC0", "chanceNone": 84},
+		
+		
+		{"comment": ["LL_at_AmmoLoot_223"], "formID": "AmmoTweaks.esm|E54", "chanceNone": 56},
+		{"comment": ["LL_at_AmmoScrounger_223"], "formID": "AmmoTweaks.esm|FBC", "chanceNone": 56},
+		
+		{"comment": ["LL_at_AmmoLoot_30-06"], "formID": "AmmoTweaks.esm|1532", "chanceNone": 78},
+		{"comment": ["LL_at_AmmoScrounger_30-06"], "formID": "AmmoTweaks.esm|1F1C", "chanceNone": 78},
+		
+		{"comment": ["LL_at_AmmoLoot_300BLK"], "formID": "AmmoTweaks.esm|3DE1", "chanceNone": 72},
+		{"comment": ["LL_at_AmmoScrounger_300BLK"], "formID": "AmmoTweaks.esm|1F20", "chanceNone": 72},
+		
+		{"comment": ["LL_at_AmmoLoot_300Magnum"], "formID": "AmmoTweaks.esm|31C6", "chanceNone": 76},
+		{"comment": ["LL_at_AmmoScrounger_300Magnum"], "formID": "AmmoTweaks.esm|2889", "chanceNone": 76},
+		
+		{"comment": ["LL_at_AmmoLoot_308Cal"], "formID": "AmmoTweaks.esm|E5B", "chanceNone": 62},
+		{"comment": ["LLS_Perk_Scrounger_308Caliber"], "formID": "Fallout4.esm|5859C", "chanceNone": 62},
+		
+		{"comment": ["LL_at_AmmoLoot_338Mag"], "formID": "AmmoTweaks.esm|E60", "chanceNone": 83},
+		{"comment": ["LL_at_AmmoScrounger_338Mag"], "formID": "AmmoTweaks.esm|FBD", "chanceNone": 83},
+		
+		{"comment": ["LL_at_AmmoLoot_50MG"], "formID": "AmmoTweaks.esm|E7C", "chanceNone": 94},
+		{"comment": ["LLS_Perk_Scrounger_50Cal"], "formID": "Fallout4.esm|585A1", "chanceNone": 94},
+		
+		
+		{"comment": ["LL_at_AmmoLoot_545x39mm"], "formID": "AmmoTweaks.esm|14FF", "chanceNone": 64},
+		{"comment": ["LL_at_AmmoScrounger_545x39mm"], "formID": "AmmoTweaks.esm|1F1A", "chanceNone": 64},
+		
+		{"comment": ["LL_at_AmmoLoot_762x39mm"], "formID": "AmmoTweaks.esm|E87", "chanceNone": 70},
+		{"comment": ["LL_at_AmmoScrounger_762x39mm"], "formID": "AmmoTweaks.esm|FC1", "chanceNone": 70},
+		
+		{"comment": ["LL_at_AmmoLoot_762x54mmR"], "formID": "AmmoTweaks.esm|1493", "chanceNone": 82},
+		{"comment": ["LL_at_AmmoScrounger_762x54mmR"], "formID": "AmmoTweaks.esm|1F22", "chanceNone": 82},
+		
+		{"comment": ["LL_at_AmmoLoot_9x39mm"], "formID": "AmmoTweaks.esm|5DAE", "chanceNone": 75},
+		{"comment": ["LL_at_AmmoScrounger_9x39mm"], "formID": "AmmoTweaks.esm|1F25", "chanceNone": 75},
+		
+		
+		{"comment": ["LL_at_AmmoLoot_556x45mm"], "formID": "AmmoTweaks.esm|E80", "chanceNone": 58},
+		{"comment": ["LLS_Perk_Scrounger_556mm"], "formID": "Fallout4.esm|5859F", "chanceNone": 58},
+		{"comment": ["LLS_Perk_Scrounger_5mm"], "formID": "Fallout4.esm|585A0", "chanceNone": 58},
+		
+		{"comment": ["LL_at_AmmoLoot_762x51mm"], "formID": "AmmoTweaks.esm|E84", "chanceNone": 68},
+		{"comment": ["LL_at_AmmoScrounger_762x51mm"], "formID": "Fallout4.esm|4F40", "chanceNone": 68},
+		
+		
+		{"comment": ["LL_at_AmmoLoot_30Carbine"], "formID": "AmmoTweaks.esm|1533", "chanceNone": 72},
+		{"comment": ["LL_at_AmmoScrounger_30Carbine"], "formID": "AmmoTweaks.esm|1F1E", "chanceNone": 72},
+		
+		{"comment": ["LL_at_AmmoLoot_57x28mm"], "formID": "AmmoTweaks.esm|6241", "chanceNone": 74},
+		{"comment": ["LL_at_AmmoScrounger_57x28mm"], "formID": "AmmoTweaks.esm|288A", "chanceNone": 74},
+		
+		{"comment": ["LL_at_AmmoLoot_792x33mmK"], "formID": "AmmoTweaks.esm|6578", "chanceNone": 86},
+		{"comment": ["LL_at_AmmoScrounger_792x33mmK"], "formID": "AmmoTweaks.esm|1F24", "chanceNone": 86},
+		
+		
+		{"comment": ["LL_at_AmmoLoot_Shot12Ga"], "formID": "AmmoTweaks.esm|EDF", "chanceNone": 60},
+		{"comment": ["LLS_Perk_Scrounger_ShotgunShell"], "formID": "Fallout4.esm|249F09", "chanceNone": 60},
+		
+		{"comment": ["LL_at_AmmoLoot_Shot20Ga"], "formID": "AmmoTweaks.esm|EEB", "chanceNone": 50},
+		{"comment": ["LL_at_AmmoScrounger_Shot20Ga"], "formID": "AmmoTweaks.esm|FBA", "chanceNone": 50},
+		
+		
+		{"comment": ["LL_at_AmmoLoot_SmallEnergyCell"], "formID": "AmmoTweaks.esm|70F5", "chanceNone": 48},
+		{"comment": ["LL_at_AmmoScrounger_SmallEnergyCell"], "formID": "AmmoTweaks.esm|2888", "chanceNone": 48},
+		
+		{"comment": ["LL_at_AmmoLoot_FusionCell"], "formID": "AmmoTweaks.esm|EBF", "chanceNone": 56},
+		{"comment": ["LLS_Perk_Scrounger_FusionCell"], "formID": "Fallout4.esm|249F07", "chanceNone": 56},
+		
+		{"comment": ["LL_at_AmmoLoot_GammaCell"], "formID": "AmmoTweaks.esm|EC3", "chanceNone": 66},
+		{"comment": ["LL_at_AmmoScrounger_GammaCell"], "formID": "AmmoTweaks.esm|288D", "chanceNone": 66},
+		
+		{"comment": ["LL_at_AmmoLoot_PlasmaCart"], "formID": "AmmoTweaks.esm|ED7", "chanceNone": 70},
+		{"comment": ["LLS_Perk_Scrounger_PlasmaCartridge"], "formID": "Fallout4.esm|249F08", "chanceNone": 70},
+		
+		{"comment": ["LL_at_AmmoLoot_AlienCell"], "formID": "AmmoTweaks.esm|EAB", "chanceNone": 25},
+		{"comment": ["LL_at_AmmoScrounger_AlienCell"], "formID": "AmmoTweaks.esm|3E82", "chanceNone": 25},
+		
+		{"comment": ["LL_at_AmmoLoot_CryoCell"], "formID": "AmmoTweaks.esm|EB3", "chanceNone": 78},
+		{"comment": ["LL_at_AmmoScrounger_CryoCell"], "formID": "AmmoTweaks.esm|2892", "chanceNone": 78},
+		
+		{"comment": ["LL_at_AmmoLoot_FlamerFuel"], "formID": "AmmoTweaks.esm|EBA", "chanceNone": 64},
+		{"comment": ["LL_at_AmmoScrounger_FlamerFuel"], "formID": "AmmoTweaks.esm|288C", "chanceNone": 64},
+	
+		{"comment": ["LL_at_AmmoLoot_FusionCore"], "formID": "AmmoTweaks.esm|1168F", "chanceNone": 78},
+		{"comment": ["LL_at_AmmoScrounger_FusionCore"], "formID": "AmmoTweaks.esm|2891", "chanceNone": 78},
+		
+		
+		{"comment": ["LL_at_AmmoLoot_2mmEC"], "formID": "AmmoTweaks.esm|E57", "chanceNone": 85},
+		{"comment": ["LLS_Perk_Scrounger_2mmEC"], "formID": "Fallout4.esm|249F06", "chanceNone": 85},
+		
+		{"comment": ["LL_at_AmmoLoot_RRSpike"], "formID": "AmmoTweaks.esm|EDB", "chanceNone": 65},
+		{"comment": ["LL_at_AmmoScrounger_RRSpike"], "formID": "AmmoTweaks.esm|3E85", "chanceNone": 65},
+		
+		
+		{"comment": ["LL_at_AmmoLoot_Cannonball"], "formID": "AmmoTweaks.esm|EAF", "chanceNone": 100, "useChanceGlobal": "Fallout4.esm|1A32D9"},
+		
+		{"comment": ["LL_at_AmmoLoot_Grenade40mm"], "formID": "AmmoTweaks.esm|1FD4", "chanceNone": 78},
+		{"comment": ["LL_at_AmmoScrounger_Grenade40mm"], "formID": "AmmoTweaks.esm|3E83", "chanceNone": 78},
+		
+		{"comment": ["LL_at_AmmoLoot_Missile"], "formID": "AmmoTweaks.esm|ECF", "chanceNone": 82},
+		{"comment": ["LL_at_AmmoScrounger_Missile"], "formID": "AmmoTweaks.esm|2890", "chanceNone": 82},
+		
+		{"comment": ["LL_at_AmmoLoot_MiniNuke"], "formID": "AmmoTweaks.esm|ECA", "chanceNone": 89},
+		{"comment": ["LL_at_AmmoScrounger_MiniNuke"], "formID": "AmmoTweaks.esm|2893", "chanceNone": 89},
+		
+		
+		{"comment": ["LL_at_RandomRepairKit"], "formID": "AmmoTweaks.esm|2FDB", "chanceNone": 90}
+		
+	]
+}

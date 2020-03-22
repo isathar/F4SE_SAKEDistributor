@@ -1,35 +1,41 @@
-# SAKE Distributor v0.9.7
+# SAKE Distributor v0.9.9
 
-An experimental dynamic patcher for Fallout 4 with the capability to edit various form types in memory.
+An experimental dynamic patcher for Fallout 4.
 
 -------------------------------------------------
-
 ## What It Does
 
-- Enables the creation of dynamic patches using JSON files.
-- Makes it possible to create simple mods with edits to existing forms that don't require additional mod plugins to be loaded.
-- Compatibility patches that allow different mods to work together are also possible.
-- Overrides are loaded after the game finishes loading all mods/forms, so they're independent of plugin load order.
-- Includes a profile system that allows loading different combinations of overrides depending on your loaded mods.
-- Supported Form types: LeveledItems, LeveledCharacters, Races, Actors, Armors, Weapons, MiscItems, Ammo, Ingestibles, and Encounter Zones.
-- Also supports adding prefixes to item names for inventory sorting and editing GameSettings.
-- Overrides do not affect save games, and most of them should be safe to enable/disable at any time.
-- *Note: Templates and Overrides are very unfinished for now. More will be finished and added as I get to them over time.*
+- This tool allows you use json-based text files to create simple mods and compatibility patches that edit game forms in memory.
+- All overrides are independent of plugin load order and most have no effect on save files (the main exceptions being spells and enchantments with scripts).
+- It also supports adding prefixes to item names for inventory sorting and editing GameSettings.
+- Currently supported form types:
+	- LeveledItem, LeveledNPC, Race, Actor, Armor, Weapon, MiscItem, Key, Ammo, Ingestible, and Encounter Zone.
+- *Note: Most of the included overrides are incomplete and will be finished eventually.*
 
 -------------------------------------------------
-
 ## Compiling Notes
 
-- Created using Visual Studio 2017 v141, Windows SDK 10.0.17763.0
+- The solution and project files were made *Visual Studio 2017* and probably require *Windows SDK 10.0.17763.0*.
+- Instructions:
+	- Copy the F4SE source files to a new directory.
+	- Copy the SAKE source files to the same directory - the SAKE folder should be in *src\f4se*.
+	- Open the solution using *src\f4se\SAKE.sln*.
+	- Once loaded, edit the properties for the f4se project to change its *Configuration Type* to *Static Library* (under *General*).
+	- It's also a good idea to remove the *Post-Build Event* from the *f4se*, *f4se_loader* and *f4se_steam_loader* projects.
+		- They create unnecessary copies of the compiled F4SE binaries.
+	- Make sure the compiler is set to Release mode.
+	- After compiling, the DLL can be found in *src\out* by default. 
+		- Edit the SAKE project's *Post-Build Event* if you want to use another directory for the output.
 
 -------------------------------------------------
-
 ## Credits/License Info
 
+- Created with *Microsoft Visual Studio Community 2017*.
+- Uses *JSON for Modern C++* by Niels Lohmann and contributors. (https://github.com/nlohmann/json)
+- Uses *simpleini* by Brodie Thiesfield. (https://github.com/brofield/simpleini)
 - Thank you to the F4SE team for providing and updating the tools that make this kind of stuff possible.
-- Uses *JSON for Modern C++* (https://github.com/nlohmann/json)
 - Thank you to Bethesda Game Studios for Fallout 4 and its Creation Kit.
-- This is a mod, so the following applies: (*the Software* being Fallout 4, and *the Publisher* being Zenimax/Bethesda Softworks)
-	- THIS MATERIAL IS NOT MADE, GUARANTEED OR SUPPORTED BY THE PUBLISHER OF THE SOFTWARE OR ITS AFFILIATES.
+- This is a mod (I think?), so the following applies: (*the software* being Fallout 4)
+- *THIS MATERIAL IS NOT MADE, GUARANTEED OR SUPPORTED BY THE PUBLISHER OF THE SOFTWARE OR ITS AFFILIATES.*
 
 -------------------------------------------------

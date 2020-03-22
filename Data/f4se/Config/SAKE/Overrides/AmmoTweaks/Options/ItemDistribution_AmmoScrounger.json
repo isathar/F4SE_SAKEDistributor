@@ -1,0 +1,96 @@
+{
+	"menuName": "AmmoTweaks - Scrounger Leveled Lists",
+	"menuDescription": "Adds subtypes for default ammo types to their Scrounger lists",
+	
+	"overrides": [
+		{"comment": ["LLS_Perk_Scrounger_10mm"], "formID": "Fallout4.esm|249F04",
+			"add": [
+				{"formID": "AmmoTweaks.esm|F9A", "level": 1, "count": 1, "comment": ["at_Ammo_10mm_JHP"]},
+				{"formID": "AmmoTweaks.esm|F99", "level": 1, "count": 1, "comment": ["at_Ammo_10mm_AP"]},
+				{"formID": "AmmoTweaks.esm|1C99", "level": 1, "count": 1, "comment": ["at_Ammo_10mm_SD"]}
+			]
+		},
+		{"comment": ["LLS_Perk_Scrounger_2mmEC"], "formID": "Fallout4.esm|249F06",
+			"add": [
+				{"formID": "AmmoTweaks.esm|819", "level": 1, "count": 1, "comment": ["at_Ammo_2mmEC_RAD"]},
+				{"formID": "AmmoTweaks.esm|A33", "level": 1, "count": 1, "comment": ["at_Ammo_2mmEC_Charged"]}
+			]
+		},
+		{"comment": ["LLS_Perk_Scrounger_308Caliber"], "formID": "Fallout4.esm|5859C",
+			"add": [
+				{"formID": "AmmoTweaks.esm|80D", "level": 1, "count": 1, "comment": ["at_Ammo_308Cal_HP"]},
+				{"formID": "AmmoTweaks.esm|80C", "level": 1, "count": 1, "comment": ["at_Ammo_308Cal_JSP"]}
+			]
+		},
+		{"comment": ["LLS_Perk_Scrounger_38Caliber"], "formID": "Fallout4.esm|5859E",
+			"add": [
+				{"formID": "AmmoTweaks.esm|3CE6", "level": 1, "count": 1, "comment": ["at_Ammo_38Super_JHP"]},
+				{"formID": "AmmoTweaks.esm|3CE8", "level": 1, "count": 1, "comment": ["at_Ammo_38Super_P"]},
+				{"formID": "AmmoTweaks.esm|125B", "level": 1, "count": 1, "comment": ["at_Ammo_38Super_JHPP"]}
+			]
+		},
+		{"comment": ["LLS_Perk_Scrounger_44"], "formID": "Fallout4.esm|249F05",
+			"add": [
+				{"formID": "AmmoTweaks.esm|804", "level": 1, "count": 1, "comment": ["at_Ammo_44Magnum_JHP"]},
+				{"formID": "AmmoTweaks.esm|803", "level": 1, "count": 1, "comment": ["at_Ammo_44Magnum_SWC"]},
+				{"formID": "AmmoTweaks.esm|125A", "level": 1, "count": 1, "comment": ["at_Ammo_44Magnum_JSP"]}
+			]
+		},
+		{"comment": ["LLS_Perk_Scrounger_45Caliber"], "formID": "Fallout4.esm|5859D",
+			"add": [
+				{"formID": "AmmoTweaks.esm|802", "level": 1, "count": 1, "comment": ["at_Ammo_45ACP_JHP"]},
+				{"formID": "AmmoTweaks.esm|801", "level": 1, "count": 1, "comment": ["at_Ammo_45ACP_P"]}
+			]
+		},
+		{"comment": ["LLS_Perk_Scrounger_50Cal"], "formID": "Fallout4.esm|585A1",
+			"add": [
+				{"formID": "AmmoTweaks.esm|1267", "level": 1, "count": 1, "comment": ["at_Ammo_50MG_Bulk"]},
+				{"formID": "AmmoTweaks.esm|125D", "level": 1, "count": 1, "comment": ["at_Ammo_50MG_Matched"]},
+				{"formID": "AmmoTweaks.esm|43F4", "level": 1, "count": 1, "comment": ["at_Ammo_50MG_AP"]},
+				{"formID": "AmmoTweaks.esm|837", "level": 1, "count": 1, "comment": ["at_Ammo_50MG_AP-I"]},
+				{"formID": "AmmoTweaks.esm|836", "level": 1, "count": 1, "comment": ["at_Ammo_50MG_AP-HE"]}
+			]
+		},
+		{"comment": ["LLS_Perk_Scrounger_556mm"], "formID": "Fallout4.esm|5859F",
+			"add": [
+				{"formID": "AmmoTweaks.esm|809", "level": 1, "count": 1, "comment": ["at_Ammo_556x45mm_JHP"]},
+				{"formID": "AmmoTweaks.esm|125C", "level": 1, "count": 1, "comment": ["at_Ammo_556x45mm_JSP"]},
+				{"formID": "AmmoTweaks.esm|808", "level": 1, "count": 1, "comment": ["at_Ammo_556x45mm_AP"]},
+				{"formID": "AmmoTweaks.esm|1C9A", "level": 1, "count": 1, "comment": ["at_Ammo_556x45mm_SD"]}
+			]
+		},
+		{"comment": ["LLS_Perk_Scrounger_FusionCell"], "formID": "Fallout4.esm|249F07",
+			"add": [
+				{"formID": "AmmoTweaks.esm|815", "level": 1, "count": 1, "comment": ["at_Ammo_FusionCell_OPT"]},
+				{"formID": "AmmoTweaks.esm|1380", "level": 1, "count": 1, "comment": ["at_Ammo_FusionCell_Bulk"]},
+				{"formID": "AmmoTweaks.esm|814", "level": 1, "count": 1, "comment": ["at_Ammo_FusionCell_OC"]}
+			]
+		},
+		{"comment": ["LLS_Perk_Scrounger_PlasmaCartridge"], "formID": "Fallout4.esm|249F08",
+			"add": [
+				{"formID": "AmmoTweaks.esm|828", "level": 1, "count": 1, "comment": ["at_Ammo_PlasmaCart_Unstable"]},
+				{"formID": "AmmoTweaks.esm|829", "level": 1, "count": 1, "comment": ["at_Ammo_PlasmaCart_Charged"]}
+			]
+		},
+		{"comment": ["LLS_Perk_Scrounger_ShotgunShell"], "formID": "Fallout4.esm|249F09",
+			"add": [
+				{"formID": "AmmoTweaks.esm|82F", "level": 1, "count": 1, "comment": ["at_Ammo_12GaShell_Magnum"]},
+				{"formID": "AmmoTweaks.esm|82E", "level": 1, "count": 1, "comment": ["at_Ammo_12GaShell_Slug"]},
+				{"formID": "AmmoTweaks.esm|ABE", "level": 1, "count": 1, "comment": ["at_Ammo_12GaShell_Flechette"]},
+				{"formID": "AmmoTweaks.esm|830", "level": 1, "count": 1, "comment": ["at_Ammo_12GaShell_DragonsBreath"]},
+				{"formID": "AmmoTweaks.esm|897B", "level": 1, "count": 1, "comment": ["at_Ammo_12GaShell_Frag12"]}
+			]
+		},
+		
+		{"comment": ["LL_at_AmmoScrounger_45-70 - adds Far Harbor ammo"], "formID": "AmmoTweaks.esm|FC0",
+			"add": [
+				{"formID": "DLCCoast.esm|2C8B1", "level": 1, "count": 1, "comment": ["DLC03_Ammo4570"]}
+			]
+		},
+		{"comment": ["LL_at_AmmoScrounger_762x39mm - adds Nuka-World ammo"], "formID": "AmmoTweaks.esm|FC1",
+			"add": [
+				{"formID": "DLCNukaWorld.esm|37897", "level": 1, "count": 1, "comment": ["DLC04_Ammo_HandmadeRound"]}
+			]
+		}
+	]
+}

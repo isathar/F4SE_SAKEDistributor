@@ -1,0 +1,12 @@
+{
+	"menuName": "Armor CND Spell and f4tf_kwIsArmorWearingRace - Player Only",
+	
+	"requirements": ["F4TweaksFramework.esm"],
+	
+	"overrides": [
+		{"comment": ["Player"], "formID": "Fallout4.esm|7", 
+			"spells": [{"formID": "F4TweaksFramework.esm|828"}],
+			"keywords": {"add": ["F4TweaksFramework.esm|2EF6"]}
+		}
+	]
+}

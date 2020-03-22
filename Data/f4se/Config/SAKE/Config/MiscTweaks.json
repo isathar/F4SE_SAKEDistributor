@@ -1,0 +1,22 @@
+{
+	"name": "Misc. Tweaks",
+	"description": "Example configuration with a mix of overrides.",
+	
+	"active": [
+		{"name": "AdditionalDRTypes"},
+		
+		{"name": "AddLuck_Actors_Humanoid.json", "includeIf": ["AmmoTweaks.esm"]},
+		{"name": "AddCritChance_Actors_Humanoid.json", "excludeIf": ["AmmoTweaks.esm"]},
+		
+		{"name": "DamageThreshold", "includeIf": ["DamageThreshold.esm"], "excludeIf": ["DamageThresholdFramework.esm"]},
+		{"name": "DamageThresholdFramework", "includeIf": ["DamageThresholdFramework.esm"], "excludeIf": ["AmmoTweaks.esm", "DamageThreshold.esm"]},
+		
+		{"name": "NPCsUseAmmo"},
+		
+		{"name": "DLCItemDistribution"},
+		
+		{"name": "MoreSupermutantWeaponAnims", "excludeIf": ["SM More Weapon Level Lists.esp"]},
+		
+		{"name": "LootMultiplier_Ammo_25Percent.json"}
+	]
+}

@@ -1,0 +1,11 @@
+{
+	"name": "Damage Threshold Framework - Actors",
+	
+	"comment": "AV - Damage Threshold - DamageThresholdFramework.esm|F99",
+	
+	"requirements": ["DamageThresholdFramework.esm"],
+	
+	"overrides": [
+		
+	]
+}

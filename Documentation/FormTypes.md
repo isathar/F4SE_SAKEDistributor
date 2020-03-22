@@ -7,43 +7,61 @@
 	- Can be used for organization. 
 	- One comment can be added into each object (anything between {...} )
 	- These are loaded with the rest of the file, so don't overdo it.
-	- Used in all form types and objects.
+	- Used for all form types and objects.
 - **formID** *(FormID String) - required*
 	- The FormID of the item/object to edit (see Configuration.md for the format).
-	- Used in all form types.
+	- Used for all form types.
 - **name** *(String) - optional*
 	- Edits the Form's base name.
 	- Used for most forms. Not used for: LeveledItems, LeveledActors, Races, EncounterZones.
 - **value** *(int) - optional*
 	- Base caps value.
-	- Only for items: Armor, Weapon, MiscItem, Component, Ingestible, Ammo.
+	- Only for items: Armor, Weapon, MiscItem, Key, Component, Ingestible, Ammo.
 - **weight** *(float) - optional*
 	- Base weight.
-	- Only for items: Armor, Weapon, MiscItem, Ingestible, Ammo.
+	- Only for items: Armor, Weapon, MiscItem, Key, Ingestible, Ammo.
+- **damageTypes** *(array(Object)) - optional*
+	- Base amounts of typed damage/resistance.
+	- Used for Weapons and Armors.
+	- **Object Variables:**
+		- **formID** *(FormID String) - required*
+			- The damageType's formID.
+		- **set** *(int) - optional*
+			- The amount of damage/resistance to set.
+		- **add** *(int) - optional*
+			- The amount of damage/resistance to add (after *set*).
 - **spells** *(Array(Object)) - optional*
 	- List of spells/abilities to add.
 	- Used for Races and Actors.
-	- **Variables:**
+	- **Object Variables:**
 		- **formID** *(FormID String) - required*
-		- Room for comments.
+			- Spell FormID.
+- **enchantments** *(Array(Object)) - optional*
+	- The list of enchantments to add.
+	- Used for Weapons and Armors.
+	- **Object Variables:**
+		- **formID** *(FormID String) - optional*
+			- Enchantment FormID.
 - **actorValues** *(Array(Object)) - optional*
 	- List of ActorValues to modify.
-	- Used for Races and Actors. NOTE: See Weapons definition for the differences compared to weapon ActorValues.
-	- **Variables:**
+	- Used for Races, Actors, Armors, and Weapons.
+	- NOTE: Weapons and Armors can't use 0 or negative values.
+	- **Object Variables:**
 		- **formID** *(FormID String) - required*
-		- **set** *(float) - optional*
+		- **set** *(Races/Actors: float, Armors/Weapons: int) - optional*
 			- the amount to replace this AV's value with.
-		- **add** *(float) - optional*
+		- **add** *(Races/Actors: float, Armors/Weapons: int) - optional*
 			- The amount to add to this AV.
 			- Processed after *set*.
 - **keywords** *(Object) - optional*
 	- The lists of keywords to add/remove.
 	- Used for most forms. Not used for: LeveledItems, LeveledActors, Races, Components, EncounterZones.
-	- **Variables:**
+	- **Object Variables:**
 		- **add/remove** *(Array(FormID String)) - both optional*
 - **instanceNamingRules** *(FormID String) - optional*
 	- Replaces the item's Instance Naming Rules form.
-	- Used by Weapons, Armors.
+	- Used for Weapons and Armors.
+
 
 ------------------------------------------------------------------------------------
 ## Leveled Items
@@ -63,7 +81,7 @@
 	- The lists of entries to add or remove from the original leveled list.
 	- Added entries are affected by *delevel* and *multiplyCount*.
 	- Add can be used to replace the contents of existing leveled lists when *clear* is enabled.
-	- **Variables:**
+	- **Object Variables:**
 		- **formID** *(FormID String) - required*
 		- **level** *(int) - required*
 		- **count** *(int) - required*
@@ -82,7 +100,7 @@
 	- The lists of entries to add or remove from the original leveled list.
 	- Added entries are affected by *delevel*.
 	- Add can be used to replace the contents of existing leveled lists when *clear* is enabled.
-	- **Variables:**
+	- **Object Variables:**
 		- **formID** *(FormID String) - required*
 		- **level** *(int) - required*
 
@@ -107,18 +125,9 @@
 ------------------------------------------------------------------------------------
 ## Armors
 
-- **Shared:** *formID, name, keywords, value, weight, instanceNamingRules*
+- **Shared:** *formID, name, keywords, value, weight, instanceNamingRules, damageTypes*
 - **armorRating** *(int) - optional*
 	- Base armor rating.
-- **damageResistances** *(array(Object)) - optional*
-	- Base typed damage resistances.
-	- **Variables:**
-		- **formID** *(FormID String) - required*
-			- The damageType's formID.
-		- **set** *(int) - optional*
-			- The amount of resistance to set.
-		- **add** *(int) - optional*
-			- The amount of resistance to add (after *set*).
 - **health** *(int) - optional*
 	- This armor's maximum condition - used by power armor.
 
@@ -128,38 +137,14 @@
 - **Shared:** *formID, name, keywords, value, weight, instanceNamingRules*
 - **damage** *(int) - optional*
 	- Base weapon damage.
-- **damageTypes** *(array(Object)) - optional*
-	- Base typed damage amounts.
-	- **Variables:**
-		- **formID** *(FormID String) - required*
-			- The damageType's formID.
-		- **set** *(int) - optional*
-			- The amount of damage to set.
-		- **add** *(int) - optional*
-			- The amount of damage to add (after *set*).
 - **secondaryDamage** *(float) - optional*
 	- Base bashing damage.
-- **enchantments** *(Array(Object)) - optional*
-	- The list of enchantments to add to this weapon.
-	- **Variables:**
-		- **formID** *(FormID String) - optional*
-			- Enchantment FormID.
-		- Room for comments.
-- **actorvalues** *(Array(Object) - optional*
-	- The list of ActorValue modifiers
-	- Works the same way as actorValues variables on Races and Actors, except using integers instead of floats.
-	- **Variables:**
-		- **formID** *(FormID String) - required*
-		- **set** *(int) - optional*
-			- the amount to replace this AV modifier's value with.
-		- **add** *(int) - optional*
-			- The amount to add to this AV modifier.
 - **aimModel** *(Object) - optional*
-	- **Variables:**
+	- **Object Variables:**
 		- **formID** *(FormID String) - optional*
 			- The weapon's base AimModel Form.
 		- **recoil** *(Object) - optional*
-			- **Variables:**
+			- **Object Variables:**
 				- **minAngle/maxAngle** *(float) - both optional*
 					- min./max. spread angle (crosshair size)
 				- **increasePerShot** *(float) - optional*
@@ -173,7 +158,7 @@
 				- **ironSightsMult** *(float) - optional*
 					- multiplier applied to spread while aiming without a scope
 		- **coneOfFire** *(Object) - optional*
-			- **Variables:**
+			- **Object Variables:**
 				- **arcDegrees** *(float) - optional*
 					- max. difference from the base recoil angle per shot in degrees
 				- **arcRotate** *(float) - optional*
@@ -204,7 +189,7 @@
 	- Base critical damage multiplier.
 - **flags** *(Object) - optional*
 	- Edits weapon flags.
-	- **Variables:**
+	- **Object Variables:**
 		- **npcsUseAmmo** *(bool) - optional*
 			- Enables NPC ammo depletion.
 
@@ -226,12 +211,17 @@
 - **Shared:** *formID, name, keywords, value, weight*
 - **components** *(Object) - optional*
 	- The list of components to add/remove.
-	- **Variables:**
+	- **Object Variables:**
 		- **clear** *(bool) - optional*
 			- Whether or not to remove all existing components.
 		- **add/remove** *(array(Object)) - both optional*
 			- *formID (FormID String) - required*
 			- *count (int) - required*
+
+------------------------------------------------------------------------------------
+## Keys
+
+- **Shared:** *formID, name, keywords, value, weight*
 
 ------------------------------------------------------------------------------------
 ## Crafting Components
@@ -245,13 +235,13 @@
 ------------------------------------------------------------------------------------
 ## Chems/Ingestibles
 
-- **Shared:** *formID, name, keywords, weight*
+- **Shared:** *formID, name, keywords, weight, value*
 
 ------------------------------------------------------------------------------------
 ## Encounter Zones
 
 - **Shared:** *formID*
 - **levelMin/levelMax** *(int) - both required*
-	- Min/Max levels for things generated in this encounter zone.
+	- Min/Max levels for NPCs and items generated in this encounter zone.
 
 ------------------------------------------------------------------------------------

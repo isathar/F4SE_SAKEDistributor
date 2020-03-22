@@ -1,0 +1,230 @@
+{
+	"menuName": "Damage Threshold - Power Armor",
+	"menuDescription": "Distributes DT ActorValues.",
+	
+	"requirements": ["DamageThreshold.esm"],
+	
+	"comment": [
+		"Raider - 18 DT - resists most low caliber/power attacks",
+		"T-45 - 22 DT - slightly better than raider PA",
+		"T-51 - 28 DT - resists most mid level weapons",
+		"T-60 - 34 DT - requires high quality weapons or clever tactics",
+		"X-01 - 42 DT - a walking tank"
+	],
+	
+	"overrides": [
+		{"comment": ["Armor_Power_Raider_Torso"], "formID": "Fallout4.esm|140C57",
+			"actorValues": [
+				{"formID": "DamageThreshold.esm|801", "add": 8, "comment": ["Physical DT"]}
+			]
+		},
+		{"comment": ["Armor_Power_Raider_Helm"], "formID": "Fallout4.esm|140C54",
+			"actorValues": [
+				{"formID": "DamageThreshold.esm|801", "add": 2, "comment": ["Physical DT"]}
+			]
+		},
+		{"comment": ["Armor_Power_Raider_ArmLeft"], "formID": "Fallout4.esm|140C52",
+			"actorValues": [
+				{"formID": "DamageThreshold.esm|801", "add": 2, "comment": ["Physical DT"]}
+			]
+		},
+		{"comment": ["Armor_Power_Raider_ArmRight"], "formID": "Fallout4.esm|140C53",
+			"actorValues": [
+				{"formID": "DamageThreshold.esm|801", "add": 2, "comment": ["Physical DT"]}
+			]
+		},
+		{"comment": ["Armor_Power_Raider_LegLeft"], "formID": "Fallout4.esm|140C55",
+			"actorValues": [
+				{"formID": "DamageThreshold.esm|801", "add": 2, "comment": ["Physical DT"]}
+			]
+		},
+		{"comment": ["Armor_Power_Raider_LegRight"], "formID": "Fallout4.esm|140C56",
+			"actorValues": [
+				{"formID": "DamageThreshold.esm|801", "add": 2, "comment": ["Physical DT"]}
+			]
+		},
+		
+		{"comment": ["Armor_Power_T45_Torso"], "formID": "Fallout4.esm|154AC2",
+			"actorValues": [
+				{"formID": "DamageThreshold.esm|801", "add": 10, "comment": ["Physical DT"]}
+			]
+		},
+		{"comment": ["Armor_Power_T45_Helm"], "formID": "Fallout4.esm|154ABF",
+			"actorValues": [
+				{"formID": "DamageThreshold.esm|801", "add": 4, "comment": ["Physical DT"]}
+			]
+		},
+		{"comment": ["Armor_Power_T45_ArmLeft"], "formID": "Fallout4.esm|154ABD",
+			"actorValues": [
+				{"formID": "DamageThreshold.esm|801", "add": 2, "comment": ["Physical DT"]}
+			]
+		},
+		{"comment": ["Armor_Power_T45_ArmRight"], "formID": "Fallout4.esm|154ABE",
+			"actorValues": [
+				{"formID": "DamageThreshold.esm|801", "add": 2, "comment": ["Physical DT"]}
+			]
+		},
+		{"comment": ["Armor_Power_T45_LegLeft"], "formID": "Fallout4.esm|154AC0",
+			"actorValues": [
+				{"formID": "DamageThreshold.esm|801", "add": 2, "comment": ["Physical DT"]}
+			]
+		},
+		{"comment": ["Armor_Power_T45_LegRight"], "formID": "Fallout4.esm|154AC1",
+			"actorValues": [
+				{"formID": "DamageThreshold.esm|801", "add": 2, "comment": ["Physical DT"]}
+			]
+		},
+		
+		{"comment": ["Armor_Power_T51_Torso"], "formID": "Fallout4.esm|140C51",
+			"actorValues": [
+				{"formID": "DamageThreshold.esm|801", "add": 12, "comment": ["Physical DT"]}
+			]
+		},
+		{"comment": ["Armor_Power_T51_Helmet"], "formID": "Fallout4.esm|140C4E",
+			"actorValues": [
+				{"formID": "DamageThreshold.esm|801", "add": 4, "comment": ["Physical DT"]}
+			]
+		},
+		{"comment": ["Armor_Power_T51_LeftArm"], "formID": "Fallout4.esm|140C4C",
+			"actorValues": [
+				{"formID": "DamageThreshold.esm|801", "add": 3, "comment": ["Physical DT"]}
+			]
+		},
+		{"comment": ["Armor_Power_T51_RightArm"], "formID": "Fallout4.esm|140C4D",
+			"actorValues": [
+				{"formID": "DamageThreshold.esm|801", "add": 3, "comment": ["Physical DT"]}
+			]
+		},
+		{"comment": ["Armor_Power_T51_LeftLeg"], "formID": "Fallout4.esm|140C4F",
+			"actorValues": [
+				{"formID": "DamageThreshold.esm|801", "add": 3, "comment": ["Physical DT"]}
+			]
+		},
+		{"comment": ["Armor_Power_T51_RightLeg"], "formID": "Fallout4.esm|140C50",
+			"actorValues": [
+				{"formID": "DamageThreshold.esm|801", "add": 3, "comment": ["Physical DT"]}
+			]
+		},
+		
+		{"comment": ["Armor_Power_T60_Torso"], "formID": "Fallout4.esm|140C42",
+			"actorValues": [
+				{"formID": "DamageThreshold.esm|801", "add": 17, "comment": ["Physical DT"]}
+			]
+		},
+		{"comment": ["Armor_Power_T60_Helm"], "formID": "Fallout4.esm|140C4A",
+			"actorValues": [
+				{"formID": "DamageThreshold.esm|801", "add": 5, "comment": ["Physical DT"]}
+			]
+		},
+		{"comment": ["Armor_Power_T60_ArmLeft"], "formID": "Fallout4.esm|140C3D",
+			"actorValues": [
+				{"formID": "DamageThreshold.esm|801", "add": 3, "comment": ["Physical DT"]}
+			]
+		},
+		{"comment": ["Armor_Power_T60_ArmRight"], "formID": "Fallout4.esm|140C45",
+			"actorValues": [
+				{"formID": "DamageThreshold.esm|801", "add": 3, "comment": ["Physical DT"]}
+			]
+		},
+		{"comment": ["Armor_Power_T60_LegLeft"], "formID": "Fallout4.esm|140C49",
+			"actorValues": [
+				{"formID": "DamageThreshold.esm|801", "add": 3, "comment": ["Physical DT"]}
+			]
+		},
+		{"comment": ["Armor_Power_T60_LegRight"], "formID": "Fallout4.esm|140C3F",
+			"actorValues": [
+				{"formID": "DamageThreshold.esm|801", "add": 3, "comment": ["Physical DT"]}
+			]
+		},
+		
+		{"comment": ["DN015_Armor_Power_Torso - Nucleostrictive Torso Armor"], "formID": "Fallout4.esm|1C0382",
+			"actorValues": [
+				{"formID": "DamageThreshold.esm|801", "add": 19, "comment": ["Physical DT"]}
+			]
+		},
+		
+		{"comment": ["Armor_Power_X01_Torso"], "formID": "Fallout4.esm|140C42",
+			"actorValues": [
+				{"formID": "DamageThreshold.esm|801", "add": 20, "comment": ["Physical DT"]}
+			]
+		},
+		{"comment": ["Armor_Power_X01_Helm"], "formID": "Fallout4.esm|140C4A",
+			"actorValues": [
+				{"formID": "DamageThreshold.esm|801", "add": 6, "comment": ["Physical DT"]}
+			]
+		},
+		{"comment": ["Armor_Power_X01_ArmLeft"], "formID": "Fallout4.esm|154AC3",
+			"actorValues": [
+				{"formID": "DamageThreshold.esm|801", "add": 4, "comment": ["Physical DT"]}
+			]
+		},
+		{"comment": ["Armor_Power_X01_ArmRight"], "formID": "Fallout4.esm|154AC4",
+			"actorValues": [
+				{"formID": "DamageThreshold.esm|801", "add": 4, "comment": ["Physical DT"]}
+			]
+		},
+		{"comment": ["Armor_Power_X01_LegLeft"], "formID": "Fallout4.esm|154AC6",
+			"actorValues": [
+				{"formID": "DamageThreshold.esm|801", "add": 4, "comment": ["Physical DT"]}
+			]
+		},
+		{"comment": ["Armor_Power_X01_LegRight"], "formID": "Fallout4.esm|154AC7",
+			"actorValues": [
+				{"formID": "DamageThreshold.esm|801", "add": 4, "comment": ["Physical DT"]}
+			]
+		},
+		
+		{"comment": ["Armor_Power_T60_Torso_Danse"], "formID": "Fallout4.esm|24984F",
+			"actorValues": [
+				{"formID": "DamageThreshold.esm|801", "add": 20, "comment": ["Physical DT"]}
+			]
+		},
+		{"comment": ["Armor_Power_T60_ArmLeft_Danse"], "formID": "Fallout4.esm|24984B",
+			"actorValues": [
+				{"formID": "DamageThreshold.esm|801", "add": 3, "comment": ["Physical DT"]}
+			]
+		},
+		{"comment": ["Armor_Power_T60_ArmRight_Danse"], "formID": "Fallout4.esm|24984C",
+			"actorValues": [
+				{"formID": "DamageThreshold.esm|801", "add": 3, "comment": ["Physical DT"]}
+			]
+		},
+		{"comment": ["Armor_Power_T60_LegLeft_Danse"], "formID": "Fallout4.esm|24984D",
+			"actorValues": [
+				{"formID": "DamageThreshold.esm|801", "add": 3, "comment": ["Physical DT"]}
+			]
+		},
+		{"comment": ["Armor_Power_T60_LegRight_Danse"], "formID": "Fallout4.esm|24984E",
+			"actorValues": [
+				{"formID": "DamageThreshold.esm|801", "add": 3, "comment": ["Physical DT"]}
+			]
+		},
+		
+		{"comment": ["Armor_Power_X01_Torso_Danse"], "formID": "Fallout4.esm|249854",
+			"actorValues": [
+				{"formID": "DamageThreshold.esm|801", "add": 24, "comment": ["Physical DT"]}
+			]
+		},
+		{"comment": ["Armor_Power_X01_ArmLeft_Danse"], "formID": "Fallout4.esm|249850",
+			"actorValues": [
+				{"formID": "DamageThreshold.esm|801", "add": 4, "comment": ["Physical DT"]}
+			]
+		},
+		{"comment": ["Armor_Power_X01_ArmRight_Danse"], "formID": "Fallout4.esm|249851",
+			"actorValues": [
+				{"formID": "DamageThreshold.esm|801", "add": 4, "comment": ["Physical DT"]}
+			]
+		},
+		{"comment": ["Armor_Power_X01_LegLeft_Danse"], "formID": "Fallout4.esm|249852",
+			"actorValues": [
+				{"formID": "DamageThreshold.esm|801", "add": 4, "comment": ["Physical DT"]}
+			]
+		},
+		{"comment": ["Armor_Power_X01_LegRight_Danse"], "formID": "Fallout4.esm|249853",
+			"actorValues": [
+				{"formID": "DamageThreshold.esm|801", "add": 4, "comment": ["Physical DT"]}
+			]
+		}
+		
+	]
+}

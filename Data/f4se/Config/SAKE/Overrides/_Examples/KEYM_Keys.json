@@ -1,0 +1,16 @@
+{
+	"menuName": "Key Overrides",
+	"menuDescription": "Key override examples",
+	
+	"overrides": [
+		{
+			"comment": ["Key (Prydwen Armory Key) - changes name, value, weight, adds the DisableAsJunkjetAmmo keyword for no reason"],
+			"formID": "Fallout4.esm|23E372",
+			"name": "A Renamed Key",
+			"value": 20,
+			"weight": 2.0,
+			"keywords": {"add": ["Fallout4.esm|E9447"]}
+		}
+		
+	]
+}

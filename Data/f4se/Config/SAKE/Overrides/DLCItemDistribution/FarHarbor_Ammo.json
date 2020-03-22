@@ -1,0 +1,41 @@
+{
+	"menuName": "DLC Item Distribution - Far Harbor - Ammo",
+	
+	"overrides": [
+		{"comment": ["LL_Ammo_RareTypes"], "formID": "Fallout4.esm|18ABE3",
+			"add": [{"formID": "DLCCoast.esm|10B84", "level": 8, "count": 1, "comment": ["DLC03_LL_Ammo_Harpoon"]}]
+		},
+		
+		{"comment": ["LLI_Loot_Ammo_Basic"], "formID": "Fallout4.esm|CFC91",
+			"add": [{"formID": "DLCCoast.esm|42E73", "level": 14, "count": 1, "comment": ["DLC03_LL_Ammo_4570"]}]
+		},
+		
+		{"comment": ["LL_Ammo_ShopRareTypes"], "formID": "Fallout4.esm|18F659",
+			"add": [{"formID": "DLCCoast.esm|10B84", "level": 8, "count": 1, "comment": ["DLC03_LL_Ammo_Harpoon"]}]
+		},
+		
+		{"comment": ["LLI_Vendor_Ammo_Basic"], "formID": "Fallout4.esm|7580A",
+			"add": [{"formID": "DLCCoast.esm|42E73", "level": 14, "count": 1, "comment": ["DLC03_LL_Ammo_4570"]}]
+		},
+		
+		{"comment": ["LLI_Vendor_Ammo_Rare"], "formID": "Fallout4.esm|7580B",
+			"add": [{"formID": "DLCCoast.esm|10B84", "level": 8, "count": 1, "comment": ["DLC03_LL_Ammo_Harpoon"]}]
+		},
+		
+		{"comment": ["LLI_Vendor_Ammo_HighLevelAmmo"], "formID": "Fallout4.esm|225A56",
+			"add": [{"formID": "DLCCoast.esm|42E73", "level": 1, "count": 1, "comment": ["DLC03_LL_Ammo_4570"]}]
+		},
+		
+		{"comment": ["RECampSC03MerchantAmmo"], "formID": "Fallout4.esm|3D63C",
+			"add": [{"formID": "DLCCoast.esm|42E73", "level": 1, "count": 1, "comment": ["DLC03_LL_Ammo_4570"]}]
+		},
+		
+		{"comment": ["LLI_Vendor_Ammo_Base"], "formID": "Fallout4.esm|1FE31C",
+			"add": [{"formID": "DLCCoast.esm|42E73", "level": 14, "count": 1, "comment": ["DLC03_LL_Ammo_4570"]}]
+		},
+		
+		{"comment": ["LLI_Vendor_Ammo_WeaponStore"], "formID": "Fallout4.esm|1FE31D",
+			"add": [{"formID": "DLCCoast.esm|42E73", "level": 14, "count": 2, "comment": ["DLC03_LL_Ammo_4570"]}]
+		}
+	]
+}

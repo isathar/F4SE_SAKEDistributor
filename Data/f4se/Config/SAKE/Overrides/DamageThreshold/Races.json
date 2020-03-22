@@ -1,0 +1,158 @@
+{
+	"name": "DT per Race",
+	
+	"requirements": ["DamageThreshold.esm"],
+	
+	"overrides": [
+		{
+			"comment": "AlienRace", "formID": "Fallout4.esm|184C4D",
+			"actorValues": [{"formID": "DamageThreshold.esm|801", "set": 12.0}]
+		},
+		
+		{
+			"comment": "DogmeatRace", "formID": "Fallout4.esm|1D698",
+			"actorValues": [{"formID": "DamageThreshold.esm|801", "set": 4.0}]
+		},
+		{
+			"comment": "RaiderDogRace", "formID": "Fallout4.esm|187AF9",
+			"actorValues": [{"formID": "DamageThreshold.esm|801", "set": 5.0}]
+		},
+		{
+			"comment": "ViciousDogRace", "formID": "Fallout4.esm|3578A",
+			"actorValues": [{"formID": "DamageThreshold.esm|801", "set": 3.0}]
+		},
+		
+		{
+			"comment": "GorillaRace", "formID": "Fallout4.esm|D9804",
+			"actorValues": [{"formID": "DamageThreshold.esm|801", "set": 6.0}]
+		},
+		
+		{
+			"comment": "MoleratRace", "formID": "Fallout4.esm|1D810",
+			"actorValues": [{"formID": "DamageThreshold.esm|801", "set": 3.0}]
+		},
+		
+		{
+			"comment": "RadStagRace", "formID": "Fallout4.esm|7ED1D",
+			"actorValues": [{"formID": "DamageThreshold.esm|801", "set": 4.0}]
+		},
+		{
+			"comment": "BrahminRace", "formID": "Fallout4.esm|2047E",
+			"actorValues": [{"formID": "DamageThreshold.esm|801", "set": 2.0}]
+		},
+		
+		{
+			"comment": "YaoGuaiRace", "formID": "Fallout4.esm|A0F2F",
+			"actorValues": [{"formID": "DamageThreshold.esm|801", "set": 12.0}]
+		},
+		
+		{
+			"comment": "BloodbugRace", "formID": "Fallout4.esm|2456D",
+			"actorValues": [{"formID": "DamageThreshold.esm|801", "set": 2.0}]
+		},
+		{
+			"comment": "StingwingRace", "formID": "Fallout4.esm|5FBB1",
+			"actorValues": [{"formID": "DamageThreshold.esm|801", "set": 4.0}]
+		},
+		{
+			"comment": "RadScorpionRace", "formID": "Fallout4.esm|636AB",
+			"actorValues": [{"formID": "DamageThreshold.esm|801", "set": 8.0}]
+		},
+		
+		{
+			"comment": "MirelurkRace", "formID": "Fallout4.esm|23FFC",
+			"actorValues": [{"formID": "DamageThreshold.esm|801", "set": 6.0}]
+		},
+		{
+			"comment": "MirelurkHunterRace", "formID": "Fallout4.esm|64C60",
+			"actorValues": [{"formID": "DamageThreshold.esm|801", "set": 18.0}]
+		},
+		{
+			"comment": "MirelurkKingRace", "formID": "Fallout4.esm|B7F91",
+			"actorValues": [{"formID": "DamageThreshold.esm|801", "set": 12.0}]
+		},
+		{
+			"comment": "MirelurkQueenRace", "formID": "Fallout4.esm|E12A6",
+			"actorValues": [{"formID": "DamageThreshold.esm|801", "set": 48.0}]
+		},
+		
+		{
+			"comment": "FeralGhoulRace", "formID": "Fallout4.esm|6B4EC",
+			"actorValues": [{"formID": "DamageThreshold.esm|801", "set": 2.0}]
+		},
+		{
+			"comment": "FeralGhoulGlowingRace", "formID": "Fallout4.esm|A96BF",
+			"actorValues": [{"formID": "DamageThreshold.esm|801", "set": 6.0}]
+		},
+		
+		{
+			"comment": "SuperMutantRace", "formID": "Fallout4.esm|1A009",
+			"actorValues": [{"formID": "DamageThreshold.esm|801", "set": 6.0}]
+		},
+		{
+			"comment": "SupermutantBehemothRace", "formID": "Fallout4.esm|BB7D9",
+			"actorValues": [{"formID": "DamageThreshold.esm|801", "set": 22.0}]
+		},
+		{
+			"comment": "FEVHoundRace", "formID": "Fallout4.esm|90C33",
+			"actorValues": [{"formID": "DamageThreshold.esm|801", "set": 8.0}]
+		},
+		
+		{
+			"comment": "DeathclawRace", "formID": "Fallout4.esm|1DB4A",
+			"actorValues": [{"formID": "DamageThreshold.esm|801", "set": 16.0}]
+		},
+		
+		{
+			"comment": "TurretBubbleRace", "formID": "Fallout4.esm|B28D3",
+			"actorValues": [{"formID": "DamageThreshold.esm|801", "set": 12.0}]
+		},
+		{
+			"comment": "TurretTripodRace", "formID": "Fallout4.esm|B1F08",
+			"actorValues": [{"formID": "DamageThreshold.esm|801", "set": 12.0}]
+		},
+		{
+			"comment": "TurretWorkshopRace", "formID": "Fallout4.esm|1A6D64",
+			"actorValues": [{"formID": "DamageThreshold.esm|801", "set": 12.0}]
+		},
+		
+		{
+			"comment": "VertibirdRace", "formID": "Fallout4.esm|D77E3",
+			"actorValues": [{"formID": "DamageThreshold.esm|801", "set": 64.0}]
+		},
+		
+		{
+			"comment": "EyeBotRace", "formID": "Fallout4.esm|A563A",
+			"actorValues": [{"formID": "DamageThreshold.esm|801", "set": 6.0}]
+		},
+		{
+			"comment": "HandyRace", "formID": "Fallout4.esm|359F4",
+			"actorValues": [{"formID": "DamageThreshold.esm|801", "set": 8.0}]
+		},
+		{
+			"comment": "ProtectronRace", "formID": "Fallout4.esm|DFB33",
+			"actorValues": [{"formID": "DamageThreshold.esm|801", "set": 12.0}]
+		},
+		{
+			"comment": "AssaultronRace", "formID": "Fallout4.esm|D8417",
+			"actorValues": [{"formID": "DamageThreshold.esm|801", "set": 32.0}]
+		},
+		{
+			"comment": "SentryBotRace", "formID": "Fallout4.esm|AE0B7",
+			"actorValues": [{"formID": "DamageThreshold.esm|801", "set": 44.0}]
+		},
+		
+		{
+			"comment": "SynthGen1Race", "formID": "Fallout4.esm|E8D09",
+			"actorValues": [{"formID": "DamageThreshold.esm|801", "set": 8.0}]
+		},
+		{
+			"comment": "SynthGen2Race", "formID": "Fallout4.esm|10BD65",
+			"actorValues": [{"formID": "DamageThreshold.esm|801", "set": 6.0}]
+		},
+		{
+			"comment": "SynthGen2RaceValentine", "formID": "Fallout4.esm|2261A4",
+			"actorValues": [{"formID": "DamageThreshold.esm|801", "set": 8.0}]
+		}
+	]
+}
