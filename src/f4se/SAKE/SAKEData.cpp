@@ -51,14 +51,10 @@ namespace SAKEData
 		spellData->numSpells = spellsIn.size();
 		UInt32 spellIdx = 0;
 
-		if (iDebugLogLevel == 2) {
-			_MESSAGE("        Edited Spells list:");
-		}
+		_MESSAGE("        Edited Spells list:");
 		for (std::vector<SpellItem*>::iterator itAdd = spellsIn.begin(); itAdd != spellsIn.end(); ++itAdd) {
 			spellData->spells[spellIdx] = *itAdd;
-			if (iDebugLogLevel == 2) {
-				_MESSAGE("          %i: 0x%08X", spellIdx, spellData->spells[spellIdx]->formID);
-			}
+			_MESSAGE("          %i: 0x%08X", spellIdx, spellData->spells[spellIdx]->formID);
 			spellIdx += 1;
 		}
 	}
@@ -81,9 +77,7 @@ namespace SAKEData
 				if (remKWID != 0) {
 					keywordsToRemove.push_back(remKWID);
 				}
-				if (iDebugLogLevel == 2) {
-					_MESSAGE("        Removing keyword %s", remKWStr.c_str());
-				}
+				_MESSAGE("        Removing keyword %s", remKWStr.c_str());
 			}
 		}
 
@@ -96,9 +90,7 @@ namespace SAKEData
 				if (addKWID != 0) {
 					keywordsToAdd.push_back(addKWID);
 				}
-				if (iDebugLogLevel == 2) {
-					_MESSAGE("        Adding keyword %s", addKWStr.c_str());
-				}
+				_MESSAGE("        Adding keyword %s", addKWStr.c_str());
 			}
 		}
 
@@ -159,9 +151,7 @@ namespace SAKEData
 		if (clearExisting) {
 			if (damageTypes->count != 0) {
 				damageTypes->Clear();
-				if (iDebugLogLevel == 2) {
-					_MESSAGE("        Clearing damage types...");
-				}
+				_MESSAGE("        Clearing damage types...");
 			}
 		}
 
@@ -194,9 +184,7 @@ namespace SAKEData
 								if (iDTSet == -1) {
 									iDTSet = checkDT.value;
 								}
-								if (iDebugLogLevel == 2) {
-									_MESSAGE("        Found existing damage type: %s, value: %i", dtIDStr.c_str(), checkDT.value);
-								}
+								_MESSAGE("        Found existing damage type: %s, value: %i", dtIDStr.c_str(), checkDT.value);
 								break;
 							}
 						}
@@ -212,9 +200,7 @@ namespace SAKEData
 						newDT.damageType = tempDT;
 						newDT.value = (UInt32)finalDTVal;
 						finalDamageTypes.push_back(newDT);
-						if (iDebugLogLevel == 2) {
-							_MESSAGE("        Adding damage type: %s, set: %i, add: %i", dtIDStr.c_str(), iDTSet, iDTAdd);
-						}
+						_MESSAGE("        Adding damage type: %s, set: %i, add: %i", dtIDStr.c_str(), iDTSet, iDTAdd);
 					}
 				}
 			}
@@ -285,37 +271,33 @@ void SAKEData::LoadOverrides_Weapon(TESObjectWEAP * weapForm, json & weaponOverr
 		_MESSAGE("        ERROR: No Weapon Form! dump: %s", weaponOverride.dump().c_str());
 		return;
 	}
-	if (iDebugLogLevel != 0) {
-		_MESSAGE("\n      Editing Weapon - 0x%08X (%s)", weapForm->formID, weapForm->GetFullName());
-	}
+	_MESSAGE("\n      Editing Weapon - 0x%08X (%s)", weapForm->formID, weapForm->GetFullName());
 
-	// -------- Base Form:
-
-	// ---- Name
+	// ---- Base Form:
+	// -- Name
 	if (!weaponOverride["name"].is_null()) {
 		std::string weaponName = weaponOverride["name"];
 		weapForm->fullName.name = BSFixedString(weaponName.c_str());
-		if (iDebugLogLevel == 2) {
-			_MESSAGE("        Edited base name: %s", weaponName.c_str());
-		}
+		_MESSAGE("        Base Name: %s", weapForm->fullName.name.c_str());
 	}
-
-	// ---- instance naming rules
+	// -- instance naming rules
 	if (!weaponOverride["instanceNamingRules"].is_null()) {
 		std::string inrID = weaponOverride["instanceNamingRules"];
 		BGSInstanceNamingRules * newNamingRules = reinterpret_cast<BGSInstanceNamingRules*>(SAKEUtilities::GetFormFromIdentifier(inrID.c_str()));
 		// null is acceptable here if the name should be static
 		weapForm->namingRules.rules = newNamingRules;
-		if (iDebugLogLevel == 2) {
-			_MESSAGE("        Edited naming rules: %s", inrID.c_str());
+		if (weapForm->namingRules.rules) {
+			_MESSAGE("        Instance Naming Rules: 0x%08X", weapForm->namingRules.rules->formID);
+		}
+		else {
+			_MESSAGE("        Instance Naming Rules: none");
 		}
 	}
-
-	// ---- keywords
+	// -- keywords
 	if (!weaponOverride["keywords"].is_null()) {
 		json keywordsObject = weaponOverride["keywords"];
 		LoadData_KeywordForm(&weapForm->keyword, keywordsObject);
-		if ((iDebugLogLevel == 2) && (weapForm->keyword.numKeywords != 0)) {
+		if (weapForm->keyword.numKeywords != 0) {
 			_MESSAGE("        Final Keywords list:");
 			for (UInt32 j = 0; j < weapForm->keyword.numKeywords; j++) {
 				_MESSAGE("          %i: 0x%08X (%s)", j, weapForm->keyword.keywords[j]->formID, weapForm->keyword.keywords[j]->keyword.c_str());
@@ -323,7 +305,7 @@ void SAKEData::LoadOverrides_Weapon(TESObjectWEAP * weapForm, json & weaponOverr
 		}
 	}
 
-	// -------- InstanceData --------
+	// ---- InstanceData
 	// anything past this point is only processed for weapons that can have ObjectMods
 	TESObjectWEAP::InstanceData *instanceData = &weapForm->weapData;
 	if (!instanceData) {
@@ -331,25 +313,22 @@ void SAKEData::LoadOverrides_Weapon(TESObjectWEAP * weapForm, json & weaponOverr
 		return;
 	}
 
-	// ---- base damage
+	// -- base damage
 	if (!weaponOverride["damage"].is_null()) {
 		int iBaseDamage = weaponOverride["damage"];
 		if (iBaseDamage > 0) {
 			instanceData->baseDamage = (UInt16)iBaseDamage;
-			if (iDebugLogLevel == 2) {
-				_MESSAGE("        Edited base damage: %i", iBaseDamage);
-			}
+			_MESSAGE("        Base Damage: %i", instanceData->baseDamage);
 		}
 	}
-
-	// ---- damageTypes
+	// -- damageTypes
 	if (weaponOverride["damageTypes"].is_array() && !weaponOverride["damageTypes"].empty()) {
 		json damageTypesObject = weaponOverride["damageTypes"];
 		if (!instanceData->damageTypes) {
 			instanceData->damageTypes = new tArray<TBO_InstanceData::DamageTypes>();
 		}
 		LoadData_DamageTypes(instanceData->damageTypes, damageTypesObject, false);
-		if ((iDebugLogLevel == 2) && (instanceData->damageTypes && (instanceData->damageTypes->count != 0))) {
+		if (instanceData->damageTypes && (instanceData->damageTypes->count != 0)) {
 			_MESSAGE("        Final Damage Types list:");
 			for (UInt32 j = 0; j < instanceData->damageTypes->count; j++) {
 				TBO_InstanceData::DamageTypes checkDT;
@@ -359,60 +338,45 @@ void SAKEData::LoadOverrides_Weapon(TESObjectWEAP * weapForm, json & weaponOverr
 			}
 		}
 	}
-
-	// ---- secondary/bash damage 
+	// -- secondary/bash damage 
 	if (!weaponOverride["secondaryDamage"].is_null()) {
 		float fSecDmg = weaponOverride["secondaryDamage"];
 		if (fSecDmg > 0.0) {
 			instanceData->secondary = fSecDmg;
-			if (iDebugLogLevel == 2) {
-				_MESSAGE("        Edited secondary damage: %.2f", fSecDmg);
-			}
+			_MESSAGE("        Base Secondary Damage: %.2f", instanceData->secondary);
 		}
 	}
-
-	// ---- AP cost
+	// -- AP cost
 	if (!weaponOverride["apCost"].is_null()) {
 		float fAPCost = weaponOverride["apCost"];
 		if (fAPCost > 0.0) {
 			instanceData->actionCost = fAPCost;
-			if (iDebugLogLevel == 2) {
-				_MESSAGE("        Edited AP cost: %.2f", fAPCost);
-			}
+			_MESSAGE("        Base AP Cost: %.2f", instanceData->actionCost);
 		}
 	}
-
-	// ---- crit charge multiplier
+	// -- crit charge multiplier
 	if (!weaponOverride["critChargeMult"].is_null()) {
 		float fCritChargeMult = weaponOverride["critChargeMult"];
 		if (fCritChargeMult > 0.0) {
 			instanceData->critChargeBonus = fCritChargeMult;
-			if (iDebugLogLevel == 2) {
-				_MESSAGE("        Edited crit charge multiplier: %.2f", fCritChargeMult);
-			}
+			_MESSAGE("        Base Crit Charge Multiplier: %.2f", instanceData->critChargeBonus);
 		}
 	}
-
-	// ---- crit damage multiplier
+	// -- crit damage multiplier
 	if (!weaponOverride["critDamageMult"].is_null()) {
 		float fCritDmgMult = weaponOverride["critDamageMult"];
 		if (fCritDmgMult > 0.0) {
 			instanceData->critDamageMult = fCritDmgMult;
-			if (iDebugLogLevel == 2) {
-				_MESSAGE("        Edited crit damage multiplier: %.2f", fCritDmgMult);
-			}
+			_MESSAGE("        Base Crit Damage Multiplier: %.2f", fCritDmgMult);
 		}
 	}
-
-	// ---- range
+	// ---- range:
 	// -- min
 	if (!weaponOverride["rangeMin"].is_null()) {
 		float fMinRange = weaponOverride["rangeMin"];
 		if (fMinRange > 0.0) {
 			instanceData->minRange = fMinRange;
-			if (iDebugLogLevel == 2) {
-				_MESSAGE("        Edited minimum range: %.2f", fMinRange);
-			}
+			_MESSAGE("        Base Minimum Range: %.2f", instanceData->minRange);
 		}
 	}
 	// -- max
@@ -420,124 +384,96 @@ void SAKEData::LoadOverrides_Weapon(TESObjectWEAP * weapForm, json & weaponOverr
 		float fMaxRange = weaponOverride["rangeMax"];
 		if (fMaxRange > 0.0) {
 			instanceData->minRange = fMaxRange;
-			if (iDebugLogLevel == 2) {
-				_MESSAGE("        Edited maximum range: %.2f", fMaxRange);
-			}
+			_MESSAGE("        Base Maximum Range: %.2f", instanceData->minRange);
 		}
 	}
-
-	// ---- out of range damage multiplier
+	// -- out of range damage multiplier
 	if (!weaponOverride["outOfRangeMult"].is_null()) {
 		float fOoRMult = weaponOverride["outOfRangeMult"];
 		if (fOoRMult > 0.0) {
 			instanceData->outOfRangeMultiplier = fOoRMult;
-			if (iDebugLogLevel == 2) {
-				_MESSAGE("        Edited oor damage mult: %.2f", fOoRMult);
-			}
+			_MESSAGE("        Base OOR Damage Mult: %.2f", instanceData->outOfRangeMultiplier);
 		}
 	}
-
-	// ---- attack delay
+	// -- attack delay
 	if (!weaponOverride["attackDelay"].is_null()) {
 		float fAttackDelay = weaponOverride["attackDelay"];
 		if (fAttackDelay > 0.0) {
 			instanceData->attackDelay = fAttackDelay;
-			if (iDebugLogLevel == 2) {
-				_MESSAGE("        Edited attack delay: %.2f", fAttackDelay);
-			}
+			_MESSAGE("        Base Attack Delay: %.2f", instanceData->attackDelay);
 		}
 	}
-
-	// ---- speed multiplier
+	// -- speed multiplier
 	if (!weaponOverride["speedMult"].is_null()) {
 		float fSpeedMult = weaponOverride["speedMult"];
 		if (fSpeedMult > 0.0) {
 			instanceData->speed = fSpeedMult;
-			if (iDebugLogLevel == 2) {
-				_MESSAGE("        Edited speed mult: %.2f", fSpeedMult);
-			}
+			_MESSAGE("        Base Speed Mult: %.2f", instanceData->speed);
 		}
 	}
-
-	// ---- reach
+	// -- reach
 	if (!weaponOverride["reach"].is_null()) {
 		float fReach = weaponOverride["reach"];
 		if (fReach > 0.0) {
 			instanceData->reach = fReach;
-			if (iDebugLogLevel == 2) {
-				_MESSAGE("        Edited reach: %.2f", fReach);
-			}
+			_MESSAGE("        Base Reach: %.2f", instanceData->reach);
 		}
 	}
-
-	// ---- stagger
+	// -- stagger
 	if (!weaponOverride["stagger"].is_null()) {
 		int iStagger = weaponOverride["stagger"];
 		if (iStagger >= 0) {
 			instanceData->stagger = (UInt32)iStagger;
-			if (iDebugLogLevel == 2) {
-				_MESSAGE("        Edited stagger: %i", iStagger);
-			}
+			_MESSAGE("        Base Stagger: %i", instanceData->stagger);
 		}
 	}
-
-	// ---- value
+	// -- value
 	if (!weaponOverride["value"].is_null()) {
 		int iBaseValue = weaponOverride["value"];
 		if (iBaseValue > 0) {
 			instanceData->value = (UInt32)iBaseValue;
-			if (iDebugLogLevel == 2) {
-				_MESSAGE("        Edited value: %i", iBaseValue);
-			}
+			_MESSAGE("        Base Value: %i", instanceData->value);
 		}
 	}
-
-	// ---- weight
+	// -- weight
 	if (!weaponOverride["weight"].is_null()) {
 		float fWeight = weaponOverride["weight"];
 		if (fWeight > 0.0) {
 			instanceData->weight = fWeight;
-			if (iDebugLogLevel == 2) {
-				_MESSAGE("        Edited weight: %.2f", fWeight);
-			}
+			_MESSAGE("        Base Weight: %.2f", instanceData->weight);
 		}
 	}
-
-	// ---- ammo
+	// -- ammo
 	if (!weaponOverride["ammo"].is_null()) {
 		std::string ammoID = weaponOverride["ammo"];
 		TESAmmo * newAmmo = reinterpret_cast<TESAmmo*>(SAKEUtilities::GetFormFromIdentifier(ammoID.c_str()));
 		if (newAmmo) {
 			instanceData->ammo = newAmmo;
-			if (iDebugLogLevel == 2) {
-				_MESSAGE("        Edited ammo form: %s", ammoID.c_str());
-			}
+			_MESSAGE("        Ammo: 0x%08X", instanceData->ammo->formID);
 		}
 	}
-
-	// ---- NPC ammo leveled list - can be none
+	// -- NPC ammo leveled list - can be none
 	if (!weaponOverride["npcAmmoLeveledList"].is_null()) {
 		std::string ammoListID = weaponOverride["npcAmmoLeveledList"];
 		TESLevItem * newAmmoList = reinterpret_cast<TESLevItem*>(SAKEUtilities::GetFormFromIdentifier(ammoListID.c_str()));
 		instanceData->addAmmoList = newAmmoList;
-		if (iDebugLogLevel == 2) {
-			_MESSAGE("        Edited NPC ammo list form: %s", ammoListID.c_str());
+		if (instanceData->addAmmoList) {
+			_MESSAGE("        NPC Ammo List: 0x%08X", instanceData->addAmmoList->formID);
+		}
+		else {
+			_MESSAGE("        NPC Ammo List: none");
 		}
 	}
-
-	// ---- impactDataSet
+	// -- impactDataSet
 	if (!weaponOverride["impactDataSet"].is_null()) {
 		std::string impactsID = weaponOverride["impactDataSet"];
 		BGSImpactDataSet * newImpacts = reinterpret_cast<BGSImpactDataSet*>(SAKEUtilities::GetFormFromIdentifier(impactsID.c_str()));
 		if (newImpacts) {
 			instanceData->unk58 = newImpacts;
-			if (iDebugLogLevel == 2) {
-				_MESSAGE("        Edited impactDataSet form: %s", impactsID.c_str());
-			}
+			_MESSAGE("        ImpactDataSet: %s", impactsID.c_str());
 		}
 	}
-
-	// ---- Enchantments
+	// -- Enchantments
 	if (weaponOverride["enchantments"].is_array() && !weaponOverride["enchantments"].empty()) {
 		if (!instanceData->enchantments) {
 			instanceData->enchantments = new tArray<EnchantmentItem*>();
@@ -549,28 +485,23 @@ void SAKEData::LoadOverrides_Weapon(TESObjectWEAP * weapForm, json & weaponOverr
 				EnchantmentItem * newEnchantment = reinterpret_cast<EnchantmentItem*>(SAKEUtilities::GetFormFromIdentifier(enchID.c_str()));
 				if (newEnchantment) {
 					instanceData->enchantments->Push(newEnchantment);
-					if (iDebugLogLevel == 2) {
-						_MESSAGE("        Adding Enchantment: %s", enchID.c_str());
-					}
+					_MESSAGE("        Adding Enchantment: %s", enchID.c_str());
 				}
 			}
 		}
-		if (iDebugLogLevel == 2) {
-			if (instanceData->enchantments->count != 0) {
-				_MESSAGE("        Final Enchantments list:");
-				for (UInt32 j = 0; j < instanceData->enchantments->count; j++) {
-					EnchantmentItem * tempEnch = nullptr;
-					if (instanceData->enchantments->GetNthItem(j, tempEnch)) {
-						if (tempEnch) {
-							_MESSAGE("          %i:  0x%08X", j, tempEnch->formID);
-						}
+		if (instanceData->enchantments->count != 0) {
+			_MESSAGE("        Final Enchantments list:");
+			for (UInt32 j = 0; j < instanceData->enchantments->count; j++) {
+				EnchantmentItem * tempEnch = nullptr;
+				if (instanceData->enchantments->GetNthItem(j, tempEnch)) {
+					if (tempEnch) {
+						_MESSAGE("          %i:  0x%08X", j, tempEnch->formID);
 					}
 				}
 			}
 		}
 	}
-
-	// ---- ActorValue modifiers
+	// -- ActorValue modifiers
 	if (weaponOverride["actorValues"].is_array() && !weaponOverride["actorValues"].empty()) {
 		if (!instanceData->modifiers) {
 			instanceData->modifiers = new tArray<TBO_InstanceData::ValueModifier>();
@@ -611,66 +542,273 @@ void SAKEData::LoadOverrides_Weapon(TESObjectWEAP * weapForm, json & weaponOverr
 						newAVMod.avInfo = newAV;
 						newAVMod.unk08 = (UInt32)newAVValue;
 						instanceData->modifiers->Push(newAVMod);
-						if (iDebugLogLevel == 2) {
-							_MESSAGE("        Adding actorValueMod: %s - set: %i, add: %i", avID.c_str(), iAVSet, iAVAdd);
-						}
+						_MESSAGE("        Adding actorValueMod: %s - set: %i, add: %i", avID.c_str(), iAVSet, iAVAdd);
 					}
 				}
 			}
 		}
-		if (iDebugLogLevel == 2) {
-			_MESSAGE("        Final ActorValue Modifiers:");
-			if (instanceData->modifiers->count != 0) {
-				for (UInt32 j = 0; j < instanceData->modifiers->count; j++) {
-					TBO_InstanceData::ValueModifier checkAVMod;
-					if (instanceData->modifiers->GetNthItem(j, checkAVMod)) {
-						if (checkAVMod.avInfo) {
-							_MESSAGE("          %i:  0x%08X - %i", j, checkAVMod.avInfo->formID, checkAVMod.unk08);
-						}
+		_MESSAGE("        Final ActorValue Modifiers:");
+		if (instanceData->modifiers->count != 0) {
+			for (UInt32 j = 0; j < instanceData->modifiers->count; j++) {
+				TBO_InstanceData::ValueModifier checkAVMod;
+				if (instanceData->modifiers->GetNthItem(j, checkAVMod)) {
+					if (checkAVMod.avInfo) {
+						_MESSAGE("          %i:  0x%08X - %i", j, checkAVMod.avInfo->formID, checkAVMod.unk08);
 					}
 				}
 			}
 		}
 	}
-
-	// ---- Flags:
+	// -- Flags:
 	if (instanceData->flags && !weaponOverride["flags"].is_null()) {
 		json flagsObj = weaponOverride["flags"];
-		// -- NPCs Use Ammo
-		if (!flagsObj["npcsUseAmmo"].is_null()) {
-			bool bUseAmmo = flagsObj["npcsUseAmmo"];
-			if (bUseAmmo) {
+		bool bFlagCheck = false;
+		// -- PlayerOnly
+		if (!flagsObj["PlayerOnly"].is_null()) {
+			bFlagCheck = flagsObj["PlayerOnly"];
+			if (bFlagCheck) {
+				instanceData->flags |= wFlag_PlayerOnly;
+			}
+			else {
+				instanceData->flags &= ~wFlag_PlayerOnly;
+			}
+		}
+		// -- NPCsUseAmmo
+		if (!flagsObj["NPCsUseAmmo"].is_null()) {
+			bFlagCheck = flagsObj["NPCsUseAmmo"];
+			if (bFlagCheck) {
 				instanceData->flags |= wFlag_NPCsUseAmmo;
-				if (iDebugLogLevel == 2) {
-					_MESSAGE("        Enabled NPCsUseAmmo");
-				}
 			}
 			else {
 				instanceData->flags &= ~wFlag_NPCsUseAmmo;
-				if (iDebugLogLevel == 2) {
-					_MESSAGE("        Disabled NPCsUseAmmo");
-				}
+			}
+		}
+		// -- NoJamAfterReload
+		if (!flagsObj["NoJamAfterReload"].is_null()) {
+			bFlagCheck = flagsObj["NoJamAfterReload"];
+			if (bFlagCheck) {
+				instanceData->flags |= wFlag_NoJamAfterReload;
+			}
+			else {
+				instanceData->flags &= ~wFlag_NoJamAfterReload;
+			}
+		}
+		// -- ChargingReload
+		if (!flagsObj["ChargingReload"].is_null()) {
+			bFlagCheck = flagsObj["ChargingReload"];
+			if (bFlagCheck) {
+				instanceData->flags |= wFlag_ChargingReload;
+			}
+			else {
+				instanceData->flags &= ~wFlag_ChargingReload;
+			}
+		}
+		// -- MinorCrime
+		if (!flagsObj["MinorCrime"].is_null()) {
+			bFlagCheck = flagsObj["MinorCrime"];
+			if (bFlagCheck) {
+				instanceData->flags |= wFlag_MinorCrime;
+			}
+			else {
+				instanceData->flags &= ~wFlag_MinorCrime;
+			}
+		}
+		// -- FixedRange
+		if (!flagsObj["FixedRange"].is_null()) {
+			bFlagCheck = flagsObj["FixedRange"];
+			if (bFlagCheck) {
+				instanceData->flags |= wFlag_FixedRange;
+			}
+			else {
+				instanceData->flags &= ~wFlag_FixedRange;
+			}
+		}
+		// -- NotUsedInNormalCombat
+		if (!flagsObj["NotUsedInNormalCombat"].is_null()) {
+			bFlagCheck = flagsObj["NotUsedInNormalCombat"];
+			if (bFlagCheck) {
+				instanceData->flags |= wFlag_NotUsedInNormalCombat;
+			}
+			else {
+				instanceData->flags &= ~wFlag_NotUsedInNormalCombat;
+			}
+		}
+		// -- CritEffectonDeath
+		if (!flagsObj["CritEffectonDeath"].is_null()) {
+			bFlagCheck = flagsObj["CritEffectonDeath"];
+			if (bFlagCheck) {
+				instanceData->flags |= wFlag_CritEffectonDeath;
+			}
+			else {
+				instanceData->flags &= ~wFlag_CritEffectonDeath;
+			}
+		}
+		// -- ChargingAttack
+		if (!flagsObj["ChargingAttack"].is_null()) {
+			bFlagCheck = flagsObj["ChargingAttack"];
+			if (bFlagCheck) {
+				instanceData->flags |= wFlag_ChargingAttack;
+			}
+			else {
+				instanceData->flags &= ~wFlag_ChargingAttack;
+			}
+		}
+		// -- HoldInputToPower
+		if (!flagsObj["HoldInputToPower"].is_null()) {
+			bFlagCheck = flagsObj["HoldInputToPower"];
+			if (bFlagCheck) {
+				instanceData->flags |= wFlag_HoldInputToPower;
+			}
+			else {
+				instanceData->flags &= ~wFlag_HoldInputToPower;
+			}
+		}
+		// -- NonHostile
+		if (!flagsObj["NonHostile"].is_null()) {
+			bFlagCheck = flagsObj["NonHostile"];
+			if (bFlagCheck) {
+				instanceData->flags |= wFlag_NonHostile;
+			}
+			else {
+				instanceData->flags &= ~wFlag_NonHostile;
+			}
+		}
+		// -- BoundWeapon
+		if (!flagsObj["BoundWeapon"].is_null()) {
+			bFlagCheck = flagsObj["BoundWeapon"];
+			if (bFlagCheck) {
+				instanceData->flags |= wFlag_BoundWeapon;
+			}
+			else {
+				instanceData->flags &= ~wFlag_BoundWeapon;
+			}
+		}
+		// -- IgnoresNormalResist
+		if (!flagsObj["IgnoresNormalResist"].is_null()) {
+			bFlagCheck = flagsObj["IgnoresNormalResist"];
+			if (bFlagCheck) {
+				instanceData->flags |= wFlag_IgnoresNormalResist;
+			}
+			else {
+				instanceData->flags &= ~wFlag_IgnoresNormalResist;
+			}
+		}
+		// -- Automatic
+		if (!flagsObj["Automatic"].is_null()) {
+			bFlagCheck = flagsObj["Automatic"];
+			if (bFlagCheck) {
+				instanceData->flags |= wFlag_Automatic;
+			}
+			else {
+				instanceData->flags &= ~wFlag_Automatic;
+			}
+		}
+		// -- RepeatableSingleFire
+		if (!flagsObj["RepeatableSingleFire"].is_null()) {
+			bFlagCheck = flagsObj["RepeatableSingleFire"];
+			if (bFlagCheck) {
+				instanceData->flags |= wFlag_RepeatableSingleFire;
+			}
+			else {
+				instanceData->flags &= ~wFlag_RepeatableSingleFire;
+			}
+		}
+		// -- CantDrop
+		if (!flagsObj["CantDrop"].is_null()) {
+			bFlagCheck = flagsObj["CantDrop"];
+			if (bFlagCheck) {
+				instanceData->flags |= wFlag_CantDrop;
+			}
+			else {
+				instanceData->flags &= ~wFlag_CantDrop;
+			}
+		}
+		// -- HideBackpack
+		if (!flagsObj["HideBackpack"].is_null()) {
+			bFlagCheck = flagsObj["HideBackpack"];
+			if (bFlagCheck) {
+				instanceData->flags |= wFlag_HideBackpack;
+			}
+			else {
+				instanceData->flags &= ~wFlag_HideBackpack;
+			}
+		}
+		// -- EmbeddedWeapon
+		if (!flagsObj["EmbeddedWeapon"].is_null()) {
+			bFlagCheck = flagsObj["EmbeddedWeapon"];
+			if (bFlagCheck) {
+				instanceData->flags |= wFlag_EmbeddedWeapon;
+			}
+			else {
+				instanceData->flags &= ~wFlag_EmbeddedWeapon;
+			}
+		}
+		// -- NotPlayable
+		if (!flagsObj["NotPlayable"].is_null()) {
+			bFlagCheck = flagsObj["NotPlayable"];
+			if (bFlagCheck) {
+				instanceData->flags |= wFlag_NotPlayable;
+			}
+			else {
+				instanceData->flags &= ~wFlag_NotPlayable;
+			}
+		}
+		// -- HasScope
+		if (!flagsObj["HasScope"].is_null()) {
+			bFlagCheck = flagsObj["HasScope"];
+			if (bFlagCheck) {
+				instanceData->flags |= wFlag_HasScope;
+			}
+			else {
+				instanceData->flags &= ~wFlag_HasScope;
+			}
+		}
+		// -- BoltAction
+		if (!flagsObj["BoltAction"].is_null()) {
+			bFlagCheck = flagsObj["BoltAction"];
+			if (bFlagCheck) {
+				instanceData->flags |= wFlag_BoltAction;
+			}
+			else {
+				instanceData->flags &= ~wFlag_BoltAction;
+			}
+		}
+		// -- SecondaryWeapon
+		if (!flagsObj["SecondaryWeapon"].is_null()) {
+			bFlagCheck = flagsObj["SecondaryWeapon"];
+			if (bFlagCheck) {
+				instanceData->flags |= wFlag_SecondaryWeapon;
+			}
+			else {
+				instanceData->flags &= ~wFlag_SecondaryWeapon;
+			}
+		}
+		// -- DisableShells
+		if (!flagsObj["DisableShells"].is_null()) {
+			bFlagCheck = flagsObj["DisableShells"];
+			if (bFlagCheck) {
+				instanceData->flags |= wFlag_DisableShells;
+			}
+			else {
+				instanceData->flags &= ~wFlag_DisableShells;
 			}
 		}
 	}
-
-	// -------- AimModel - guns only:
+	// ---- AimModel - guns only:
 	if (instanceData->aimModel && !weaponOverride["aimModel"].is_null()) {
 		json aimModelObject = weaponOverride["aimModel"];
 
-		// ---- AimModel Form
+		// -- AimModel Form
 		if (!aimModelObject["formID"].is_null()) {
 			std::string aimmodelID = aimModelObject["formID"];
 			BGSAimModel * newAimModel = reinterpret_cast<BGSAimModel*>(SAKEUtilities::GetFormFromIdentifier(aimmodelID.c_str()));
 			if (newAimModel) {
 				instanceData->aimModel = newAimModel;
-				if (iDebugLogLevel == 2) {
-					_MESSAGE("        Edited Aim Model Form: %s", aimmodelID.c_str());
-				}
+				_MESSAGE("        Aim Model: %s", aimmodelID.c_str());
 			}
 		}
 
-		TempAimModel *aimModel = reinterpret_cast<TempAimModel*>(instanceData->aimModel);
+		TempBGSAimModel *aimModel = reinterpret_cast<TempBGSAimModel*>(instanceData->aimModel);
 		if (aimModel) {
 			// ---- Cone of Fire:
 			if (!aimModelObject["coneOfFire"].is_null()) {
@@ -681,9 +819,7 @@ void SAKEData::LoadOverrides_Weapon(TESObjectWEAP * weapForm, json & weaponOverr
 					fCoFMin = cofObj["minAngle"];
 					if (fCoFMin > 0.0) {
 						aimModel->CoF_MinAngle = fCoFMin;
-						if (iDebugLogLevel == 2) {
-							_MESSAGE("        Edited AimModel: Cone of Fire - Min Angle: %.2f", fCoFMin);
-						}
+						_MESSAGE("        AimModel: Cone of Fire - Min Angle: %.2f", aimModel->CoF_MinAngle);
 					}
 				}
 				else {
@@ -698,9 +834,7 @@ void SAKEData::LoadOverrides_Weapon(TESObjectWEAP * weapForm, json & weaponOverr
 							fCoFMax = fCoFMin;
 						}
 						aimModel->CoF_MaxAngle = fCoFMax;
-						if (iDebugLogLevel == 2) {
-							_MESSAGE("        Edited AimModel: Cone of Fire - Max Angle: %.2f", fCoFMax);
-						}
+						_MESSAGE("        AimModel: Cone of Fire - Max Angle: %.2f", aimModel->CoF_MaxAngle);
 					}
 				}
 				// -- increase per shot
@@ -708,9 +842,7 @@ void SAKEData::LoadOverrides_Weapon(TESObjectWEAP * weapForm, json & weaponOverr
 					float fCoFIncPerShot = cofObj["increasePerShot"];
 					if (fCoFIncPerShot >= 0.0) {
 						aimModel->CoF_IncrPerShot = fCoFIncPerShot;
-						if (iDebugLogLevel == 2) {
-							_MESSAGE("        Edited AimModel: Cone of Fire - Increase per Shot: %.2f", fCoFIncPerShot);
-						}
+						_MESSAGE("        AimModel: Cone of Fire - Increase per Shot: %.2f", aimModel->CoF_IncrPerShot);
 					}
 				}
 				// -- decrease per second
@@ -718,9 +850,7 @@ void SAKEData::LoadOverrides_Weapon(TESObjectWEAP * weapForm, json & weaponOverr
 					float fCoFDecPerSec = cofObj["decreasePerSec"];
 					if (fCoFDecPerSec >= 0.0) {
 						aimModel->CoF_DecrPerSec = fCoFDecPerSec;
-						if (iDebugLogLevel == 2) {
-							_MESSAGE("        Edited AimModel: Cone of Fire - Decrease per Second: %.2f", fCoFDecPerSec);
-						}
+						_MESSAGE("        AimModel: Cone of Fire - Decrease per Second: %.2f", aimModel->CoF_DecrPerSec);
 					}
 				}
 				// -- decrease delay ms
@@ -728,9 +858,7 @@ void SAKEData::LoadOverrides_Weapon(TESObjectWEAP * weapForm, json & weaponOverr
 					int iCoFDecDelayMS = cofObj["decreaseDelayMS"];
 					if (iCoFDecDelayMS >= 0) {
 						aimModel->CoF_DecrDelayMS = (UInt32)iCoFDecDelayMS;
-						if (iDebugLogLevel == 2) {
-							_MESSAGE("        Edited AimModel: Cone of Fire - Decrease Delay ms: %i", iCoFDecDelayMS);
-						}
+						_MESSAGE("        AimModel: Cone of Fire - Decrease Delay ms: %i", aimModel->CoF_DecrDelayMS);
 					}
 				}
 				// -- sneak multiplier
@@ -738,9 +866,7 @@ void SAKEData::LoadOverrides_Weapon(TESObjectWEAP * weapForm, json & weaponOverr
 					float fCoFSneakMult = cofObj["sneakMult"];
 					if (fCoFSneakMult >= 0.0) {
 						aimModel->CoF_SneakMult = fCoFSneakMult;
-						if (iDebugLogLevel == 2) {
-							_MESSAGE("        Edited AimModel: Cone of Fire - Sneak Multiplier: %.2f", fCoFSneakMult);
-						}
+						_MESSAGE("        AimModel: Cone of Fire - Sneak Multiplier: %.2f", aimModel->CoF_SneakMult);
 					}
 				}
 				// -- ironsights multiplier
@@ -748,9 +874,7 @@ void SAKEData::LoadOverrides_Weapon(TESObjectWEAP * weapForm, json & weaponOverr
 					float fCoFIronsightsMult = cofObj["ironSightsMult"];
 					if (fCoFIronsightsMult >= 0.0) {
 						aimModel->CoF_IronSightsMult = fCoFIronsightsMult;
-						if (iDebugLogLevel == 2) {
-							_MESSAGE("        Edited AimModel: Cone of Fire - Ironsights Multiplier: %.2f", fCoFIronsightsMult);
-						}
+						_MESSAGE("        AimModel: Cone of Fire - Ironsights Multiplier: %.2f", aimModel->CoF_IronSightsMult);
 					}
 				}
 				cofObj.clear();
@@ -764,9 +888,7 @@ void SAKEData::LoadOverrides_Weapon(TESObjectWEAP * weapForm, json & weaponOverr
 					float fArcDegrees = recObj["arcDegrees"];
 					if (fArcDegrees > 0.0) {
 						aimModel->Rec_ArcMaxDegrees = fArcDegrees;
-						if (iDebugLogLevel == 2) {
-							_MESSAGE("        Edited AimModel: Recoil - Arc Degrees (max angle diff.): %.2f", fArcDegrees);
-						}
+						_MESSAGE("        AimModel: Recoil - Arc Degrees (max angle diff.): %.2f", aimModel->Rec_ArcMaxDegrees);
 					}
 				}
 				// ---- arc rotate
@@ -774,9 +896,7 @@ void SAKEData::LoadOverrides_Weapon(TESObjectWEAP * weapForm, json & weaponOverr
 					float fArcRotate = recObj["arcRotate"];
 					if (fArcRotate > 0.0) {
 						aimModel->Rec_ArcRotate = fArcRotate;
-						if (iDebugLogLevel == 2) {
-							_MESSAGE("        Edited AimModel: Recoil - Arc Rotate (base angle): %.2f", fArcRotate);
-						}
+						_MESSAGE("        AimModel: Recoil - Arc Rotate (base angle): %.2f", aimModel->Rec_ArcRotate);
 					}
 				}
 				// ---- diminish spring force
@@ -784,9 +904,7 @@ void SAKEData::LoadOverrides_Weapon(TESObjectWEAP * weapForm, json & weaponOverr
 					float fRecoilSpringForce = recObj["diminishSpringForce"];
 					if (fRecoilSpringForce >= 0.0) {
 						aimModel->Rec_DimSpringForce = fRecoilSpringForce;
-						if (iDebugLogLevel == 2) {
-							_MESSAGE("        Edited AimModel: Recoil - Diminish Spring Force: %.2f", fRecoilSpringForce);
-						}
+						_MESSAGE("        AimModel: Recoil - Diminish Spring Force: %.2f", aimModel->Rec_DimSpringForce);
 					}
 				}
 				// ---- diminish sights mult.
@@ -794,9 +912,7 @@ void SAKEData::LoadOverrides_Weapon(TESObjectWEAP * weapForm, json & weaponOverr
 					float fRecoilDimSightsMult = recObj["diminishSightsMult"];
 					if (fRecoilDimSightsMult >= 0.0) {
 						aimModel->Rec_DimSightsMult = fRecoilDimSightsMult;
-						if (iDebugLogLevel == 2) {
-							_MESSAGE("        Edited AimModel: Recoil - Diminish Sights Mult.: %.2f", fRecoilDimSightsMult);
-						}
+						_MESSAGE("        AimModel: Recoil - Diminish Sights Mult.: %.2f", aimModel->Rec_DimSightsMult);
 					}
 				}
 				// ---- min recoil
@@ -805,9 +921,7 @@ void SAKEData::LoadOverrides_Weapon(TESObjectWEAP * weapForm, json & weaponOverr
 					fRecoilMin = recObj["minPerShot"];
 					if (fRecoilMin >= 0.0) {
 						aimModel->Rec_MinPerShot = fRecoilMin;
-						if (iDebugLogLevel == 2) {
-							_MESSAGE("        Edited AimModel: Recoil - Min. Per Shot: %.2f", fRecoilMin);
-						}
+						_MESSAGE("        AimModel: Recoil - Min. Per Shot: %.2f", aimModel->Rec_MinPerShot);
 					}
 				}
 				else {
@@ -822,9 +936,7 @@ void SAKEData::LoadOverrides_Weapon(TESObjectWEAP * weapForm, json & weaponOverr
 					}
 					if (fRecoilMax >= 0.0) {
 						aimModel->Rec_MaxPerShot = fRecoilMax;
-						if (iDebugLogLevel == 2) {
-							_MESSAGE("        Edited AimModel: Recoil - Max. Per Shot: %.2f", fRecoilMax);
-						}
+						_MESSAGE("        AimModel: Recoil - Max. Per Shot: %.2f", aimModel->Rec_MaxPerShot);
 					}
 				}
 				// ---- hip multiplier
@@ -832,27 +944,26 @@ void SAKEData::LoadOverrides_Weapon(TESObjectWEAP * weapForm, json & weaponOverr
 					float fHipMult = recObj["hipMult"];
 					if (fHipMult > 0.0) {
 						aimModel->Rec_HipMult = fHipMult;
-						if (iDebugLogLevel == 2) {
-							_MESSAGE("        Edited AimModel: Recoil - Hip Multiplier: %.2f", fHipMult);
-						}
+						_MESSAGE("        AimModel: Recoil - Hip Multiplier: %.2f", aimModel->Rec_HipMult);
 					}
 				}
 				recObj.clear();
 			}
-
 		}
 		aimModelObject.clear();
 	}
-
-	// -------- InstanceData.FiringData - guns only:
+	// ---- InstanceData.FiringData - guns only:
 	if (instanceData->firingData) {
-		// ---- projectile override - can be none
+		// -- projectile override - can be none
 		if (!weaponOverride["projectileOverride"].is_null()) {
 			std::string projectileID = weaponOverride["projectileOverride"];
 			BGSProjectile * newProjectile = reinterpret_cast<BGSProjectile*>(SAKEUtilities::GetFormFromIdentifier(projectileID.c_str()));
 			instanceData->firingData->projectileOverride = newProjectile;
-			if (iDebugLogLevel == 2) {
-				_MESSAGE("        Edited projectile override form: %s", projectileID.c_str());
+			if (instanceData->firingData->projectileOverride) {
+				_MESSAGE("        Projectile Override: %s", instanceData->firingData->projectileOverride->formID);
+			}
+			else {
+				_MESSAGE("        Projectile Override: none");
 			}
 		}
 	}
@@ -866,36 +977,32 @@ void SAKEData::LoadOverrides_Armor(TESObjectARMO * armorForm, json & armorOverri
 		_MESSAGE("        ERROR: No Armor Form! dump: %s", armorOverride.dump().c_str());
 		return;
 	}
-	if (iDebugLogLevel != 0) {
-		_MESSAGE("\n      Editing Armor - 0x%08X (%s)", armorForm->formID, armorForm->GetFullName());
-	}
-
+	_MESSAGE("\n      Editing Armor - 0x%08X (%s)", armorForm->formID, armorForm->GetFullName());
+	
 	// ---- Base Form Edits:
-
-	// ---- name
+	// -- name
 	if (!armorOverride["name"].is_null()) {
 		std::string armorName = armorOverride["name"];
 		armorForm->fullName.name = BSFixedString(armorName.c_str());
-		if (iDebugLogLevel == 2) {
-			_MESSAGE("        Edited base name: %s", armorName.c_str());
-		}
+		_MESSAGE("        Base Name: %s", armorForm->fullName.name.c_str());
 	}
-
-	// ---- instance naming rules
+	// -- instance naming rules
 	if (!armorOverride["instanceNamingRules"].is_null()) {
 		std::string inrID = armorOverride["instanceNamingRules"];
 		BGSInstanceNamingRules * newNamingRules = reinterpret_cast<BGSInstanceNamingRules*>(SAKEUtilities::GetFormFromIdentifier(inrID.c_str()));
 		armorForm->namingRules.rules = newNamingRules;
-		if (iDebugLogLevel == 2) {
-			_MESSAGE("        Edited naming rules: %s", inrID.c_str());
+		if (armorForm->namingRules.rules) {
+			_MESSAGE("        Instance Naming Rules: 0x%08X", armorForm->namingRules.rules->formID);
+		}
+		else {
+			_MESSAGE("        Instance Naming Rules: none");
 		}
 	}
-
-	// ---- keywords
+	// -- keywords
 	if (!armorOverride["keywords"].is_null()) {
 		json keywordsObj = armorOverride["keywords"];
 		LoadData_KeywordForm(&armorForm->keywordForm, keywordsObj);
-		if ((iDebugLogLevel == 2) && (armorForm->keywordForm.numKeywords != 0)) {
+		if (armorForm->keywordForm.numKeywords != 0) {
 			_MESSAGE("        Final Keywords list:");
 			for (UInt32 j = 0; j < armorForm->keywordForm.numKeywords; j++) {
 				_MESSAGE("          %i: 0x%08X (%s)", j, armorForm->keywordForm.keywords[j]->formID, armorForm->keywordForm.keywords[j]->keyword.c_str());
@@ -907,58 +1014,45 @@ void SAKEData::LoadOverrides_Armor(TESObjectARMO * armorForm, json & armorOverri
 	// unk10 = enchantments
 	// unk18 = materialswaps
 	// unk38 = actorvaluemods
-
 	TESObjectARMO::InstanceData *instanceData = &armorForm->instanceData;
 	if (!instanceData) {
 		_MESSAGE("\n      WARNING: Armor has no instanceData!");
 		return;
 	}
-	
-	// ---- armor rating
+
+	// -- armor rating
 	if (!armorOverride["armorRating"].is_null()) {
 		int iArmorRating = armorOverride["armorRating"];
 		if (iArmorRating > 0) {
 			instanceData->armorRating = iArmorRating;
-			if (iDebugLogLevel == 2) {
-				_MESSAGE("        Edited armor rating: %i", iArmorRating);
-			}
+			_MESSAGE("        Base Armor Rating: %i", instanceData->armorRating);
 		}
 	}
-
-	// ---- value
+	// -- value
 	if (!armorOverride["value"].is_null()) {
 		int iBaseValue = armorOverride["value"];
 		if (iBaseValue > 0) {
 			instanceData->value = iBaseValue;
-			if (iDebugLogLevel == 2) {
-				_MESSAGE("        Edited value: %i", iBaseValue);
-			}
+			_MESSAGE("        Base Value: %i", instanceData->value);
 		}
 	}
-
-	// ---- weight
+	// -- weight
 	if (!armorOverride["weight"].is_null()) {
 		float fWeight = armorOverride["weight"];
 		if (fWeight > 0.0) {
 			instanceData->weight = fWeight;
-			if (iDebugLogLevel == 2) {
-				_MESSAGE("        Edited weight: %.2f", fWeight);
-			}
+			_MESSAGE("        Base Weight: %.2f", instanceData->weight);
 		}
 	}
-
-	// ---- health
+	// -- health
 	if (!armorOverride["health"].is_null()) {
 		int iBasehealth = armorOverride["health"];
 		if (iBasehealth > 0) {
 			instanceData->health = iBasehealth;
-			if (iDebugLogLevel == 2) {
-				_MESSAGE("        Edited health: %i", iBasehealth);
-			}
+			_MESSAGE("        Base Health: %i", instanceData->health);
 		}
 	}
-
-	// ---- damageType resistances
+	// -- damageType resistances
 	if (armorOverride["damageTypes"].is_array() && !armorOverride["damageTypes"].empty()) {
 		json damageResistsObject = armorOverride["damageTypes"];
 		bool clearExisting = false;
@@ -969,7 +1063,8 @@ void SAKEData::LoadOverrides_Armor(TESObjectARMO * armorForm, json & armorOverri
 			instanceData->damageTypes = new tArray<TBO_InstanceData::DamageTypes>();
 		}
 		LoadData_DamageTypes(instanceData->damageTypes, damageResistsObject, clearExisting);
-		if ((iDebugLogLevel == 2) && instanceData->damageTypes && (instanceData->damageTypes->count != 0)) {
+
+		if (instanceData->damageTypes && (instanceData->damageTypes->count != 0)) {
 			_MESSAGE("        Final DR list:");
 			for (UInt32 j = 0; j < instanceData->damageTypes->count; j++) {
 				TBO_InstanceData::DamageTypes checkDT;
@@ -979,8 +1074,7 @@ void SAKEData::LoadOverrides_Armor(TESObjectARMO * armorForm, json & armorOverri
 			}
 		}
 	}
-
-	// ---- Enchantments (unk10)
+	// -- Enchantments (unk10)
 	if (armorOverride["enchantments"].is_array() && !armorOverride["enchantments"].empty()) {
 		tArray<EnchantmentItem*> * tempEnchantments = nullptr;
 		if (instanceData->unk10 == 0) {
@@ -997,37 +1091,32 @@ void SAKEData::LoadOverrides_Armor(TESObjectARMO * armorForm, json & armorOverri
 					EnchantmentItem * newEnchantment = reinterpret_cast<EnchantmentItem*>(SAKEUtilities::GetFormFromIdentifier(enchID.c_str()));
 					if (newEnchantment) {
 						tempEnchantments->Push(newEnchantment);
-						if (iDebugLogLevel == 2) {
-							_MESSAGE("        Adding Enchantment: %s", enchID.c_str());
-						}
+						_MESSAGE("        Adding Enchantment: %s", enchID.c_str());
 					}
 				}
 			}
-
 			if (tempEnchantments->count != 0) {
 				instanceData->unk10 = (UInt64)tempEnchantments;
-				if (iDebugLogLevel == 2) {
-					tArray<EnchantmentItem*> * testEnchantments = reinterpret_cast<tArray<EnchantmentItem*>*>(instanceData->unk10);
-					if (testEnchantments && testEnchantments->count != 0) {
-						_MESSAGE("        Final Enchantments list (0x%016X):", instanceData->unk10);
-						for (UInt32 j = 0; j < testEnchantments->count; j++) {
-							EnchantmentItem * tempEnch = nullptr;
-							if (testEnchantments->GetNthItem(j, tempEnch)) {
-								if (tempEnch) {
-									_MESSAGE("          %i:  0x%08X", j, tempEnch->formID);
-								}
+				tArray<EnchantmentItem*> * testEnchantments = reinterpret_cast<tArray<EnchantmentItem*>*>(instanceData->unk10);
+				if (testEnchantments && testEnchantments->count != 0) {
+					_MESSAGE("        Final Enchantments list (0x%016X):", instanceData->unk10);
+					for (UInt32 j = 0; j < testEnchantments->count; j++) {
+						EnchantmentItem * tempEnch = nullptr;
+						if (testEnchantments->GetNthItem(j, tempEnch)) {
+							if (tempEnch) {
+								_MESSAGE("          %i:  0x%08X", j, tempEnch->formID);
 							}
 						}
 					}
 				}
+				
 			}
 			else {
 				instanceData->unk10 = 0;
 			}
 		}
 	}
-
-	// ---- ActorValue modifiers (unk38)
+	// -- ActorValue modifiers (unk38)
 	if (armorOverride["actorValues"].is_array() && !armorOverride["actorValues"].empty()) {
 		tArray<TBO_InstanceData::ValueModifier> * tempModifiers = nullptr;
 		if (instanceData->unk38 == 0) {
@@ -1053,7 +1142,6 @@ void SAKEData::LoadOverrides_Armor(TESObjectARMO * armorForm, json & armorOverri
 						if (!avObj["add"].is_null()) {
 							iAVAdd = avObj["add"];
 						}
-
 						for (UInt32 j = 0; j < tempModifiers->count; j++) {
 							TBO_InstanceData::ValueModifier checkAVMod;
 							if (tempModifiers->GetNthItem(j, checkAVMod)) {
@@ -1073,9 +1161,7 @@ void SAKEData::LoadOverrides_Armor(TESObjectARMO * armorForm, json & armorOverri
 							newAVMod.avInfo = newAV;
 							newAVMod.unk08 = (UInt32)newAVValue;
 							tempModifiers->Push(newAVMod);
-							if (iDebugLogLevel == 2) {
-								_MESSAGE("        Adding actorValueMod: %s - set: %i, add: %i", avID.c_str(), iAVSet, iAVAdd);
-							}
+							_MESSAGE("        Adding actorValueMod: %s - set: %i, add: %i", avID.c_str(), iAVSet, iAVAdd);
 						}
 					}
 				}
@@ -1083,16 +1169,14 @@ void SAKEData::LoadOverrides_Armor(TESObjectARMO * armorForm, json & armorOverri
 
 			if (tempModifiers->count != 0) {
 				instanceData->unk38 = (UInt64)tempModifiers;
-				if (iDebugLogLevel == 2) {
-					tArray<TBO_InstanceData::ValueModifier> * testModifiers = reinterpret_cast<tArray<TBO_InstanceData::ValueModifier>*>(instanceData->unk38);
-					_MESSAGE("        Final ActorValue Modifiers (0x%016X):", instanceData->unk38);
-					if (testModifiers->count != 0) {
-						for (UInt32 j = 0; j < testModifiers->count; j++) {
-							TBO_InstanceData::ValueModifier checkAVMod;
-							if (testModifiers->GetNthItem(j, checkAVMod)) {
-								if (checkAVMod.avInfo) {
-									_MESSAGE("          %i:  0x%08X - %i", j, checkAVMod.avInfo->formID, checkAVMod.unk08);
-								}
+				tArray<TBO_InstanceData::ValueModifier> * testModifiers = reinterpret_cast<tArray<TBO_InstanceData::ValueModifier>*>(instanceData->unk38);
+				_MESSAGE("        Final ActorValue Modifiers (0x%016X):", instanceData->unk38);
+				if (testModifiers->count != 0) {
+					for (UInt32 j = 0; j < testModifiers->count; j++) {
+						TBO_InstanceData::ValueModifier checkAVMod;
+						if (testModifiers->GetNthItem(j, checkAVMod)) {
+							if (checkAVMod.avInfo) {
+								_MESSAGE("          %i:  0x%08X - %i", j, checkAVMod.avInfo->formID, checkAVMod.unk08);
 							}
 						}
 					}
@@ -1103,7 +1187,6 @@ void SAKEData::LoadOverrides_Armor(TESObjectARMO * armorForm, json & armorOverri
 			}
 		}
 	}
-
 }
 
 
@@ -1114,11 +1197,9 @@ void SAKEData::LoadOverrides_Race(TESRace * raceForm, json & raceOverride)
 		_MESSAGE("        ERROR: No Race Form! dump: %s", raceOverride.dump().c_str());
 		return;
 	}
-	if (iDebugLogLevel != 0) {
-		_MESSAGE("\n      Editing Race - 0x%08X (%s)", raceForm->formID, raceForm->GetFullName());
-	}
+	_MESSAGE("\n      Editing Race - 0x%08X (%s)", raceForm->formID, raceForm->GetFullName());
 
-	// ---- ActorValues
+	// -- ActorValues
 	if (!raceOverride["actorValues"].is_null()) {
 		if (raceOverride["actorValues"].is_array() && !raceOverride["actorValues"].empty()) {
 			if (!raceForm->propertySheet.sheet) {
@@ -1148,9 +1229,7 @@ void SAKEData::LoadOverrides_Race(TESRace * raceForm, json & raceOverride)
 								if (raceForm->propertySheet.sheet->GetNthItem(i, checkAVProp)) {
 									if (checkAVProp.actorValue->formID == newAV->formID) {
 										checkAVProp.value = max(0.0, ((fAVSet < 0.0) ? (checkAVProp.value + fAVAdd) : (fAVSet + fAVAdd)));
-										if (iDebugLogLevel == 2) {
-											_MESSAGE("        Editing ActorValue %s - set: %.2f, add: %.2f", avIDStr.c_str(), fAVSet, fAVAdd);
-										}
+										_MESSAGE("        Editing ActorValue %s - set: %.2f, add: %.2f", avIDStr.c_str(), fAVSet, fAVAdd);
 										bFoundAV = true;
 										break;
 									}
@@ -1165,31 +1244,25 @@ void SAKEData::LoadOverrides_Race(TESRace * raceForm, json & raceOverride)
 						newAVProp.actorValue = newAV;
 						newAVProp.value = (fAVSet < 0.0) ? fAVAdd : (fAVSet + fAVAdd);
 						if (newAVProp.value >= 0.0) {
-							if (iDebugLogLevel == 2) {
-								_MESSAGE("        Adding ActorValue %s - set: %.2f, add: %.2f", avIDStr.c_str(), fAVSet, fAVAdd);
-							}
+							_MESSAGE("        Adding ActorValue %s - set: %.2f, add: %.2f", avIDStr.c_str(), fAVSet, fAVAdd);
 							raceForm->propertySheet.sheet->Push(newAVProp);
 						}
 					}
 				}
 			}
 
-			if (iDebugLogLevel == 2) {
-				if (raceForm->propertySheet.sheet->count != 0) {
-					_MESSAGE("        Final ActorValues list:");
-					for (UInt32 i = 0; i < raceForm->propertySheet.sheet->count; i++) {
-						BGSPropertySheet::AVIFProperty checkAVProp;
-						if (raceForm->propertySheet.sheet->GetNthItem(i, checkAVProp)) {
-							_MESSAGE("          %i: 0x%08X - %.2f", i, checkAVProp.actorValue->formID, checkAVProp.value);
-						}
+			if (raceForm->propertySheet.sheet->count != 0) {
+				_MESSAGE("        Final ActorValues list:");
+				for (UInt32 i = 0; i < raceForm->propertySheet.sheet->count; i++) {
+					BGSPropertySheet::AVIFProperty checkAVProp;
+					if (raceForm->propertySheet.sheet->GetNthItem(i, checkAVProp)) {
+						_MESSAGE("          %i: 0x%08X - %.2f", i, checkAVProp.actorValue->formID, checkAVProp.value);
 					}
 				}
 			}
-
 		}
 	}
-
-	// ---- Spells/Abilities
+	// -- Spells/Abilities
 	if (!raceOverride["spells"].is_null()) {
 		if (raceOverride["spells"].is_array() && !raceOverride["spells"].empty()) {
 			std::vector<SpellItem*> spellsList;
@@ -1211,11 +1284,10 @@ void SAKEData::LoadOverrides_Race(TESRace * raceForm, json & raceOverride)
 			spellsList.clear();
 		}
 	}
-
-	// ---- keywords
+	// -- keywords
 	if (!raceOverride["keywords"].is_null()) {
 		LoadData_KeywordForm(&raceForm->keywordForm, raceOverride["keywords"]);
-		if ((iDebugLogLevel == 2) && (raceForm->keywordForm.numKeywords != 0)) {
+		if (raceForm->keywordForm.numKeywords != 0) {
 			_MESSAGE("        Final Keywords list:");
 			for (UInt32 j = 0; j < raceForm->keywordForm.numKeywords; j++) {
 				_MESSAGE("          %i: 0x%08X (%s)", j, raceForm->keywordForm.keywords[j]->formID, raceForm->keywordForm.keywords[j]->keyword.c_str());
@@ -1232,18 +1304,15 @@ void SAKEData::LoadOverrides_Actor(TESNPC * actorForm, json & actorOverride)
 		_MESSAGE("        ERROR: No Actor Form! dump: %s", actorOverride.dump().c_str());
 		return;
 	}
-	if (iDebugLogLevel != 0) {
-		_MESSAGE("\n      Editing Actor - 0x%08X (%s)", actorForm->formID, actorForm->GetFullName());
-	}
-
-	// ---- Name
+	_MESSAGE("\n      Editing Actor - 0x%08X (%s)", actorForm->formID, actorForm->GetFullName());
+	
+	// -- Name
 	if (!actorOverride["name"].is_null()) {
 		std::string actorName = actorOverride["name"];
 		actorForm->fullName.name = BSFixedString(actorName.c_str());
-		_MESSAGE("        Edited name:  %s", actorForm->GetFullName());
+		_MESSAGE("        Name:  %s", actorForm->GetFullName());
 	}
-
-	// ---- ActorValues
+	// -- ActorValues
 	if (!actorOverride["actorValues"].is_null()) {
 		if (actorOverride["actorValues"].is_array() && !actorOverride["actorValues"].empty()) {
 			json curAV;
@@ -1269,14 +1338,12 @@ void SAKEData::LoadOverrides_Actor(TESNPC * actorForm, json & actorOverride)
 							actorForm->actorValueOwner.SetBase(newAV, newAVValue);
 						}
 
-						if (iDebugLogLevel == 2) {
-							if (actorForm->propertySheet.sheet->count != 0) {
-								_MESSAGE("        Final ActorValues list:");
-								for (UInt32 i = 0; i < actorForm->propertySheet.sheet->count; i++) {
-									BGSPropertySheet::AVIFProperty checkAVProp;
-									if (actorForm->propertySheet.sheet->GetNthItem(i, checkAVProp)) {
-										_MESSAGE("          %i: 0x%08X - %.2f", i, checkAVProp.actorValue->formID, checkAVProp.value);
-									}
+						if (actorForm->propertySheet.sheet->count != 0) {
+							_MESSAGE("        Final ActorValues list:");
+							for (UInt32 i = 0; i < actorForm->propertySheet.sheet->count; i++) {
+								BGSPropertySheet::AVIFProperty checkAVProp;
+								if (actorForm->propertySheet.sheet->GetNthItem(i, checkAVProp)) {
+									_MESSAGE("          %i: 0x%08X - %.2f", i, checkAVProp.actorValue->formID, checkAVProp.value);
 								}
 							}
 						}
@@ -1285,8 +1352,7 @@ void SAKEData::LoadOverrides_Actor(TESNPC * actorForm, json & actorOverride)
 			}
 		}
 	}
-
-	// ---- Spells/Abilities
+	// -- Spells/Abilities
 	if (!actorOverride["spells"].is_null()) {
 		if (actorOverride["spells"].is_array() && !actorOverride["spells"].empty()) {
 			std::vector<SpellItem*> spellsList;
@@ -1308,18 +1374,16 @@ void SAKEData::LoadOverrides_Actor(TESNPC * actorForm, json & actorOverride)
 			spellsList.clear();
 		}
 	}
-
-	// ---- keywords
+	// -- keywords
 	if (!actorOverride["keywords"].is_null()) {
 		LoadData_KeywordForm(&actorForm->keywords, actorOverride["keywords"]);
-		if ((iDebugLogLevel == 2) && (actorForm->keywords.numKeywords != 0)) {
+		if (actorForm->keywords.numKeywords != 0) {
 			_MESSAGE("        Final Keywords list:");
 			for (UInt32 j = 0; j < actorForm->keywords.numKeywords; j++) {
 				_MESSAGE("          %i: 0x%08X (%s)", j, actorForm->keywords.keywords[j]->formID, actorForm->keywords.keywords[j]->keyword.c_str());
 			}
 		}
 	}
-
 	// -- Class
 	if (!actorOverride["npcClass"].is_null()) {
 		std::string classFormID = actorOverride["npcClass"];
@@ -1329,34 +1393,31 @@ void SAKEData::LoadOverrides_Actor(TESNPC * actorForm, json & actorOverride)
 			_MESSAGE("        Edited NPC Class : %s", classFormID.c_str());
 		}
 	}
-
 	// -- CombatStyle
 	if (!actorOverride["combatStyle"].is_null()) {
 		std::string csFormID = actorOverride["combatStyle"];
 		TESCombatStyle * newCSForm = reinterpret_cast<TESCombatStyle*>(SAKEUtilities::GetFormFromIdentifier(csFormID.c_str()));
 		if (newCSForm) {
 			actorForm->combatStyle = newCSForm;
-			_MESSAGE("        Edited Combat Style : %s", csFormID.c_str());
+			_MESSAGE("        Combat Style : %s", csFormID.c_str());
 		}
 	}
-
 	// -- Default Outfit
 	if (!actorOverride["outfitDefault"].is_null()) {
 		std::string outfit1FormID = actorOverride["outfitDefault"];
 		BGSOutfit * newOutfitDef = reinterpret_cast<BGSOutfit*>(SAKEUtilities::GetFormFromIdentifier(outfit1FormID.c_str()));
 		if (newOutfitDef) {
 			actorForm->outfit[0] = newOutfitDef;
-			_MESSAGE("        Edited Default Outfit : 0x%08X", newOutfitDef->formID);
+			_MESSAGE("        Default Outfit : 0x%08X", newOutfitDef->formID);
 		}
 	}
-
 	// -- Sleep Outfit
 	if (!actorOverride["outfitSleep"].is_null()) {
 		std::string outfit2FormID = actorOverride["outfitSleep"];
 		BGSOutfit * newOutfitSlp = reinterpret_cast<BGSOutfit*>(SAKEUtilities::GetFormFromIdentifier(outfit2FormID.c_str()));
 		if (newOutfitSlp) {
 			actorForm->outfit[1] = newOutfitSlp;
-			_MESSAGE("        Edited Sleep Outfit : 0x%08X", newOutfitSlp->formID);
+			_MESSAGE("        Sleep Outfit : 0x%08X", newOutfitSlp->formID);
 		}
 	}
 }
@@ -1374,9 +1435,7 @@ void SAKEData::LoadOverrides_LeveledItem(TESLevItem * lliForm, json & llOverride
 		_MESSAGE("        ERROR: No LeveledItem Form! dump: %s", llOverride.dump().c_str());
 		return;
 	}
-	if (iDebugLogLevel != 0) {
-		_MESSAGE("\n      Editing Leveled Item - 0x%08X", lliForm->formID);
-	}
+	_MESSAGE("\n      Editing Leveled Item - 0x%08X", lliForm->formID);
 
 	bool bClearList = false, bDelevel = false, bDoCountMult = false, bListModified = false;
 	float fCountMult = 0.0;
@@ -1411,9 +1470,7 @@ void SAKEData::LoadOverrides_LeveledItem(TESLevItem * lliForm, json & llOverride
 
 	if (bClearList) {
 		// ---- clear the existing list, no need to check for entries to remove
-		if (iDebugLogLevel == 2) {
-			_MESSAGE("        Clearing original entries...");
-		}
+		_MESSAGE("        Clearing original entries...");
 		bListModified = true;
 	}
 	else {
@@ -1441,9 +1498,7 @@ void SAKEData::LoadOverrides_LeveledItem(TESLevItem * lliForm, json & llOverride
 								UInt16 checkCount = remEntry["count"];
 								if (checkLevel == curEntry.level) {
 									if (checkCount == curEntry.count) {
-										if (iDebugLogLevel == 2) {
-											_MESSAGE("        Removing entry - ID: 0x%08X, level: %i, count: %i", remFormID.c_str(), curEntry.level, curEntry.count);
-										}
+										_MESSAGE("        Removing entry - ID: 0x%08X, level: %i, count: %i", remFormID.c_str(), curEntry.level, curEntry.count);
 										bRemove = true;
 										break;
 									}
@@ -1512,9 +1567,7 @@ void SAKEData::LoadOverrides_LeveledItem(TESLevItem * lliForm, json & llOverride
 						curChanceNone = addEntry["chanceNone"];
 					}
 					tempEntry.unk8 = (UInt32)curChanceNone;
-					if (iDebugLogLevel == 2) {
-						_MESSAGE("        Adding entry - ID: %s, level: %i, count: %i, chanceNone: %i", entryFormID.c_str(), tempEntry.level, tempEntry.count, tempEntry.unk8);
-					}
+					_MESSAGE("        Adding entry - ID: %s, level: %i, count: %i, chanceNone: %i", entryFormID.c_str(), tempEntry.level, tempEntry.count, tempEntry.unk8);
 					newEntries.push_back(tempEntry);
 					bListModified = true;
 				}
@@ -1531,14 +1584,11 @@ void SAKEData::LoadOverrides_LeveledItem(TESLevItem * lliForm, json & llOverride
 			UInt8 finalCount = newEntries.size();
 			lliForm->leveledList.entries = new TESLeveledList::Entry[finalCount];
 			lliForm->leveledList.length = finalCount;
-			if (iDebugLogLevel == 2) {
-				_MESSAGE("        Final Leveled List:  ChanceNone: %i, UseGlobal: 0x%08X", lliForm->leveledList.unk2A, (UInt32)lliForm->leveledList.unk08);
-			}
+			
+			_MESSAGE("        Final Leveled List:  ChanceNone: %i, UseGlobal: 0x%08X", lliForm->leveledList.unk2A, (UInt32)lliForm->leveledList.unk08);
 			for (UInt8 i = 0; i < finalCount; i++) {
 				lliForm->leveledList.entries[i] = newEntries[i];
-				if (iDebugLogLevel == 2) {
-					_MESSAGE("          %i: 0x%08X - level: %i, count: %i, chanceNone: %i", i, newEntries[i].form->formID, newEntries[i].level, newEntries[i].count, newEntries[i].unk8);
-				}
+				_MESSAGE("          %i: 0x%08X - level: %i, count: %i, chanceNone: %i", i, newEntries[i].form->formID, newEntries[i].level, newEntries[i].count, newEntries[i].unk8);
 			}
 		}
 	}
@@ -1551,11 +1601,7 @@ void SAKEData::LoadOverrides_LeveledActor(TESLevCharacter * llcForm, json & llOv
 		_MESSAGE("        ERROR: No LeveledActor Form! dump: %s", llOverride.dump().c_str());
 		return;
 	}
-	if (iDebugLogLevel != 0) {
-		_MESSAGE("\n      Editing Leveled Actor - 0x%08X", llcForm->formID);
-	}
-
-
+	_MESSAGE("\n      Editing Leveled Actor - 0x%08X", llcForm->formID);
 
 	bool bClearList = false, bDelevel = false, bListModified = false;
 	std::vector<TESLeveledList::Entry> newEntries;
@@ -1570,9 +1616,7 @@ void SAKEData::LoadOverrides_LeveledActor(TESLevCharacter * llcForm, json & llOv
 	
 	if (bClearList) {
 		// ---- clear the existing list, no need to check for entries to remove
-		if (iDebugLogLevel == 2) {
-			_MESSAGE("        Clearing original entries...");
-		}
+		_MESSAGE("        Clearing original entries...");
 		bListModified = true;
 	}
 	else {
@@ -1598,12 +1642,9 @@ void SAKEData::LoadOverrides_LeveledActor(TESLevCharacter * llcForm, json & llOv
 							if (curEntry.form->formID == remID) {
 								UInt16 checkLevel = remEntry["level"];
 								if (checkLevel == curEntry.level) {
-									if (iDebugLogLevel == 2) {
-										_MESSAGE("        Removing entry - ID: 0x%08X, level: %i", remFormID.c_str(), curEntry.level);
-									}
+									_MESSAGE("        Removing entry - ID: 0x%08X, level: %i", remFormID.c_str(), curEntry.level);
 									bRemove = true;
 									break;
-									
 								}
 							}
 						}
@@ -1652,15 +1693,12 @@ void SAKEData::LoadOverrides_LeveledActor(TESLevCharacter * llcForm, json & llOv
 					else {
 						tempEntry.level = 1;
 					}
-					if (iDebugLogLevel == 2) {
-						_MESSAGE("        Adding entry - ID: %s, level: %i", entryFormID.c_str(), tempEntry.level);
-					}
+					_MESSAGE("        Adding entry - ID: %s, level: %i", entryFormID.c_str(), tempEntry.level);
 					newEntries.push_back(tempEntry);
 					bListModified = true;
 				}
 			}
 		}
-
 	}
 
 	// -- actual leveled list edits:
@@ -1671,14 +1709,11 @@ void SAKEData::LoadOverrides_LeveledActor(TESLevCharacter * llcForm, json & llOv
 			UInt8 finalCount = newEntries.size();
 			llcForm->leveledList.entries = new TESLeveledList::Entry[finalCount];
 			llcForm->leveledList.length = finalCount;
-			if (iDebugLogLevel == 2) {
-				_MESSAGE("        Final Leveled List:");
-			}
+
+			_MESSAGE("        Final Leveled List:");
 			for (UInt8 i = 0; i < finalCount; i++) {
 				llcForm->leveledList.entries[i] = newEntries[i];
-				if (iDebugLogLevel == 2) {
-					_MESSAGE("          %i: 0x%08X - level: %i", i, newEntries[i].form->formID, newEntries[i].level);
-				}
+				_MESSAGE("          %i: 0x%08X - level: %i", i, newEntries[i].form->formID, newEntries[i].level);
 			}
 		}
 	}
@@ -1686,37 +1721,44 @@ void SAKEData::LoadOverrides_LeveledActor(TESLevCharacter * llcForm, json & llOv
 
 
 // ---- Ammo
-void SAKEData::LoadOverrides_Ammo(TESAmmo * ammoForm, json & ammoOverride)
+void SAKEData::LoadOverrides_Ammo(TempTESAmmo * ammoForm, json & ammoOverride)
 {
-	//	TESAmmo::unk160 -
-	//		[0] = projectile (UInt64)(BGSProjectile*)
-	//		[1] = health/max charge (UInt64)
-	//		[2] = damage (UInt64)(float)
-	//	the rest of these are guesses:
-	//		[3] = short name? - no idea how it's stored, though
-	//		[4,5] = padding or flags? - identical for all ammo forms I checked
-	//		[6-9] = padding? - always 0
-
 	if (!ammoForm) {
 		_MESSAGE("        ERROR: No Ammo Form! dump: %s", ammoOverride.dump().c_str());
 		return;
 	}
-	if (iDebugLogLevel != 0) {
-		_MESSAGE("\n      Editing Ammo - 0x%08X (%s)", ammoForm->formID, ammoForm->GetFullName());
-	}
+	_MESSAGE("\n      Editing Ammo - 0x%08X (%s)", ammoForm->formID, ammoForm->GetFullName());
+	
 	// ---- name
-	bool bEditedName = false, bEditedWeight = false, bEditedValue = false, bEditedKWs = false, bEditedProj = false, bEditedHealth = false, bEditedDmg = false;
 	if (!ammoOverride["name"].is_null()) {
 		std::string ammoName = ammoOverride["name"];
 		ammoForm->fullName.name = BSFixedString(ammoName.c_str());
-		bEditedName = true;
+		_MESSAGE("        Name: %s", ammoForm->fullName.name.c_str());
+	}
+	// ---- shortName
+	if (!ammoOverride["shortName"].is_null()) {
+		std::string shortName = ammoOverride["shortName"];
+		ammoForm->shortName = BSFixedString(shortName.c_str());
+		_MESSAGE("        Short Name: %s", ammoForm->shortName.c_str());
+	}
+	// ---- model
+	if (!ammoOverride["model"].is_null()) {
+		std::string ammoModel = ammoOverride["model"];
+		ammoForm->materialSwap.SetModelName(ammoModel.c_str());
+		_MESSAGE("        Model: %s", ammoForm->materialSwap.GetModelName());
+	}
+	// ---- casingModel
+	if (!ammoOverride["casingModel"].is_null()) {
+		std::string casingModel = ammoOverride["casingModel"];
+		ammoForm->casingModel.SetModelName(casingModel.c_str());
+		_MESSAGE("        Casing Model: %s", ammoForm->casingModel.GetModelName());
 	}
 	// ---- value
 	if (!ammoOverride["value"].is_null()) {
 		int ammoValue = ammoOverride["value"];
 		if (ammoValue > -1) {
 			ammoForm->value.value = (UInt32)ammoValue;
-			bEditedValue = true;
+			_MESSAGE("        Value: %i", ammoForm->value.value);
 		}
 	}
 	// ---- weight
@@ -1724,64 +1766,126 @@ void SAKEData::LoadOverrides_Ammo(TESAmmo * ammoForm, json & ammoOverride)
 		float ammoWeight = ammoOverride["weight"];
 		if (ammoWeight >= 0.0) {
 			ammoForm->weight.weight = ammoWeight;
-			bEditedWeight = true;
+			_MESSAGE("        Weight: %f", ammoForm->weight.weight);
 		}
 	}
 	// ---- keywords
 	if (!ammoOverride["keywords"].is_null()) {
 		LoadData_KeywordForm(&ammoForm->keywordForm, ammoOverride["keywords"]);
-		bEditedKWs = true;
+		if (ammoForm->keywordForm.numKeywords != 0) {
+			_MESSAGE("        Keywords:");
+			for (UInt32 j = 0; j < ammoForm->keywordForm.numKeywords; j++) {
+				_MESSAGE("          %i: 0x%08X (%s)", j, ammoForm->keywordForm.keywords[j]->formID, ammoForm->keywordForm.keywords[j]->keyword.c_str());
+			}
+		}
 	}
 	// ---- projectile
 	if (!ammoOverride["projectile"].is_null()) {
 		std::string projID = ammoOverride["projectile"];
-		BGSProjectile * ammoProj = reinterpret_cast<BGSProjectile*>(SAKEUtilities::GetFormFromIdentifier(projID));
-		if (ammoProj) {
-			ammoForm->unk160[0] = (UInt64)ammoProj;
-			bEditedProj = true;
+		ammoForm->projectile = reinterpret_cast<BGSProjectile*>(SAKEUtilities::GetFormFromIdentifier(projID));
+		if (ammoForm->projectile) {
+			_MESSAGE("        Projectile: 0x%08X", ammoForm->projectile->formID);
+		}
+		else {
+			_MESSAGE("        Projectile: none");
 		}
 	}
 	// ---- health/charge
 	if (!ammoOverride["health"].is_null()) {
 		int ammoHealth = ammoOverride["health"];
-		if (ammoHealth > 0) {
-			ammoForm->unk160[1] = (UInt64)ammoHealth;
-			bEditedHealth = true;
+		if (ammoHealth >= 0) {
+			ammoForm->health = (UInt32)ammoHealth;
+			_MESSAGE("        Health: %i", ammoForm->health);
 		}
 	}
 	// ---- damage
 	if (!ammoOverride["damage"].is_null()) {
 		float ammoDamage = ammoOverride["damage"];
 		if (ammoDamage >= 0.0) {
-			ammoForm->unk160[2] = (UInt64)ammoDamage;
-			bEditedDmg = true;
+			ammoForm->damage = ammoDamage;
+			_MESSAGE("        Damage: %.04f", ammoForm->damage);
 		}
 	}
-	// log output
-	if (iDebugLogLevel == 2) {
-		if (bEditedName) {
-			_MESSAGE("        Edited Name: %s", ammoForm->fullName.name.c_str());
+	// ---- bounds
+	if (!ammoOverride["bounds"].is_null() && !ammoOverride["bounds"].empty()) {
+		int boundVal = 0;
+		if (!ammoOverride["bounds"]["x1"].is_null()) {
+			boundVal = ammoOverride["bounds"]["x1"];
+			ammoForm->bounds1.x = (UInt16)boundVal;
 		}
-		if (bEditedValue) {
-			_MESSAGE("        Edited Value: %i", ammoForm->value.value);
+		if (!ammoOverride["bounds"]["y1"].is_null()) {
+			boundVal = ammoOverride["bounds"]["y1"];
+			ammoForm->bounds1.y = (UInt16)boundVal;
 		}
-		if (bEditedWeight) {
-			_MESSAGE("        Edited Weight: %f", ammoForm->weight.weight);
+		if (!ammoOverride["bounds"]["z1"].is_null()) {
+			boundVal = ammoOverride["bounds"]["z1"];
+			ammoForm->bounds1.z = (UInt16)boundVal;
 		}
-		if ((bEditedKWs) && (ammoForm->keywordForm.numKeywords != 0)) {
-			_MESSAGE("        Edited Keywords:");
-			for (UInt32 j = 0; j < ammoForm->keywordForm.numKeywords; j++) {
-				_MESSAGE("          %i: 0x%08X (%s)", j, ammoForm->keywordForm.keywords[j]->formID, ammoForm->keywordForm.keywords[j]->keyword.c_str());
+		if (!ammoOverride["bounds"]["x2"].is_null()) {
+			boundVal = ammoOverride["bounds"]["x2"];
+			ammoForm->bounds2.x = (UInt16)boundVal;
+		}
+		if (!ammoOverride["bounds"]["y2"].is_null()) {
+			boundVal = ammoOverride["bounds"]["y2"];
+			ammoForm->bounds2.y = (UInt16)boundVal;
+		}
+		if (!ammoOverride["bounds"]["z2"].is_null()) {
+			boundVal = ammoOverride["bounds"]["z2"];
+			ammoForm->bounds2.z = (UInt16)boundVal;
+		}
+		_MESSAGE("        Bounds:\n          x1 - %i, y1 - %i, z1 - %i\n          x2 - %i, y2 - %i, z2 - %i",
+			(int)ammoForm->bounds1.x, (int)ammoForm->bounds1.y, (int)ammoForm->bounds1.z, (int)ammoForm->bounds2.x, (int)ammoForm->bounds2.y, (int)ammoForm->bounds2.z
+		);
+	}
+	// ---- Flags:
+	if (!ammoOverride["flags"].is_null()) {
+		json flagsObj = ammoOverride["flags"];
+		bool bFlagCheck = false;
+		_MESSAGE("        Flags:");
+		// -- IgnoreNormalResistance
+		if (!flagsObj["IgnoreNormalResistance"].is_null()) {
+			bFlagCheck = flagsObj["IgnoreNormalResistance"];
+			if (bFlagCheck) {
+				ammoForm->flags |= TempTESAmmo::aFlag_IgnoreNormalResistance;
+				_MESSAGE("          IgnoreNormalResistance: true");
+			}
+			else {
+				ammoForm->flags &= ~TempTESAmmo::aFlag_IgnoreNormalResistance;
+				_MESSAGE("          IgnoreNormalResistance: false");
 			}
 		}
-		if (bEditedProj) {
-			_MESSAGE("        Edited Projectile: 0x%016X", ammoForm->unk160[0]);
+		// -- NonPlayable
+		if (!flagsObj["NonPlayable"].is_null()) {
+			bFlagCheck = flagsObj["NonPlayable"];
+			if (bFlagCheck) {
+				ammoForm->flags |= TempTESAmmo::aFlag_NonPlayable;
+				_MESSAGE("          NonPlayable: true");
+			}
+			else {
+				ammoForm->flags &= ~TempTESAmmo::aFlag_NonPlayable;
+				_MESSAGE("          NonPlayable: false");
+			}
 		}
-		if (bEditedHealth) {
-			_MESSAGE("        Edited Health: %i", ammoForm->unk160[1]);
+		// -- CountBased3D
+		if (!flagsObj["CountBased3D"].is_null()) {
+			bFlagCheck = flagsObj["CountBased3D"];
+			if (bFlagCheck) {
+				ammoForm->flags |= TempTESAmmo::aFlag_CountBased3D;
+				_MESSAGE("          CountBased3D: true");
+			}
+			else {
+				ammoForm->flags &= ~TempTESAmmo::aFlag_CountBased3D;
+				_MESSAGE("          CountBased3D: false");
+			}
 		}
-		if (bEditedDmg) {
-			_MESSAGE("        Edited Damage: %.04f", (float)ammoForm->unk160[2]);
+	}
+	// ---- destructibleSource
+	if (!ammoOverride["destructibleSource"].is_null()) {
+		std::string destrID = ammoOverride["destructibleSource"];
+		TempTESAmmo * explSource = reinterpret_cast<TempTESAmmo*>(SAKEUtilities::GetFormFromIdentifier(destrID));
+		if (explSource) {
+			ammoForm->destructible = explSource->destructible;
+			_MESSAGE("        Destructible Source: 0x%08X", explSource->formID);
 		}
 	}
 }
@@ -1794,22 +1898,57 @@ void SAKEData::LoadOverrides_Misc(TESObjectMISC * miscForm, json & miscOverride)
 		_MESSAGE("        ERROR: No MiscItem Form! dump: %s", miscOverride.dump().c_str());
 		return;
 	}
-	if (iDebugLogLevel != 0) {
-		_MESSAGE("\n      Editing MiscItem - 0x%08X (%s)", miscForm->formID, miscForm->GetFullName());
-	}
-	bool bEditedName = false, bEditedWeight = false, bEditedValue = false, bEditedKWs = false, bEditedCompos = false;
+	_MESSAGE("\n      Editing MiscItem - 0x%08X (%s)", miscForm->formID, miscForm->GetFullName());
+	
 	// -- name
 	if (!miscOverride["name"].is_null()) {
 		std::string miscName = miscOverride["name"];
 		miscForm->fullName.name = BSFixedString(miscName.c_str());
-		bEditedName = true;
+		_MESSAGE("        Name: %s", miscForm->fullName.name.c_str());
+	}
+	// -- model
+	if (!miscOverride["model"].is_null()) {
+		std::string miscModel = miscOverride["model"];
+		miscForm->materialSwap.SetModelName(miscModel.c_str());
+		_MESSAGE("        Model: %s", miscForm->materialSwap.GetModelName());
+	}
+	// ---- bounds
+	if (!miscOverride["bounds"].is_null() && !miscOverride["bounds"].empty()) {
+		int boundVal = 0;
+		if (!miscOverride["bounds"]["x1"].is_null()) {
+			boundVal = miscOverride["bounds"]["x1"];
+			miscForm->bounds1.x = (UInt16)boundVal;
+		}
+		if (!miscOverride["bounds"]["y1"].is_null()) {
+			boundVal = miscOverride["bounds"]["y1"];
+			miscForm->bounds1.y = (UInt16)boundVal;
+		}
+		if (!miscOverride["bounds"]["z1"].is_null()) {
+			boundVal = miscOverride["bounds"]["z1"];
+			miscForm->bounds1.z = (UInt16)boundVal;
+		}
+		if (!miscOverride["bounds"]["x2"].is_null()) {
+			boundVal = miscOverride["bounds"]["x2"];
+			miscForm->bounds2.x = (UInt16)boundVal;
+		}
+		if (!miscOverride["bounds"]["y2"].is_null()) {
+			boundVal = miscOverride["bounds"]["y2"];
+			miscForm->bounds2.y = (UInt16)boundVal;
+		}
+		if (!miscOverride["bounds"]["z2"].is_null()) {
+			boundVal = miscOverride["bounds"]["z2"];
+			miscForm->bounds2.z = (UInt16)boundVal;
+		}
+		_MESSAGE("        Bounds:\n          x1 - %i, y1 - %i, z1 - %i\n          x2 - %i, y2 - %i, z2 - %i",
+			(int)miscForm->bounds1.x, (int)miscForm->bounds1.y, (int)miscForm->bounds1.z, (int)miscForm->bounds2.x, (int)miscForm->bounds2.y, (int)miscForm->bounds2.z
+		);
 	}
 	// -- value
 	if (!miscOverride["value"].is_null()) {
 		int miscValue = miscOverride["value"];
 		if (miscValue > -1) {
 			miscForm->value.value = (UInt32)miscValue;
-			bEditedValue = true;
+			_MESSAGE("        Value: %i", miscForm->value.value);
 		}
 	}
 	// -- weight
@@ -1817,13 +1956,18 @@ void SAKEData::LoadOverrides_Misc(TESObjectMISC * miscForm, json & miscOverride)
 		float miscWeight = miscOverride["weight"];
 		if (miscWeight >= 0.0) {
 			miscForm->weight.weight = miscWeight;
-			bEditedWeight = true;
+			_MESSAGE("        Weight: %f", miscForm->weight.weight);
 		}
 	}
 	// ---- keywords
 	if (!miscOverride["keywords"].is_null()) {
 		LoadData_KeywordForm(&miscForm->keywordForm, miscOverride["keywords"]);
-		bEditedKWs = true;
+		if (miscForm->keywordForm.numKeywords != 0) {
+			_MESSAGE("        Keywords:");
+			for (UInt32 j = 0; j < miscForm->keywordForm.numKeywords; j++) {
+				_MESSAGE("          %i: 0x%08X (%s)", j, miscForm->keywordForm.keywords[j]->formID, miscForm->keywordForm.keywords[j]->keyword.c_str());
+			}
+		}
 	}
 	// -- components
 	if (!miscOverride["components"].is_null()) {
@@ -1831,9 +1975,7 @@ void SAKEData::LoadOverrides_Misc(TESObjectMISC * miscForm, json & miscOverride)
 		if (!composObj["clear"].is_null()) {
 			bool clearCompos = composObj["clearList"];
 			if (clearCompos && miscForm->components) {
-				if (iDebugLogLevel == 2) {
-					_MESSAGE("        Clearing Components list...");
-				}
+				_MESSAGE("        Clearing Components list...");
 				miscForm->components->Clear();
 			}
 		}
@@ -1854,9 +1996,7 @@ void SAKEData::LoadOverrides_Misc(TESObjectMISC * miscForm, json & miscOverride)
 								TESObjectMISC::Component curRem;
 								curRem.component = tempCompo;
 								curRem.count = (UInt64)tempCount;
-								if (iDebugLogLevel == 2) {
-									_MESSAGE("        Removing compo - ID: %s, count: %i", compoID.c_str(), tempCount);
-								}
+								_MESSAGE("        Removing compo - ID: %s, count: %i", compoID.c_str(), tempCount);
 								composRemList.push_back(curRem);
 							}
 						}
@@ -1878,9 +2018,7 @@ void SAKEData::LoadOverrides_Misc(TESObjectMISC * miscForm, json & miscOverride)
 							TESObjectMISC::Component curAdd;
 							curAdd.component = tempCompo;
 							curAdd.count = (UInt64)tempCount;
-							if (iDebugLogLevel == 2) {
-								_MESSAGE("        Adding compo - ID: %s, count: %i", compoID.c_str(), tempCount);
-							}
+							_MESSAGE("        Adding compo - ID: %s, count: %i", compoID.c_str(), tempCount);
 							composAddList.push_back(curAdd);
 						}
 					}
@@ -1960,35 +2098,26 @@ void SAKEData::LoadOverrides_Misc(TESObjectMISC * miscForm, json & miscOverride)
 					TESObjectMISC::Component tempCompo = finalCompos[i];
 					miscForm->components->Push(tempCompo);
 				}
-				bEditedCompos = true;
 			}
 		}
-	}
-	// log output
-	if (iDebugLogLevel == 2) {
-		if (bEditedName) {
-			_MESSAGE("        Edited Name: %s", miscForm->fullName.name.c_str());
-		}
-		if (bEditedValue) {
-			_MESSAGE("        Edited Value: %i", miscForm->value.value);
-		}
-		if (bEditedWeight) {
-			_MESSAGE("        Edited Weight: %f", miscForm->weight.weight);
-		}
-		if ((bEditedKWs) && (miscForm->keywordForm.numKeywords != 0)) {
-			_MESSAGE("        Edited Keywords:");
-			for (UInt32 j = 0; j < miscForm->keywordForm.numKeywords; j++) {
-				_MESSAGE("          %i: 0x%08X (%s)", j, miscForm->keywordForm.keywords[j]->formID, miscForm->keywordForm.keywords[j]->keyword.c_str());
-			}
-		}
-		if (bEditedCompos && miscForm->components->count != 0) {
-			_MESSAGE("        Edited Components:");
+
+		if (miscForm->components->count != 0) {
+			_MESSAGE("        Components:");
 			for (UInt32 i = 0; i < miscForm->components->count; i++) {
 				TESObjectMISC::Component tempCompo;
 				if (miscForm->components->GetNthItem(i, tempCompo)) {
 					_MESSAGE("          %i: 0x%08X x%i", i, tempCompo.component->formID, tempCompo.count);
 				}
 			}
+		}
+	}
+	// ---- destructibleSource
+	if (!miscOverride["destructibleSource"].is_null()) {
+		std::string destrID = miscOverride["destructibleSource"];
+		TESObjectMISC * explSource = reinterpret_cast<TESObjectMISC*>(SAKEUtilities::GetFormFromIdentifier(destrID));
+		if (explSource) {
+			miscForm->destructible = explSource->destructible;
+			_MESSAGE("        Destructible Source: 0x%08X", explSource->formID);
 		}
 	}
 }
@@ -2001,22 +2130,57 @@ void SAKEData::LoadOverrides_Key(TempTESKey * keyForm, json & miscOverride)
 		_MESSAGE("        ERROR: No Key Form! dump: %s", miscOverride.dump().c_str());
 		return;
 	}
-	if (iDebugLogLevel != 0) {
-		_MESSAGE("\n      Editing Key - 0x%08X (%s)", keyForm->formID, keyForm->GetFullName());
-	}
-	bool bEditedName = false, bEditedWeight = false, bEditedValue = false, bEditedKWs = false, bEditedCompos = false;
+	_MESSAGE("\n      Editing Key - 0x%08X (%s)", keyForm->formID, keyForm->GetFullName());
+	
 	// -- name
 	if (!miscOverride["name"].is_null()) {
 		std::string miscName = miscOverride["name"];
 		keyForm->fullName.name = BSFixedString(miscName.c_str());
-		bEditedName = true;
+		_MESSAGE("        Name: %s", keyForm->fullName.name.c_str());
+	}
+	// -- model
+	if (!miscOverride["model"].is_null()) {
+		std::string miscModel = miscOverride["model"];
+		keyForm->materialSwap.SetModelName(miscModel.c_str());
+		_MESSAGE("        Model: %s", keyForm->materialSwap.GetModelName());
+	}
+	// ---- bounds
+	if (!miscOverride["bounds"].is_null() && !miscOverride["bounds"].empty()) {
+		int boundVal = 0;
+		if (!miscOverride["bounds"]["x1"].is_null()) {
+			boundVal = miscOverride["bounds"]["x1"];
+			keyForm->bounds1.x = (UInt16)boundVal;
+		}
+		if (!miscOverride["bounds"]["y1"].is_null()) {
+			boundVal = miscOverride["bounds"]["y1"];
+			keyForm->bounds1.y = (UInt16)boundVal;
+		}
+		if (!miscOverride["bounds"]["z1"].is_null()) {
+			boundVal = miscOverride["bounds"]["z1"];
+			keyForm->bounds1.z = (UInt16)boundVal;
+		}
+		if (!miscOverride["bounds"]["x2"].is_null()) {
+			boundVal = miscOverride["bounds"]["x2"];
+			keyForm->bounds2.x = (UInt16)boundVal;
+		}
+		if (!miscOverride["bounds"]["y2"].is_null()) {
+			boundVal = miscOverride["bounds"]["y2"];
+			keyForm->bounds2.y = (UInt16)boundVal;
+		}
+		if (!miscOverride["bounds"]["z2"].is_null()) {
+			boundVal = miscOverride["bounds"]["z2"];
+			keyForm->bounds2.z = (UInt16)boundVal;
+		}
+		_MESSAGE("        Bounds:\n          x1 - %i, y1 - %i, z1 - %i\n          x2 - %i, y2 - %i, z2 - %i",
+			(int)keyForm->bounds1.x, (int)keyForm->bounds1.y, (int)keyForm->bounds1.z, (int)keyForm->bounds2.x, (int)keyForm->bounds2.y, (int)keyForm->bounds2.z
+		);
 	}
 	// -- value
 	if (!miscOverride["value"].is_null()) {
 		int miscValue = miscOverride["value"];
 		if (miscValue > -1) {
 			keyForm->value.value = (UInt32)miscValue;
-			bEditedValue = true;
+			_MESSAGE("        Value: %i", keyForm->value.value);
 		}
 	}
 	// -- weight
@@ -2024,28 +2188,14 @@ void SAKEData::LoadOverrides_Key(TempTESKey * keyForm, json & miscOverride)
 		float miscWeight = miscOverride["weight"];
 		if (miscWeight >= 0.0) {
 			keyForm->weight.weight = miscWeight;
-			bEditedWeight = true;
+			_MESSAGE("        Weight: %f", keyForm->weight.weight);
 		}
 	}
-	// ---- keywords
+	// -- keywords
 	if (!miscOverride["keywords"].is_null()) {
 		LoadData_KeywordForm(&keyForm->keywordForm, miscOverride["keywords"]);
-		bEditedKWs = true;
-	}
-	
-	// log output
-	if (iDebugLogLevel == 2) {
-		if (bEditedName) {
-			_MESSAGE("        Edited Name: %s", keyForm->fullName.name.c_str());
-		}
-		if (bEditedValue) {
-			_MESSAGE("        Edited Value: %i", keyForm->value.value);
-		}
-		if (bEditedWeight) {
-			_MESSAGE("        Edited Weight: %f", keyForm->weight.weight);
-		}
-		if ((bEditedKWs) && (keyForm->keywordForm.numKeywords != 0)) {
-			_MESSAGE("        Edited Keywords:");
+		if (keyForm->keywordForm.numKeywords != 0) {
+			_MESSAGE("        Keywords:");
 			for (UInt32 j = 0; j < keyForm->keywordForm.numKeywords; j++) {
 				_MESSAGE("          %i: 0x%08X (%s)", j, keyForm->keywordForm.keywords[j]->formID, keyForm->keywordForm.keywords[j]->keyword.c_str());
 			}
@@ -2061,22 +2211,20 @@ void SAKEData::LoadOverrides_Component(BGSComponent * compoForm, json & compoOve
 		_MESSAGE("        ERROR: No Component Form! dump: %s", compoOverride.dump().c_str());
 		return;
 	}
-	if (iDebugLogLevel != 0) {
-		_MESSAGE("\n      Editing Component - 0x%08X (%s)", compoForm->formID, compoForm->GetFullName());
-	}
-	bool bEditedName = false, bEditedValue = false, bEditedScalar = false, bEditedScrap = false;
+	_MESSAGE("\n      Editing Component - 0x%08X (%s)", compoForm->formID, compoForm->GetFullName());
+
 	// -- name
 	if (!compoOverride["name"].is_null()) {
 		std::string compoName = compoOverride["name"];
 		compoForm->fullName.name = BSFixedString(compoName.c_str());
-		bEditedName = true;
+		_MESSAGE("        Name: %s", compoForm->fullName.name.c_str());
 	}
 	// -- value
 	if (!compoOverride["value"].is_null()) {
 		int compoValue = compoOverride["value"];
 		if (compoValue > -1) {
 			compoForm->value.value = (UInt32)compoValue;
-			bEditedValue = true;
+			_MESSAGE("        Value: %i", compoForm->value.value);
 		}
 	}
 	// -- scrap scalar global
@@ -2085,7 +2233,7 @@ void SAKEData::LoadOverrides_Component(BGSComponent * compoForm, json & compoOve
 		TESGlobal * compoScrapGlobal = reinterpret_cast<TESGlobal*>(SAKEUtilities::GetFormFromIdentifier(compoScrapGlobalID));
 		if (compoScrapGlobal) {
 			compoForm->scrapScalar = compoScrapGlobal;
-			bEditedScalar = true;
+			_MESSAGE("        Scrap Scalar Global: 0x%08X", compoForm->scrapScalar->formID);
 		}
 	}
 	// -- scrap misc item
@@ -2094,22 +2242,7 @@ void SAKEData::LoadOverrides_Component(BGSComponent * compoForm, json & compoOve
 		TESObjectMISC * compoScrapMiscItem = reinterpret_cast<TESObjectMISC*>(SAKEUtilities::GetFormFromIdentifier(compoScrapMiscItemID));
 		if (compoScrapMiscItem) {
 			compoForm->scrapItem = compoScrapMiscItem;
-			bEditedScrap = true;
-		}
-	}
-	// log output
-	if (iDebugLogLevel == 2) {
-		if (bEditedName) {
-			_MESSAGE("        Edited Name: %s", compoForm->fullName.name.c_str());
-		}
-		if (bEditedValue) {
-			_MESSAGE("        Edited Value: %i", compoForm->value.value);
-		}
-		if (bEditedScalar) {
-			_MESSAGE("        Edited Scrap Scalar Global: 0x%08X", compoForm->scrapScalar->formID);
-		}
-		if (bEditedScrap) {
-			_MESSAGE("        Edited Scrap MiscItem: 0x%08X", compoForm->scrapItem->formID);
+			_MESSAGE("        Scrap MiscItem: 0x%08X", compoForm->scrapItem->formID);
 		}
 	}
 }
@@ -2122,24 +2255,57 @@ void SAKEData::LoadOverrides_Ingestible(AlchemyItem * alchForm, json & alchOverr
 		_MESSAGE("        ERROR: No Ingestible Form! dump: %s", alchOverride.dump().c_str());
 		return;
 	}
-	if (iDebugLogLevel != 0) {
-		_MESSAGE("\n      Editing Ingestible - 0x%08X (%s)", alchForm->formID, alchForm->GetFullName());
-	}
-
-	bool bEditedName = false, bEditedWeight = false, bEditedValue = false, bEditedKWs = false;
+	_MESSAGE("\n      Editing Ingestible - 0x%08X (%s)", alchForm->formID, alchForm->GetFullName());
 	
 	// -- name
 	if (!alchOverride["name"].is_null()) {
 		std::string alchName = alchOverride["name"];
 		alchForm->name.name = BSFixedString(alchName.c_str());
-		bEditedName = true;
+		_MESSAGE("        Name: %s", alchForm->name.name.c_str());
+	}
+	// -- model
+	if (!alchOverride["model"].is_null()) {
+		std::string miscModel = alchOverride["model"];
+		alchForm->materialSwap.SetModelName(miscModel.c_str());
+		_MESSAGE("        Model: %s", alchForm->materialSwap.GetModelName());
+	}
+	// -- bounds
+	if (!alchOverride["bounds"].is_null() && !alchOverride["bounds"].empty()) {
+		int boundVal = 0;
+		if (!alchOverride["bounds"]["x1"].is_null()) {
+			boundVal = alchOverride["bounds"]["x1"];
+			alchForm->bounds1.x = (UInt16)boundVal;
+		}
+		if (!alchOverride["bounds"]["y1"].is_null()) {
+			boundVal = alchOverride["bounds"]["y1"];
+			alchForm->bounds1.y = (UInt16)boundVal;
+		}
+		if (!alchOverride["bounds"]["z1"].is_null()) {
+			boundVal = alchOverride["bounds"]["z1"];
+			alchForm->bounds1.z = (UInt16)boundVal;
+		}
+		if (!alchOverride["bounds"]["x2"].is_null()) {
+			boundVal = alchOverride["bounds"]["x2"];
+			alchForm->bounds2.x = (UInt16)boundVal;
+		}
+		if (!alchOverride["bounds"]["y2"].is_null()) {
+			boundVal = alchOverride["bounds"]["y2"];
+			alchForm->bounds2.y = (UInt16)boundVal;
+		}
+		if (!alchOverride["bounds"]["z2"].is_null()) {
+			boundVal = alchOverride["bounds"]["z2"];
+			alchForm->bounds2.z = (UInt16)boundVal;
+		}
+		_MESSAGE("        Bounds:\n          x1 - %i, y1 - %i, z1 - %i\n          x2 - %i, y2 - %i, z2 - %i",
+			(int)alchForm->bounds1.x, (int)alchForm->bounds1.y, (int)alchForm->bounds1.z, (int)alchForm->bounds2.x, (int)alchForm->bounds2.y, (int)alchForm->bounds2.z
+		);
 	}
 	// -- weight
 	if (!alchOverride["weight"].is_null()) {
 		float alchWeight = alchOverride["weight"];
 		if (alchWeight >= 0.0) {
 			alchForm->weightForm.weight = alchWeight;
-			bEditedWeight = true;
+			_MESSAGE("        Weight: %f", alchForm->weightForm.weight);
 		}
 	}
 	// -- value
@@ -2147,31 +2313,500 @@ void SAKEData::LoadOverrides_Ingestible(AlchemyItem * alchForm, json & alchOverr
 		int alchVal = alchOverride["value"];
 		if (alchVal >= 0) {
 			alchForm->unk1A8 = (UInt32)alchVal;
-			bEditedValue = true;
+			_MESSAGE("        Value: %i", alchForm->unk1A8);
 		}
 	}
 	// -- keywords
 	if (!alchOverride["keywords"].is_null()) {
 		LoadData_KeywordForm(&alchForm->keywordForm, alchOverride["keywords"]);
-		bEditedKWs = true;
-		
-	}
-	// log output
-	if (iDebugLogLevel == 2) {
-		if (bEditedName) {
-			_MESSAGE("        Edited Name: %s", alchForm->name.name.c_str());
-		}
-		if (bEditedWeight) {
-			_MESSAGE("        Edited Weight: %f", alchForm->weightForm.weight);
-		}
-		if (bEditedValue) {
-			_MESSAGE("        Edited Value: %i", alchForm->unk1A8);
-		}
-		if (bEditedKWs && alchForm->keywordForm.numKeywords != 0) {
-			_MESSAGE("        Edited Keywords:");
+		if (alchForm->keywordForm.numKeywords != 0) {
+			_MESSAGE("        Keywords:");
 			for (UInt32 j = 0; j < alchForm->keywordForm.numKeywords; j++) {
 				_MESSAGE("          %i: 0x%08X (%s)", j, alchForm->keywordForm.keywords[j]->formID, alchForm->keywordForm.keywords[j]->keyword.c_str());
 			}
+		}
+	}
+	// -- destructibleSource
+	if (!alchOverride["destructibleSource"].is_null()) {
+		std::string destrID = alchOverride["destructibleSource"];
+		AlchemyItem * explSource = reinterpret_cast<AlchemyItem*>(SAKEUtilities::GetFormFromIdentifier(destrID));
+		if (explSource) {
+			alchForm->destructible = explSource->destructible;
+			_MESSAGE("        Destructible Source: 0x%08X", explSource->formID);
+		}
+	}
+}
+
+
+// ---- Projectile - PROJ
+void SAKEData::LoadOverrides_Projectile(TempBGSProjectile * projForm, json & projOverride)
+{
+	if (!projForm) {
+		_MESSAGE("        ERROR: No Projectile Form! dump: %s", projOverride.dump().c_str());
+		return;
+	}
+	_MESSAGE("\n      Editing Projectile - 0x%08X", projForm->formID);
+	
+	// -- type
+	if (!projOverride["type"].is_null()) {
+		int projType = projOverride["type"];
+		if (projType >= 0) {
+			projForm->data.type = projType;
+			_MESSAGE("        Type: %i", projForm->data.type);
+		}
+	}
+	// -- name
+	if (!projOverride["name"].is_null()) {
+		std::string projName = projOverride["name"];
+		projForm->fullName.name = BSFixedString(projName.c_str());
+		_MESSAGE("        Name: %s", projForm->fullName.name.c_str());
+	}
+	// -- model
+	if (!projOverride["model"].is_null()) {
+		std::string projModel = projOverride["model"];
+		projForm->model.SetModelName(projModel.c_str());
+		_MESSAGE("        Model: %s", projForm->model.GetModelName());
+	}
+	// -- bounds
+	if (!projOverride["bounds"].is_null() && !projOverride["bounds"].empty()) {
+		int boundVal = 0;
+		if (!projOverride["bounds"]["x1"].is_null()) {
+			boundVal = projOverride["bounds"]["x1"];
+			projForm->bounds1.x = (UInt16)boundVal;
+		}
+		if (!projOverride["bounds"]["y1"].is_null()) {
+			boundVal = projOverride["bounds"]["y1"];
+			projForm->bounds1.y = (UInt16)boundVal;
+		}
+		if (!projOverride["bounds"]["z1"].is_null()) {
+			boundVal = projOverride["bounds"]["z1"];
+			projForm->bounds1.z = (UInt16)boundVal;
+		}
+		if (!projOverride["bounds"]["x2"].is_null()) {
+			boundVal = projOverride["bounds"]["x2"];
+			projForm->bounds2.x = (UInt16)boundVal;
+		}
+		if (!projOverride["bounds"]["y2"].is_null()) {
+			boundVal = projOverride["bounds"]["y2"];
+			projForm->bounds2.y = (UInt16)boundVal;
+		}
+		if (!projOverride["bounds"]["z2"].is_null()) {
+			boundVal = projOverride["bounds"]["z2"];
+			projForm->bounds2.z = (UInt16)boundVal;
+		}
+		_MESSAGE("        Bounds:\n          x1 - %i, y1 - %i, z1 - %i\n          x2 - %i, y2 - %i, z2 - %i",
+			(int)projForm->bounds1.x, (int)projForm->bounds1.y, (int)projForm->bounds1.z, (int)projForm->bounds2.x, (int)projForm->bounds2.y, (int)projForm->bounds2.z
+		);
+	}
+	// -- light
+	if (!projOverride["light"].is_null()) {
+		std::string lightID = projOverride["light"];
+		projForm->data.light = SAKEUtilities::GetFormFromIdentifier(lightID);
+		if (projForm->data.light) {
+			_MESSAGE("        Light: 0x%08X", projForm->data.light->formID);
+		}
+		else {
+			_MESSAGE("        Light: none");
+		}
+	}
+	// -- sound
+	if (!projOverride["sound"].is_null()) {
+		std::string soundID = projOverride["sound"];
+		projForm->data.sound = reinterpret_cast<BGSSoundDescriptorForm*>(SAKEUtilities::GetFormFromIdentifier(soundID));
+		if (projForm->data.sound) {
+			_MESSAGE("        Sound: 0x%08X", projForm->data.sound->formID);
+		}
+		else {
+			_MESSAGE("        Sound: none");
+		}
+	}
+	// -- soundLevel
+	if (!projOverride["soundLevel"].is_null()) {
+		int soundLevel = projOverride["soundLevel"];
+		if (soundLevel >= 0) {
+			projForm->soundLevel = soundLevel;
+			_MESSAGE("        Sound Level: %i", projForm->soundLevel);
+		}
+	}
+	// -- muzzle flash model
+	if (!projOverride["muzFlashModel"].is_null()) {
+		std::string muzFlashModel = projOverride["muzFlashModel"];
+		projForm->muzFlashModel.SetModelName(muzFlashModel.c_str());
+		_MESSAGE("        Muzzle Flash Model: %s", projForm->muzFlashModel.GetModelName());
+	}
+	// -- muzzle flash light
+	if (!projOverride["muzFlashLight"].is_null()) {
+		std::string muzFlashLightID = projOverride["muzFlashLight"];
+		projForm->data.muzFlashLight = SAKEUtilities::GetFormFromIdentifier(muzFlashLightID);
+		if (projForm->data.muzFlashLight) {
+			_MESSAGE("        Muzzle Flash Light: 0x%08X", projForm->data.muzFlashLight->formID);
+		}
+		else {
+			_MESSAGE("        Muzzle Flash Light: none");
+		}
+	}
+	// -- muzzle flash duration
+	if (!projOverride["muzFlashDuration"].is_null()) {
+		float muzFlashDur = projOverride["muzFlashDuration"];
+		if (muzFlashDur >= 0.0) {
+			projForm->data.muzflashDuration = muzFlashDur;
+			_MESSAGE("        Muzzle Flash Duration: %f", projForm->data.muzflashDuration);
+		}
+	}
+	// -- fadeDuration
+	if (!projOverride["fadeDuration"].is_null()) {
+		float fadeDuration = projOverride["fadeDuration"];
+		if (fadeDuration >= 0.0) {
+			projForm->data.fadeDuration = fadeDuration;
+			_MESSAGE("        Fade Duration: %f", projForm->data.fadeDuration);
+		}
+	}
+	// -- lifeTime
+	if (!projOverride["lifeTime"].is_null()) {
+		float lifeTime = projOverride["lifeTime"];
+		if (lifeTime >= 0.0) {
+			projForm->data.lifeTime = lifeTime;
+			_MESSAGE("        Lifetime: %f", projForm->data.lifeTime);
+		}
+	}
+	// -- relaunchInterval
+	if (!projOverride["relaunchInterval"].is_null()) {
+		float relaunchInterval = projOverride["relaunchInterval"];
+		if (relaunchInterval >= 0.0) {
+			projForm->data.relaunchInterval = relaunchInterval;
+			_MESSAGE("        Relaunch Interval: %f", projForm->data.relaunchInterval);
+		}
+	}
+	// -- speed
+	if (!projOverride["speed"].is_null()) {
+		float speed = projOverride["speed"];
+		if (speed >= 0.0) {
+			projForm->data.speed = speed;
+			_MESSAGE("        Speed: %f", projForm->data.speed);
+		}
+	}
+	// -- range
+	if (!projOverride["range"].is_null()) {
+		float range = projOverride["range"];
+		if (range >= 0.0) {
+			projForm->data.range = range;
+			_MESSAGE("        Range: %f", projForm->data.range);
+		}
+	}
+	// -- gravity
+	if (!projOverride["gravity"].is_null()) {
+		float gravity = projOverride["gravity"];
+		if (gravity >= 0.0) {
+			projForm->data.gravity = gravity;
+			_MESSAGE("        Gravity: %f", projForm->data.gravity);
+		}
+	}
+	// -- impactForce
+	if (!projOverride["impactForce"].is_null()) {
+		float impactForce = projOverride["impactForce"];
+		if (impactForce >= 0.0) {
+			projForm->data.impactForce = impactForce;
+			_MESSAGE("        Impact Force: %f", projForm->data.impactForce);
+		}
+	}
+	// -- collisionRadius
+	if (!projOverride["collisionRadius"].is_null()) {
+		float collisionRadius = projOverride["collisionRadius"];
+		if (collisionRadius >= 0.0) {
+			projForm->data.collisionRadius = collisionRadius;
+			_MESSAGE("        Collision Radius: %f", projForm->data.impactForce);
+		}
+	}
+	// -- explosion
+	if (!projOverride["explosion"].is_null()) {
+		std::string explosionID = projOverride["explosion"];
+		projForm->data.explosion = SAKEUtilities::GetFormFromIdentifier(explosionID);
+		if (projForm->data.explosion) {
+			_MESSAGE("        Explosion: 0x%08X", projForm->data.explosion->formID);
+		}
+		else {
+			_MESSAGE("        Explosion: none");
+		}
+	}
+	// -- explosionProximity
+	if (!projOverride["explosionProximity"].is_null()) {
+		float explosionProximity = projOverride["explosionProximity"];
+		if (explosionProximity >= 0.0) {
+			projForm->data.explosionProximity = explosionProximity;
+			_MESSAGE("        Explosion Proximity: %f", projForm->data.explosionProximity);
+		}
+	}
+	// -- explosionTimer
+	if (!projOverride["explosionTimer"].is_null()) {
+		float explosionTimer = projOverride["explosionTimer"];
+		if (explosionTimer >= 0.0) {
+			projForm->data.explosionTimer = explosionTimer;
+			_MESSAGE("        Explosion Timer: %f", projForm->data.explosionTimer);
+		}
+	}
+	// -- countdownSound
+	if (!projOverride["countdownSound"].is_null()) {
+		std::string countdownSoundID = projOverride["countdownSound"];
+		projForm->data.countdownSound = reinterpret_cast<BGSSoundDescriptorForm*>(SAKEUtilities::GetFormFromIdentifier(countdownSoundID));
+		if (projForm->data.countdownSound) {
+			_MESSAGE("        Countdown Sound: 0x%08X", projForm->data.countdownSound->formID);
+		}
+		else {
+			_MESSAGE("        Countdown Sound: none");
+		}
+	}
+	// -- disableSound
+	if (!projOverride["disableSound"].is_null()) {
+		std::string disableSoundID = projOverride["disableSound"];
+		projForm->data.disableSound = reinterpret_cast<BGSSoundDescriptorForm*>(SAKEUtilities::GetFormFromIdentifier(disableSoundID));
+		if (projForm->data.disableSound) {
+			_MESSAGE("        Disable Sound: 0x%08X", projForm->data.disableSound->formID);
+		}
+		else {
+			_MESSAGE("        Disable Sound: none");
+		}
+	}
+	// -- weaponSource
+	if (!projOverride["weaponSource"].is_null()) {
+		std::string weaponSourceID = projOverride["weaponSource"];
+		projForm->data.weaponSource = reinterpret_cast<TESObjectWEAP*>(SAKEUtilities::GetFormFromIdentifier(weaponSourceID));
+		if (projForm->data.weaponSource) {
+			_MESSAGE("        Weapon Source: 0x%08X", projForm->data.weaponSource->formID);
+		}
+		else {
+			_MESSAGE("        Weapon Source: none");
+		}
+	}
+	// -- vatsProjectile
+	if (!projOverride["vatsProjectile"].is_null()) {
+		std::string vatsProjectileID = projOverride["vatsProjectile"];
+		projForm->data.vatsProjectile = reinterpret_cast<BGSProjectile*>(SAKEUtilities::GetFormFromIdentifier(vatsProjectileID));
+		if (projForm->data.vatsProjectile) {
+			_MESSAGE("        VATS Projectile: 0x%08X", projForm->data.vatsProjectile->formID);
+		}
+		else {
+			_MESSAGE("        VATS Projectile: none");
+		}
+	}
+	// -- coneSpread
+	if (!projOverride["coneSpread"].is_null()) {
+		float coneSpread = projOverride["coneSpread"];
+		if (coneSpread >= 0.0) {
+			projForm->data.coneSpread = coneSpread;
+			_MESSAGE("        Cone Spread: %f", projForm->data.coneSpread);
+		}
+	}
+	// -- tracerFrequency
+	if (!projOverride["tracerFrequency"].is_null()) {
+		int tracerFrequency = projOverride["tracerFrequency"];
+		if (tracerFrequency >= 0) {
+			projForm->data.tracerFrequency = tracerFrequency;
+			_MESSAGE("        Tracer Frequency: %f", projForm->data.tracerFrequency);
+		}
+	}
+	// -- collisionLayer
+	if (!projOverride["collisionLayer"].is_null()) {
+		std::string collisionLayerID = projOverride["collisionLayer"];
+		projForm->data.collisionLayer = SAKEUtilities::GetFormFromIdentifier(collisionLayerID);
+		if (projForm->data.collisionLayer) {
+			_MESSAGE("        CollisionLayer: 0x%08X", projForm->data.collisionLayer->formID);
+		}
+		else {
+			_MESSAGE("        CollisionLayer: none");
+		}
+	}
+	// -- decalData
+	if (!projOverride["decalData"].is_null()) {
+		std::string decalDataID = projOverride["decalData"];
+		projForm->data.decalData = SAKEUtilities::GetFormFromIdentifier(decalDataID);
+		if (projForm->data.decalData) {
+			_MESSAGE("        DecalData: 0x%08X", projForm->data.decalData->formID);
+		}
+		else {
+			_MESSAGE("        DecalData: none");
+		}
+	}
+	// ---- Flags:
+	if (!projOverride["flags"].is_null()) {
+		json flagsObj = projOverride["flags"];
+		bool bFlagCheck = false;
+		_MESSAGE("        Flags:");
+		// -- HitScan
+		if (!flagsObj["HitScan"].is_null()) {
+			bFlagCheck = flagsObj["HitScan"];
+			if (bFlagCheck) {
+				projForm->data.flags |= TempBGSProjectile::pFlag_Hitscan;
+				_MESSAGE("          Hitscan: true");
+			}
+			else {
+				projForm->data.flags &= ~TempBGSProjectile::pFlag_Hitscan;
+				_MESSAGE("          Hitscan: false");
+			}
+		}
+		// -- Explosion
+		if (!flagsObj["Explosion"].is_null()) {
+			bFlagCheck = flagsObj["Explosion"];
+			if (bFlagCheck) {
+				projForm->data.flags |= TempBGSProjectile::pFlag_Explosion;
+				_MESSAGE("          Explosion: true");
+			}
+			else {
+				projForm->data.flags &= ~TempBGSProjectile::pFlag_Explosion;
+				_MESSAGE("          Explosion: false");
+			}
+		}
+		// -- AltTrigger
+		if (!flagsObj["AltTrigger"].is_null()) {
+			bFlagCheck = flagsObj["AltTrigger"];
+			if (bFlagCheck) {
+				projForm->data.flags |= TempBGSProjectile::pFlag_AltTrigger;
+				_MESSAGE("          AltTrigger: true");
+			}
+			else {
+				projForm->data.flags &= ~TempBGSProjectile::pFlag_AltTrigger;
+				_MESSAGE("          AltTrigger: false");
+			}
+		}
+		// -- MuzzleFlash
+		if (!flagsObj["MuzzleFlash"].is_null()) {
+			bFlagCheck = flagsObj["MuzzleFlash"];
+			if (bFlagCheck) {
+				projForm->data.flags |= TempBGSProjectile::pFlag_MuzzleFlash;
+				_MESSAGE("          MuzzleFlash: true");
+			}
+			else {
+				projForm->data.flags &= ~TempBGSProjectile::pFlag_MuzzleFlash;
+				_MESSAGE("          MuzzleFlash: false");
+			}
+		}
+		// -- Unknown4
+		if (!flagsObj["Unknown4"].is_null()) {
+			bFlagCheck = flagsObj["Unknown4"];
+			if (bFlagCheck) {
+				projForm->data.flags |= TempBGSProjectile::pFlag_Unknown4;
+				_MESSAGE("          Unknown4: true");
+			}
+			else {
+				projForm->data.flags &= ~TempBGSProjectile::pFlag_Unknown4;
+				_MESSAGE("          Unknown4: false");
+			}
+		}
+		// -- CanBeDisabled
+		if (!flagsObj["CanBeDisabled"].is_null()) {
+			bFlagCheck = flagsObj["CanBeDisabled"];
+			if (bFlagCheck) {
+				projForm->data.flags |= TempBGSProjectile::pFlag_CanBeDisabled;
+				_MESSAGE("          CanBeDisabled: true");
+			}
+			else {
+				projForm->data.flags &= ~TempBGSProjectile::pFlag_CanBeDisabled;
+				_MESSAGE("          CanBeDisabled: false");
+			}
+		}
+		// -- CanBePickedUp
+		if (!flagsObj["CanBePickedUp"].is_null()) {
+			bFlagCheck = flagsObj["CanBePickedUp"];
+			if (bFlagCheck) {
+				projForm->data.flags |= TempBGSProjectile::pFlag_CanBePickedUp;
+				_MESSAGE("          CanBePickedUp: true");
+			}
+			else {
+				projForm->data.flags &= ~TempBGSProjectile::pFlag_CanBePickedUp;
+				_MESSAGE("          CanBePickedUp: false");
+			}
+		}
+		// -- Supersonic
+		if (!flagsObj["Supersonic"].is_null()) {
+			bFlagCheck = flagsObj["Supersonic"];
+			if (bFlagCheck) {
+				projForm->data.flags |= TempBGSProjectile::pFlag_Supersonic;
+				_MESSAGE("          Supersonic: true");
+			}
+			else {
+				projForm->data.flags &= ~TempBGSProjectile::pFlag_Supersonic;
+				_MESSAGE("          Supersonic: false");
+			}
+		}
+		// -- PinsLimbs
+		if (!flagsObj["PinsLimbs"].is_null()) {
+			bFlagCheck = flagsObj["PinsLimbs"];
+			if (bFlagCheck) {
+				projForm->data.flags |= TempBGSProjectile::pFlag_PinsLimbs;
+				_MESSAGE("          PinsLimbs: true");
+			}
+			else {
+				projForm->data.flags &= ~TempBGSProjectile::pFlag_PinsLimbs;
+				_MESSAGE("          PinsLimbs: false");
+			}
+		}
+		// -- PassThroughSmallTransparent
+		if (!flagsObj["PassThroughSmallTransparent"].is_null()) {
+			bFlagCheck = flagsObj["PassThroughSmallTransparent"];
+			if (bFlagCheck) {
+				projForm->data.flags |= TempBGSProjectile::pFlag_PassThroughSmallTransparent;
+				_MESSAGE("          PassThroughSmallTransparent: true");
+			}
+			else {
+				projForm->data.flags &= ~TempBGSProjectile::pFlag_PassThroughSmallTransparent;
+				_MESSAGE("          PassThroughSmallTransparent: false");
+			}
+		}
+		// -- DisableCombatAimCorrection
+		if (!flagsObj["DisableCombatAimCorrection"].is_null()) {
+			bFlagCheck = flagsObj["DisableCombatAimCorrection"];
+			if (bFlagCheck) {
+				projForm->data.flags |= TempBGSProjectile::pFlag_DisableCombatAimCorrection;
+				_MESSAGE("          DisableCombatAimCorrection: true");
+			}
+			else {
+				projForm->data.flags &= ~TempBGSProjectile::pFlag_DisableCombatAimCorrection;
+				_MESSAGE("          DisableCombatAimCorrection: false");
+			}
+		}
+		// -- PenetratesGeometry
+		if (!flagsObj["PenetratesGeometry"].is_null()) {
+			bFlagCheck = flagsObj["PenetratesGeometry"];
+			if (bFlagCheck) {
+				projForm->data.flags |= TempBGSProjectile::pFlag_PenetratesGeometry;
+				_MESSAGE("          PenetratesGeometry: true");
+			}
+			else {
+				projForm->data.flags &= ~TempBGSProjectile::pFlag_PenetratesGeometry;
+				_MESSAGE("          PenetratesGeometry: false");
+			}
+		}
+		// -- ContinuousUpdate
+		if (!flagsObj["ContinuousUpdate"].is_null()) {
+			bFlagCheck = flagsObj["ContinuousUpdate"];
+			if (bFlagCheck) {
+				projForm->data.flags |= TempBGSProjectile::pFlag_ContinuousUpdate;
+				_MESSAGE("          ContinuousUpdate: true");
+			}
+			else {
+				projForm->data.flags &= ~TempBGSProjectile::pFlag_ContinuousUpdate;
+				_MESSAGE("          ContinuousUpdate: false");
+			}
+		}
+		// -- SeeksTarget
+		if (!flagsObj["SeeksTarget"].is_null()) {
+			bFlagCheck = flagsObj["SeeksTarget"];
+			if (bFlagCheck) {
+				projForm->data.flags |= TempBGSProjectile::pFlag_SeeksTarget;
+				_MESSAGE("          SeeksTarget: true");
+			}
+			else {
+				projForm->data.flags &= ~TempBGSProjectile::pFlag_SeeksTarget;
+				_MESSAGE("          SeeksTarget: false");
+			}
+		}
+	}
+	// -- destructibleSource
+	if (!projOverride["destructibleSource"].is_null()) {
+		std::string destrID = projOverride["destructibleSource"];
+		TempBGSProjectile * explSource = reinterpret_cast<TempBGSProjectile*>(SAKEUtilities::GetFormFromIdentifier(destrID));
+		if (explSource) {
+			projForm->destructible = explSource->destructible;
+			_MESSAGE("        Destructible Source: 0x%08X", explSource->formID);
 		}
 	}
 }
@@ -2184,9 +2819,8 @@ void SAKEData::LoadOverrides_EncounterZone(BGSEncounterZone * enczForm, json & e
 		_MESSAGE("        ERROR: No EncounterZone Form! dump: %s", enczOverride.dump().c_str());
 		return;
 	}
-	if (iDebugLogLevel != 0) {
-		_MESSAGE("\n      Editing EncounterZone - 0x%08X (%s)", enczForm->formID, enczForm->GetFullName());
-	}
+	_MESSAGE("\n      Editing EncounterZone - 0x%08X (%s)", enczForm->formID, enczForm->GetFullName());
+	
 	int levelMin = enczForm->minLevel, levelMax = enczForm->maxLevel;
 	if (!enczOverride["levelMin"].is_null()) {
 		levelMin = enczOverride["levelMin"];
@@ -2200,9 +2834,7 @@ void SAKEData::LoadOverrides_EncounterZone(BGSEncounterZone * enczForm, json & e
 	if ((levelMin != (int)enczForm->minLevel) || (levelMax != (int)enczForm->maxLevel)) {
 		enczForm->minLevel = (UInt8)levelMin;
 		enczForm->maxLevel = (UInt8)levelMax;
-		if (iDebugLogLevel == 2) {
-			_MESSAGE("        Edited Levels - Min: %i, Max: %i", enczForm->minLevel, enczForm->maxLevel);
-		}
+		_MESSAGE("        Edited Levels - Min: %i, Max: %i", enczForm->minLevel, enczForm->maxLevel);
 	}
 }
 
@@ -2219,9 +2851,7 @@ void SAKEData::LoadNamePrefix(TESForm * targetForm, const std::string & prefixSt
 	formName.append(" ");
 	formName.append(targetForm->GetFullName());
 
-	if (iDebugLogLevel == 2) {
-		_MESSAGE("    Original Name: %s", targetForm->GetFullName());
-	}
+	_MESSAGE("    Original Name: %s", targetForm->GetFullName());
 	
 	switch (targetForm->formType) {
 		case kFormType_ARMO:
@@ -2248,10 +2878,7 @@ void SAKEData::LoadNamePrefix(TESForm * targetForm, const std::string & prefixSt
 		default:
 			bEdited = false;
 	}
-
-	if ((iDebugLogLevel == 2) && bEdited) {
-		_MESSAGE("    Edited Name: %s", targetForm->GetFullName());
-	}
+	_MESSAGE("    Edited Name: %s", targetForm->GetFullName());
 }
 
 

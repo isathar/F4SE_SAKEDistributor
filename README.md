@@ -1,6 +1,8 @@
-# SAKE Distributor v0.9.9
+# SAKE Distributor v0.9.10
 
 An experimental dynamic patcher for Fallout 4.
+
+- [Documentation](https://github.com/isathar/F4SE_SAKEDistributor/wiki)
 
 -------------------------------------------------
 ## What It Does
@@ -9,7 +11,7 @@ An experimental dynamic patcher for Fallout 4.
 - All overrides are independent of plugin load order and most have no effect on save files (the main exceptions being spells and enchantments with scripts).
 - It also supports adding prefixes to item names for inventory sorting and editing GameSettings.
 - Currently supported form types:
-	- LeveledItem, LeveledNPC, Race, Actor, Armor, Weapon, MiscItem, Key, Ammo, Ingestible, and Encounter Zone.
+	- LeveledItem, LeveledNPC, Race, Actor, Armor, Weapon, MiscItem, Key, Ammo, Ingestible, Projectile, and Encounter Zone.
 - *Note: Most of the included overrides are incomplete and will be finished eventually.*
 
 -------------------------------------------------

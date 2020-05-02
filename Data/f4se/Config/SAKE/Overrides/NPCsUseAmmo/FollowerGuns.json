@@ -4,39 +4,39 @@
 	"overrides": [
 		{"comment": ["Piper's 10mm Pistol"], "formID": "Fallout4.esm|5DF2D",
 			"ammo": "Fallout4.esm|1F276",
-			"flags": {"npcsUseAmmo": true}
+			"flags": {"NPCsUseAmmo": true}
 		},
 		
 		{"comment": ["Valentine's Pipe Revolver"], "formID": "Fallout4.esm|5BBA7", 
-			"flags": {"npcsUseAmmo": true}
+			"flags": {"NPCsUseAmmo": true}
 		},
 		
 		{"comment": ["Cait's Double-Barreled Shotgun"], "formID": "Fallout4.esm|5DF30", 
-			"flags": {"npcsUseAmmo": true}
+			"flags": {"NPCsUseAmmo": true}
 		},
 		
 		{"comment": ["Hancock's Double-Barreled Shotgun"], "formID": "Fallout4.esm|62AA4", 
-			"flags": {"npcsUseAmmo": true}
+			"flags": {"NPCsUseAmmo": true}
 		},
 		
 		{"comment": ["McCready's Hunting Rifle"], "formID": "Fallout4.esm|5BBA4", 
-			"flags": {"npcsUseAmmo": true}
+			"flags": {"NPCsUseAmmo": true}
 		},
 		
 		{"comment": ["Deacon's Hunting Rifle"], "formID": "Fallout4.esm|215CE3", 
-			"flags": {"npcsUseAmmo": true}
+			"flags": {"NPCsUseAmmo": true}
 		},
 		
 		{"comment": ["Curie's Laser Gun"], "formID": "Fallout4.esm|22CC13", 
-			"flags": {"npcsUseAmmo": true}
+			"flags": {"NPCsUseAmmo": true}
 		},
 		
 		{"comment": ["Danse's Laser Gun"], "formID": "Fallout4.esm|5BBA6", 
-			"flags": {"npcsUseAmmo": true}
+			"flags": {"NPCsUseAmmo": true}
 		},
 		
 		{"comment": ["Ingram's Laser Gun"], "formID": "Fallout4.esm|249D38", 
-			"flags": {"npcsUseAmmo": true}
+			"flags": {"NPCsUseAmmo": true}
 		}
 	]
 }

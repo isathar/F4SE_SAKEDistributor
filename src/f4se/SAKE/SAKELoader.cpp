@@ -14,12 +14,11 @@ namespace SAKEFileReader
 	// reads the overrides from a json file at jsonPath
 	int LoadOverride(const std::string & jsonPath)
 	{
-		if (SAKEData::iDebugLogLevel != 0) {
-			_MESSAGE("\n  Loading Override file %s...", jsonPath.c_str());
-		}
+		_MESSAGE("\n  Loading Override file %s...", jsonPath.c_str());
 		if (!SAKEUtilities::IsPathValid(jsonPath)) {
 			return 4;
 		}
+
 		json otObject;
 		std::ifstream otFile(jsonPath.c_str());
 		otFile >> otObject;
@@ -115,7 +114,7 @@ namespace SAKEFileReader
 							SAKEData::LoadOverrides_Actor(reinterpret_cast<TESNPC*>(curForm), curOverride);
 							break;
 						case kFormType_AMMO:
-							SAKEData::LoadOverrides_Ammo(reinterpret_cast<TESAmmo*>(curForm), curOverride);
+							SAKEData::LoadOverrides_Ammo(reinterpret_cast<TempTESAmmo*>(curForm), curOverride);
 							break;
 						case kFormType_MISC:
 							SAKEData::LoadOverrides_Misc(reinterpret_cast<TESObjectMISC*>(curForm), curOverride);
@@ -131,6 +130,9 @@ namespace SAKEFileReader
 							break;
 						case kFormType_ECZN:
 							SAKEData::LoadOverrides_EncounterZone(reinterpret_cast<BGSEncounterZone*>(curForm), curOverride);
+							break;
+						case kFormType_PROJ:
+							SAKEData::LoadOverrides_Projectile(reinterpret_cast<TempBGSProjectile*>(curForm), curOverride);
 							break;
 
 						default:
@@ -174,9 +176,7 @@ namespace SAKEFileReader
 	// reads all json overrides found in the directory at jsonPath
 	int LoadOverridesFolder(const std::string & jsonPath)
 	{
-		if (SAKEData::iDebugLogLevel != 0) {
-			_MESSAGE("\n\nLoading Template: %s", jsonPath.c_str());
-		}
+		_MESSAGE("\n\nLoading Template: %s", jsonPath.c_str());
 		if (!SAKEUtilities::IsPathValid(jsonPath)) {
 			return 0;
 		}
@@ -222,9 +222,7 @@ namespace SAKEFileReader
 		curProfile.append(presetName.c_str());
 		curProfile.append(".json");
 
-		if (SAKEData::iDebugLogLevel != 0) {
-			_MESSAGE("\n\nLoading Profile: %s", curProfile.c_str());
-		}
+		_MESSAGE("\n\nLoading Profile: %s", curProfile.c_str());
 		if (!SAKEUtilities::IsPathValid(curProfile)) {
 			return 0;
 		}
@@ -339,36 +337,10 @@ namespace SAKEFileReader
 }
 
 
+
 // temp form decoding + dev stuff
 void TestingStuff()
 {
-	// leather medium torso
-	BGSMod::Attachment::Mod * tempMod = (BGSMod::Attachment::Mod*)SAKEUtilities::GetFormFromIdentifier("Fallout4.esm|184BD2");
-	UInt32 targetOffset = BGSMod::Container::kArmorTarget_Offset;
-
-	for (UInt32 i = 0; i < tempMod->modContainer.dataSize / sizeof(BGSMod::Container::Data); i++) {
-		UInt32 targetType = targetOffset;
-		UInt32 op = 0;
-		TESForm * form = nullptr;
-		float value1 = 0.0f;
-		float value2 = 0.0f;
-
-		BGSMod::Container::Data data = tempMod->modContainer.data[i];
-
-		targetType += data.target;
-
-		if (data.op == BGSMod::Container::Data::kOpFlag_Add_Int || data.op == BGSMod::Container::Data::kOpFlag_Set_Int) {
-			if (targetType == targetOffset + 6) {
-				_MESSAGE("Leather Armor Medium - ArmorRating Add  i: %i, f: %.f, ff.formID: 0x%08X, ff.v2: %.f, fi.formID: 0x%08X, fi.v2: 0x%08X, form: 0x%08X", data.value.i.v1, data.value.f.v1, data.value.ff.formId, data.value.ff.v2, data.value.fi.formId, data.value.fi.v2, data.value.form);
-				//tempMod->modContainer.data[i].value.f.v1 = (float)0x64;
-				tempMod->modContainer.data[i].value.ff.formId = 0x64;
-				tempMod->modContainer.data[i].value.fi.formId = 0x64;
-				tempMod->modContainer.data[i].value.i.v1 = 0x64;
-				tempMod->modContainer.data[i].value.form = reinterpret_cast<TESForm*>(0x64);
-				break;
-			}
-		}
-	}
 	
 }
 
@@ -384,11 +356,10 @@ void SAKEFileReader::LoadGameData()
 	if (iniBase.LoadFile(".\\Data\\F4SE\\Plugins\\SAKE.ini") > -1) {
 		sDataPath = iniBase.GetValue("Settings", "sDataPath", ".\\Data\\F4SE\\Config\\SAKE\\");
 		sConfigPreset = iniBase.GetValue("Settings", "sConfigPreset", "Default");
-		SAKEData::iDebugLogLevel = iniBase.GetLongValue("Settings", "iDebugLogLevel", 0);
-		_MESSAGE("\nLoaded SAKE.ini...\n  dataPath: %s\n  configPreset: %s\n  debugLogLevel: %i", sDataPath.c_str(), sConfigPreset.c_str(), SAKEData::iDebugLogLevel);
+		_MESSAGE("\nLoaded SAKE.ini...\n  dataPath: %s\n  configPreset: %s", sDataPath.c_str(), sConfigPreset.c_str());
 	}
 	else {
-		_MESSAGE("\nUnable to load SAKE.ini... Using defaults.\n  dataPath: %s\n  configPreset: %s\n  debugLogLevel: %i", sDataPath.c_str(), sConfigPreset.c_str(), SAKEData::iDebugLogLevel);
+		_MESSAGE("\nUnable to load SAKE.ini... Using defaults.\n  dataPath: %s\n  configPreset: %s", sDataPath.c_str(), sConfigPreset.c_str());
 	}
 
 	switch (LoadProfile(sConfigPreset, sDataPath)) {

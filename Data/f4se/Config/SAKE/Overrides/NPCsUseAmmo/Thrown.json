@@ -4,7 +4,7 @@
 	"overrides": [
 		{
 			"comment": ["Frag Grenade"], "formID": "Fallout4.esm|EEBED", 
-			"flags": {"npcsUseAmmo": true}
+			"flags": {"NPCsUseAmmo": true}
 		}
 	]
 }

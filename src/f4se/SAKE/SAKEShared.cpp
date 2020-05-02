@@ -1,9 +1,6 @@
 #include "SAKEShared.h"
 
 
-UInt8 SAKEData::iDebugLogLevel = 0;
-
-
 // returns a form's plugin name or "Ref" if it's not a base form
 const char * SAKEUtilities::GetPluginNameFromFormID(UInt32 formID)
 {
