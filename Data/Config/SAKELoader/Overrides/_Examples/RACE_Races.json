@@ -1,0 +1,41 @@
+{
+	"info": "Race form override examples.",
+	
+	"overrides": [
+		{
+			"info": [
+				"Race (Deathclaw)",
+				"Adds critical chance and some more physical resistance"
+			],
+			"formID": "Fallout4.esm|1DB4A",
+			"actorValues": [
+				{"formID": "Fallout4.esm|2DD", "set": 2.0, "add": 2.0, "info": "4 percent crit chance"},
+				{"formID": "Fallout4.esm|2E3", "add": 200.0, "info": "200 DR"}
+			]
+		},
+		
+		{
+			"info": [
+				"Race (Molerat)",
+				"Adds the CourserSpeedUp ability to make them faster"
+			],
+			"formID": "Fallout4.esm|1D810",
+			"spells": [
+				{"formID": "Fallout4.esm|237E4F", "info": "CourserSpeedUp"}
+			]
+		},
+		
+		{
+			"info": [
+				"Race (Radroach)",
+				"Adds the Radiation Healing keyword"
+			],
+			"formID": "Fallout4.esm|4716C",
+			"keywords": {
+				"add": [
+					{"formID": "Fallout4.esm|23954F"}
+				]
+			}
+		}
+	]
+}

@@ -1,0 +1,39 @@
+{
+	"info": "Ingestible/Chem override examples",
+	
+	"overrides": [
+		{
+			"info": "Ingestible (Jet) - Name and model edits",
+			"formID": "Fallout4.esm|366C5",
+			"name": "Jet in a Stimpack",
+			"model": "Props\\Stimpack01.nif",
+			"bounds": {
+				"x1": -5, "y1": -13, "z1": 0,
+				"x2": 6, "y2": 11, "z2": 2
+			}
+		},
+		
+		{
+			"info": "Ingestible (Deathclaw Meat) - Makes it heavier and more expensive",
+			"formID": "Fallout4.esm|74D0E",
+			"weight": 2.0,
+			"value": 2000
+		},
+		
+		{
+			"info": [
+				"Ingestible (Melon Blossom)",
+				"Makes it usable as food in Survival mode and adds some disease risk"
+			],
+			"formID": "Fallout4.esm|1C4010",
+			"keywords": {
+				"add": [
+					{"formID": "Fallout4.esm|899", "info": "HC_DiseaseRisk_FoodStandard"}
+				],
+				"remove": [
+					{"formID": "Fallout4.esm|249F52", "info": "HC_IgnoreAsFood"}
+				]
+			}
+		}
+	]
+}

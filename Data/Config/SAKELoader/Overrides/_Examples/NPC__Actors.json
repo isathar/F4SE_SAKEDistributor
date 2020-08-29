@@ -1,0 +1,104 @@
+{
+	"info": [
+		"ActorBase form override examples",
+		"Boosts for the player character",
+		"Gives a Fatman and 20 Mini Nukes to some raiders"
+	]
+	
+	"overrides": [
+		
+		{"info": "Actor - Player", "formID": "Fallout4.esm|7",
+			"npcClass": "Fallout4.esm|1326B",
+			"actorValues": [
+				{"formID": "Fallout4.esm|2DD", "set": 5.0, "add": 2.0, "info": "7 percent crit chance"},
+				{"formID": "Fallout4.esm|2DD", "add": 2.0, "info": "add another 2 percent"}
+			],
+			"spells": [
+				{"formID": "Fallout4.esm|237E4F", "info": "CourserSpeedUp"}
+			],
+			"perks": [
+				{"formID": "Fallout4.esm|4A0AB", "rank": 1, "info": "Toughness 1"}
+			],
+			"keywords": {
+				"add": [
+					{"formID": "Fallout4.esm|23954F", "info": "RadiationHealing"}
+				]
+			},
+			"inventory": {
+				"remove": [
+					{"formID": "Fallout4.esm|4822", "info": "10mm"}
+				],
+				"add": [
+					{"formID": "Fallout4.esm|9983B", "count": 1, "owner": "none", "condition": 1.0, "info": "Laser Gun"},
+					{"formID": "Fallout4.esm|C1897", "count": 500, "owner": "none", "condition": 1.0, "info": "500 Fusion Cells"}
+				]
+			}
+		},
+		
+		{"info": "Actor - EncRaider01Template", "formID": "Fallout4.esm|3183A",
+			"inventory": {
+				"add": [
+					{"formID": "Fallout4.esm|BD56F", "count": 1, "owner": "none", "condition": 1.0, "info": "Fatman"},
+					{"formID": "Fallout4.esm|E6B2E", "count": 20, "owner": "none", "condition": 1.0, "info": "20 Mini Nukes"}
+				]
+			}
+		},
+		{"info": "Actor - EncRaider01PowerArmorTemplate", "formID": "Fallout4.esm|23D8C9",
+			"inventory": {
+				"add": [
+					{"formID": "Fallout4.esm|BD56F", "count": 1, "owner": "none", "condition": 1.0, "info": "Fatman"},
+					{"formID": "Fallout4.esm|E6B2E", "count": 20, "owner": "none", "condition": 1.0, "info": "20 Mini Nukes"}
+				]
+			}
+		},
+		{"info": "Actor - EncRaider01MissileTemplate", "formID": "Fallout4.esm|23D8C7",
+			"inventory": {
+				"add": [
+					{"formID": "Fallout4.esm|BD56F", "count": 1, "owner": "none", "condition": 1.0, "info": "Fatman"},
+					{"formID": "Fallout4.esm|E6B2E", "count": 20, "owner": "none", "condition": 1.0, "info": "20 Mini Nukes"}
+				]
+			}
+		},
+		{"info": "Actor - EncRaider01Melee", "formID": "Fallout4.esm|47162",
+			"inventory": {
+				"add": [
+					{"formID": "Fallout4.esm|BD56F", "count": 1, "owner": "none", "condition": 1.0, "info": "Fatman"},
+					{"formID": "Fallout4.esm|E6B2E", "count": 20, "owner": "none", "condition": 1.0, "info": "20 Mini Nukes"}
+				]
+			}
+		},
+		{"info": "Actor - EncRaider01Grenade", "formID": "Fallout4.esm|F7578",
+			"inventory": {
+				"add": [
+					{"formID": "Fallout4.esm|BD56F", "count": 1, "owner": "none", "condition": 1.0, "info": "Fatman"},
+					{"formID": "Fallout4.esm|E6B2E", "count": 20, "owner": "none", "condition": 1.0, "info": "20 Mini Nukes"}
+				]
+			}
+		},
+		{"info": "Actor - EncRaider01Boss", "formID": "Fallout4.esm|19567",
+			"inventory": {
+				"add": [
+					{"formID": "Fallout4.esm|BD56F", "count": 1, "owner": "none", "condition": 1.0, "info": "Fatman"},
+					{"formID": "Fallout4.esm|E6B2E", "count": 20, "owner": "none", "condition": 1.0, "info": "20 Mini Nukes"}
+				]
+			}
+		},
+		
+		{"info": "Actor - LvlRaiderBossPowerArmor", "formID": "Fallout4.esm|153391",
+			"inventory": {
+				"add": [
+					{"formID": "Fallout4.esm|BD56F", "count": 1, "owner": "none", "condition": 1.0, "info": "Fatman"},
+					{"formID": "Fallout4.esm|E6B2E", "count": 20, "owner": "none", "condition": 1.0, "info": "20 Mini Nukes"}
+				]
+			}
+		},
+		{"info": "Actor - LvlRaiderAuto", "formID": "Fallout4.esm|CE986",
+			"inventory": {
+				"add": [
+					{"formID": "Fallout4.esm|BD56F", "count": 1, "owner": "none", "condition": 1.0, "info": "Fatman"},
+					{"formID": "Fallout4.esm|E6B2E", "count": 20, "owner": "none", "condition": 1.0, "info": "20 Mini Nukes"}
+				]
+			}
+		}
+	]
+}

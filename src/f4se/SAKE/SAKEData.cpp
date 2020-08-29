@@ -1,7 +1,7 @@
 #include "SAKEData.h"
 
 
-namespace SAKEData
+namespace SAKELoader
 {
 	// adds a list of spells to Actor/Race spellLists
 	void LoadData_Spells(std::vector<SpellItem*> & spellsIn, TESRace * targetRace, TESActorBase * targetActor)
@@ -51,10 +51,10 @@ namespace SAKEData
 		spellData->numSpells = spellsIn.size();
 		UInt32 spellIdx = 0;
 
-		_MESSAGE("        Edited Spells list:");
+		//_MESSAGE("        Edited Spells list:");
 		for (std::vector<SpellItem*>::iterator itAdd = spellsIn.begin(); itAdd != spellsIn.end(); ++itAdd) {
 			spellData->spells[spellIdx] = *itAdd;
-			_MESSAGE("          %i: 0x%08X", spellIdx, spellData->spells[spellIdx]->formID);
+			//_MESSAGE("          %i: 0x%08X", spellIdx, spellData->spells[spellIdx]->formID);
 			spellIdx += 1;
 		}
 	}
@@ -69,28 +69,38 @@ namespace SAKEData
 
 		std::vector<UInt32> keywordsToAdd, keywordsToRemove, finalKeywordsList;
 		// -- get keywords to remove
-		if (keywordData["remove"].is_array() && !keywordData["remove"].empty()) {
+		if (!keywordData["remove"].is_null() && !keywordData["remove"].empty()) {
 			UInt32 remKWID = 0;
-			for (json::iterator itRemove = keywordData["remove"].begin(); itRemove != keywordData["remove"].end(); ++itRemove) {
-				std::string remKWStr = *itRemove;
-				remKWID = SAKEUtilities::GetFormIDFromIdentifier(remKWStr.c_str());
+			json remKWObj;
+			for (json::iterator itRemKW = keywordData["remove"].begin(); itRemKW != keywordData["remove"].end(); ++itRemKW) {
+				remKWObj = *itRemKW;
+				if (remKWObj["formID"].is_null()) {
+					_MESSAGE("        WARNING: Skipping Keyword - formID is null!");
+					continue;
+				}
+				remKWID = GetFormIDFromIdentifier(remKWObj["formID"]);
 				if (remKWID != 0) {
 					keywordsToRemove.push_back(remKWID);
 				}
-				_MESSAGE("        Removing keyword %s", remKWStr.c_str());
+				_MESSAGE("        Removing keyword 0x%08X", remKWID);
 			}
 		}
 
 		// -- get keywords to add
 		if (keywordData["add"].is_array() && !keywordData["add"].empty()) {
 			UInt32 addKWID = 0;
-			for (json::iterator itAdd = keywordData["add"].begin(); itAdd != keywordData["add"].end(); ++itAdd) {
-				std::string addKWStr = *itAdd;
-				addKWID = SAKEUtilities::GetFormIDFromIdentifier(addKWStr.c_str());
+			json addKWObj;
+			for (json::iterator itAddKW = keywordData["add"].begin(); itAddKW != keywordData["add"].end(); ++itAddKW) {
+				addKWObj = *itAddKW;
+				if (addKWObj["formID"].is_null()) {
+					_MESSAGE("        WARNING: Skipping Keyword - formID is null!");
+					continue;
+				}
+				addKWID = GetFormIDFromIdentifier(addKWObj["formID"]);
 				if (addKWID != 0) {
 					keywordsToAdd.push_back(addKWID);
 				}
-				_MESSAGE("        Adding keyword %s", addKWStr.c_str());
+				_MESSAGE("        Adding keyword 0x%08X", addKWID);
 			}
 		}
 
@@ -163,8 +173,7 @@ namespace SAKEData
 			dtObj.clear();
 			dtObj = *itDT;
 			if (!dtObj["formID"].is_null()) {
-				std::string dtIDStr = dtObj["formID"];
-				dtID = SAKEUtilities::GetFormIDFromIdentifier(dtIDStr.c_str());
+				dtID = GetFormIDFromIdentifier(dtObj["formID"]);
 				int iDTSet = -1;
 				if (!dtObj["set"].is_null()) {
 					iDTSet = dtObj["set"];
@@ -184,7 +193,7 @@ namespace SAKEData
 								if (iDTSet == -1) {
 									iDTSet = checkDT.value;
 								}
-								_MESSAGE("        Found existing damage type: %s, value: %i", dtIDStr.c_str(), checkDT.value);
+								_MESSAGE("        Found existing damage type: 0x%08X, value: %i", dtID, checkDT.value);
 								break;
 							}
 						}
@@ -200,7 +209,7 @@ namespace SAKEData
 						newDT.damageType = tempDT;
 						newDT.value = (UInt32)finalDTVal;
 						finalDamageTypes.push_back(newDT);
-						_MESSAGE("        Adding damage type: %s, set: %i, add: %i", dtIDStr.c_str(), iDTSet, iDTAdd);
+						_MESSAGE("        Adding damage type: 0x%08X, set: %i, add: %i", tempDT->formID, iDTSet, iDTAdd);
 					}
 				}
 			}
@@ -216,6 +225,308 @@ namespace SAKEData
 		}
 	}
 
+	// Modifies Actor inventory lists
+	void LoadData_Container_TESNPC(TESNPC * actorForm, json invData)
+	{
+		if (invData.is_null()) {
+			return;
+		}
+
+		std::vector<TESContainer::Entry> tempInvItems;
+		std::vector<UInt32> remItemsList;
+		UInt32 paddingVal = 0;
+		UInt32 iNumRemoved = 0;
+		UInt32 iNumAdded = 0;
+		bool bClear = false;
+
+		if (actorForm->container.numEntries != 0) {
+			if (!invData["clear"].is_null()) {
+				bClear = invData["clear"];
+			}
+
+			if (!bClear) {
+				// get items to remove
+				if (!invData["remove"].is_null() && !invData["remove"].empty()) {
+					json invRemObj;
+					UInt32 formIDRem = 0;
+					for (json::iterator itInvRem = invData["remove"].begin(); itInvRem != invData["remove"].end(); ++itInvRem) {
+						invRemObj = *itInvRem;
+						if (invRemObj.is_null() || invRemObj.empty()) {
+							continue;
+						}
+						if (invRemObj["formID"].is_null()) {
+							continue;
+						}
+						formIDRem = GetFormIDFromIdentifier(invRemObj["formID"]);
+						if (formIDRem == 0) {
+							continue;
+						}
+						remItemsList.push_back(formIDRem);
+					}
+				}
+
+				// get the current inventory, skipping any items that need to be removed
+				_MESSAGE("        Editing inventory list:");
+				for (UInt32 i = 0; i < actorForm->container.numEntries; i++) {
+					TESContainer::Entry * curEntry = actorForm->container.entries[i];
+					if (curEntry && curEntry->form) {
+						if (std::find(remItemsList.begin(), remItemsList.end(), curEntry->form->formID) != remItemsList.end()) {
+							_MESSAGE("            removing item %i: 0x%08X (%s) x%i",
+								i, curEntry->form->formID, curEntry->form->GetFullName(), curEntry->count
+							);
+							iNumRemoved += 1;
+						}
+						else {
+							_MESSAGE("            item %i: 0x%08X (%s) x%i - data: 0x%016X - padding: 0x%08X",
+								i, curEntry->form->formID, curEntry->form->GetFullName(), curEntry->count, curEntry->data, curEntry->pad04
+							);
+							tempInvItems.push_back(*curEntry);
+							paddingVal = curEntry->pad04;
+						}
+					}
+					else {
+						_MESSAGE("            skipping item %i: null");
+					}
+				}
+			}
+			else {
+				_MESSAGE("        Clearing inventory list");
+			}
+		}
+
+		// get items to add
+		if (!invData["add"].is_null() && !invData["add"].empty()) {
+			json invAddObj;
+			for (json::iterator itInvAdd = invData["add"].begin(); itInvAdd != invData["add"].end(); ++itInvAdd) {
+				invAddObj = *itInvAdd;
+				if (invAddObj.is_null() || invAddObj.empty()) {
+					continue;
+				}
+				if (invAddObj["formID"].is_null()) {
+					continue;
+				}
+				TESContainer::Entry newEntry;
+				newEntry.form = GetFormFromIdentifier(invAddObj["formID"]);
+				if (!newEntry.form) {
+					continue;
+				}
+				if (!invAddObj["count"].is_null()) {
+					newEntry.count = invAddObj["count"];
+					if ((int)newEntry.count <= 0) {
+						continue;
+					}
+				}
+				else {
+					newEntry.count = 1;
+				}
+				newEntry.data = nullptr;
+				newEntry.pad04 = paddingVal;
+				// TBD: check if the item already exists and increment count instead of adding a new entry
+				tempInvItems.push_back(newEntry);
+				_MESSAGE("            adding item: 0x%08X (%s) x%i",
+					newEntry.form->formID, newEntry.form->GetFullName(), newEntry.count
+				);
+				iNumAdded += 1;
+			}
+		}
+
+		// rebuild the inventory list if any changes were made
+		UInt32 finalItemsCount = tempInvItems.size();
+		if ((iNumRemoved != 0) || (iNumAdded != 0)) {
+			_MESSAGE("        Final inventory:");
+			actorForm->container.numEntries = finalItemsCount;
+			actorForm->container.entries = new TESContainer::Entry*[finalItemsCount];
+			if (finalItemsCount != 0) {
+				for (UInt32 i = 0; i < finalItemsCount; i++) {
+					actorForm->container.entries[i] = new TESContainer::Entry();
+					actorForm->container.entries[i]->form = tempInvItems[i].form;
+					actorForm->container.entries[i]->count = tempInvItems[i].count;
+					actorForm->container.entries[i]->data = tempInvItems[i].data;
+					actorForm->container.entries[i]->pad04 = tempInvItems[i].pad04;
+					_MESSAGE("            %i: 0x%08X (%s) x%i",
+						i, actorForm->container.entries[i]->form->formID,
+						actorForm->container.entries[i]->form->GetFullName(),
+						actorForm->container.entries[i]->count
+					);
+				}
+			}
+		}
+	}
+
+	// Modifies Actor inventory lists
+	void LoadData_Container_TESObjectCONT(TESObjectCONT * contForm, json invData)
+	{
+		if (invData.is_null()) {
+			return;
+		}
+
+		std::vector<TESContainer::Entry> tempInvItems;
+		std::vector<UInt32> remItemsList;
+		UInt32 paddingVal = 0;
+		UInt32 iNumRemoved = 0;
+		UInt32 iNumAdded = 0;
+
+		if (contForm->container.numEntries != 0) {
+			// get items to remove
+			if (!invData["remove"].is_null() && !invData["remove"].empty()) {
+				json invRemObj;
+				UInt32 formIDRem = 0;
+				for (json::iterator itInvRem = invData["remove"].begin(); itInvRem != invData["remove"].end(); ++itInvRem) {
+					invRemObj = *itInvRem;
+					if (invRemObj.is_null() || invRemObj.empty()) {
+						continue;
+					}
+					if (invRemObj["formID"].is_null()) {
+						continue;
+					}
+					formIDRem = GetFormIDFromIdentifier(invRemObj["formID"]);
+					if (formIDRem == 0) {
+						continue;
+					}
+					remItemsList.push_back(formIDRem);
+				}
+			}
+
+			// get the current inventory, skipping any items that need to be removed
+			_MESSAGE("        Editing inventory list:");
+			for (UInt32 i = 0; i < contForm->container.numEntries; i++) {
+				TESContainer::Entry * curEntry = contForm->container.entries[i];
+				if (curEntry && curEntry->form) {
+					if (std::find(remItemsList.begin(), remItemsList.end(), curEntry->form->formID) != remItemsList.end()) {
+						_MESSAGE("            removing item %i: 0x%08X (%s) x%i",
+							i, curEntry->form->formID, curEntry->form->GetFullName(), curEntry->count
+						);
+						iNumRemoved += 1;
+					}
+					else {
+						_MESSAGE("            item %i: 0x%08X (%s) x%i - data: 0x%016X - padding: 0x%08X",
+							i, curEntry->form->formID, curEntry->form->GetFullName(), curEntry->count, curEntry->data, curEntry->pad04
+						);
+						tempInvItems.push_back(*curEntry);
+						paddingVal = curEntry->pad04;
+					}
+				}
+				else {
+					_MESSAGE("            skipping item %i: null");
+				}
+			}
+		}
+
+		// get items to add
+		if (!invData["add"].is_null() && !invData["add"].empty()) {
+			json invAddObj;
+			for (json::iterator itInvAdd = invData["add"].begin(); itInvAdd != invData["add"].end(); ++itInvAdd) {
+				invAddObj = *itInvAdd;
+				if (invAddObj.is_null() || invAddObj.empty()) {
+					continue;
+				}
+				if (invAddObj["formID"].is_null()) {
+					continue;
+				}
+				TESContainer::Entry newEntry;
+				newEntry.form = GetFormFromIdentifier(invAddObj["formID"]);
+				if (!newEntry.form) {
+					continue;
+				}
+				if (!invAddObj["count"].is_null()) {
+					newEntry.count = invAddObj["count"];
+					if ((int)newEntry.count <= 0) {
+						continue;
+					}
+				}
+				else {
+					newEntry.count = 1;
+				}
+				newEntry.data = nullptr;
+				newEntry.pad04 = paddingVal;
+				// TBD: check if the item already exists and increment count instead of adding a new entry
+				tempInvItems.push_back(newEntry);
+				_MESSAGE("            adding item: 0x%08X (%s) x%i",
+					newEntry.form->formID, newEntry.form->GetFullName(), newEntry.count
+				);
+				iNumAdded += 1;
+			}
+		}
+
+		// rebuild the inventory list if any changes were made
+		UInt32 finalItemsCount = tempInvItems.size();
+		if ((iNumRemoved != 0) || (iNumAdded != 0)) {
+			_MESSAGE("        Final inventory:");
+			contForm->container.numEntries = finalItemsCount;
+			contForm->container.entries = new TESContainer::Entry*[finalItemsCount];
+			if (finalItemsCount != 0) {
+				for (UInt32 i = 0; i < finalItemsCount; i++) {
+					contForm->container.entries[i] = new TESContainer::Entry();
+					contForm->container.entries[i]->form = tempInvItems[i].form;
+					contForm->container.entries[i]->count = tempInvItems[i].count;
+					contForm->container.entries[i]->data = tempInvItems[i].data;
+					contForm->container.entries[i]->pad04 = tempInvItems[i].pad04;
+					_MESSAGE("            %i: 0x%08X (%s) x%i",
+						i, contForm->container.entries[i]->form->formID,
+						contForm->container.entries[i]->form->GetFullName(),
+						contForm->container.entries[i]->count
+					);
+				}
+			}
+		}
+	}
+
+	// Modifies base ActorValues
+	void LoadData_PropertySheet(tArray<BGSPropertySheet::AVIFProperty> * properties, json propsData)
+	{
+		if (propsData.is_null() || propsData.empty()) {
+			return;
+		}
+		if (!properties) {
+			properties = new tArray<BGSPropertySheet::AVIFProperty>();
+		}
+
+		json curAV;
+		for (json::iterator itAVs = propsData.begin(); itAVs != propsData.end(); ++itAVs) {
+			curAV.clear();
+			curAV = *itAVs;
+			if (!curAV["formID"].is_null()) {
+				ActorValueInfo * newAV = reinterpret_cast<ActorValueInfo*>(GetFormFromIdentifier(curAV["formID"]));
+				if (newAV) {
+					float fAVSet = -1.0;
+					if (!curAV["set"].is_null()) {
+						fAVSet = curAV["set"];
+					}
+					float fAVAdd = 0.0;
+					if (!curAV["add"].is_null()) {
+						fAVAdd = curAV["add"];
+					}
+
+					bool bFoundAV = false;
+					if (properties->count != 0) {
+						for (UInt32 i = 0; i < properties->count; i++) {
+							BGSPropertySheet::AVIFProperty checkAVProp;
+							if (properties->GetNthItem(i, checkAVProp)) {
+								if (checkAVProp.actorValue->formID == newAV->formID) {
+									checkAVProp.value = max(0.0, ((fAVSet < 0.0) ? (checkAVProp.value + fAVAdd) : (fAVSet + fAVAdd)));
+									_MESSAGE("        Editing ActorValue 0x%08X (%s) - set: %.2f, add: %.2f",
+										newAV->formID, newAV->avName, fAVSet, fAVAdd);
+									bFoundAV = true;
+									break;
+								}
+							}
+						}
+						if (bFoundAV) {
+							continue;
+						}
+					}
+
+					BGSPropertySheet::AVIFProperty newAVProp;
+					newAVProp.actorValue = newAV;
+					newAVProp.value = (fAVSet < 0.0) ? fAVAdd : (fAVSet + fAVAdd);
+					if (newAVProp.value >= 0.0) {
+						_MESSAGE("        Adding ActorValue 0x%08X (%s) - set: %.2f, add: %.2f", newAV->formID, newAV->avName, fAVSet, fAVAdd);
+						properties->Push(newAVProp);
+					}
+				}
+			}
+		}
+	}
 
 	// name editing functions to get around not being able to define variables in switches:
 
@@ -264,8 +575,8 @@ namespace SAKEData
 }
 
 
-// ---- Weapon - WEAP
-void SAKEData::LoadOverrides_Weapon(TESObjectWEAP * weapForm, json & weaponOverride)
+// Weapons
+void SAKELoader::LoadOverrides_Weapon(TESObjectWEAP * weapForm, json & weaponOverride)
 {
 	if (!weapForm) {
 		_MESSAGE("        ERROR: No Weapon Form! dump: %s", weaponOverride.dump().c_str());
@@ -282,8 +593,7 @@ void SAKEData::LoadOverrides_Weapon(TESObjectWEAP * weapForm, json & weaponOverr
 	}
 	// -- instance naming rules
 	if (!weaponOverride["instanceNamingRules"].is_null()) {
-		std::string inrID = weaponOverride["instanceNamingRules"];
-		BGSInstanceNamingRules * newNamingRules = reinterpret_cast<BGSInstanceNamingRules*>(SAKEUtilities::GetFormFromIdentifier(inrID.c_str()));
+		BGSInstanceNamingRules * newNamingRules = reinterpret_cast<BGSInstanceNamingRules*>(GetFormFromIdentifier(weaponOverride["instanceNamingRules"]));
 		// null is acceptable here if the name should be static
 		weapForm->namingRules.rules = newNamingRules;
 		if (weapForm->namingRules.rules) {
@@ -297,17 +607,11 @@ void SAKEData::LoadOverrides_Weapon(TESObjectWEAP * weapForm, json & weaponOverr
 	if (!weaponOverride["keywords"].is_null()) {
 		json keywordsObject = weaponOverride["keywords"];
 		LoadData_KeywordForm(&weapForm->keyword, keywordsObject);
-		if (weapForm->keyword.numKeywords != 0) {
-			_MESSAGE("        Final Keywords list:");
-			for (UInt32 j = 0; j < weapForm->keyword.numKeywords; j++) {
-				_MESSAGE("          %i: 0x%08X (%s)", j, weapForm->keyword.keywords[j]->formID, weapForm->keyword.keywords[j]->keyword.c_str());
-			}
-		}
 	}
 
 	// ---- InstanceData
 	// anything past this point is only processed for weapons that can have ObjectMods
-	TESObjectWEAP::InstanceData *instanceData = &weapForm->weapData;
+	TempWEAPInstanceData * instanceData = reinterpret_cast<TempWEAPInstanceData*>(&weapForm->weapData);
 	if (!instanceData) {
 		_MESSAGE("\n      WARNING: Weapon has no instanceData!");
 		return;
@@ -324,19 +628,14 @@ void SAKEData::LoadOverrides_Weapon(TESObjectWEAP * weapForm, json & weaponOverr
 	// -- damageTypes
 	if (weaponOverride["damageTypes"].is_array() && !weaponOverride["damageTypes"].empty()) {
 		json damageTypesObject = weaponOverride["damageTypes"];
+		bool clearExisting = false;
+		if (!weaponOverride["clearDmgTypes"].is_null()) {
+			clearExisting = weaponOverride["clearDmgTypes"];
+		}
 		if (!instanceData->damageTypes) {
 			instanceData->damageTypes = new tArray<TBO_InstanceData::DamageTypes>();
 		}
-		LoadData_DamageTypes(instanceData->damageTypes, damageTypesObject, false);
-		if (instanceData->damageTypes && (instanceData->damageTypes->count != 0)) {
-			_MESSAGE("        Final Damage Types list:");
-			for (UInt32 j = 0; j < instanceData->damageTypes->count; j++) {
-				TBO_InstanceData::DamageTypes checkDT;
-				if (instanceData->damageTypes->GetNthItem(j, checkDT)) {
-					_MESSAGE("          %i:  0x%08X - %i", j, checkDT.damageType->formID, checkDT.value);
-				}
-			}
-		}
+		LoadData_DamageTypes(instanceData->damageTypes, damageTypesObject, clearExisting);
 	}
 	// -- secondary/bash damage 
 	if (!weaponOverride["secondaryDamage"].is_null()) {
@@ -445,8 +744,7 @@ void SAKEData::LoadOverrides_Weapon(TESObjectWEAP * weapForm, json & weaponOverr
 	}
 	// -- ammo
 	if (!weaponOverride["ammo"].is_null()) {
-		std::string ammoID = weaponOverride["ammo"];
-		TESAmmo * newAmmo = reinterpret_cast<TESAmmo*>(SAKEUtilities::GetFormFromIdentifier(ammoID.c_str()));
+		TESAmmo * newAmmo = reinterpret_cast<TESAmmo*>(GetFormFromIdentifier(weaponOverride["ammo"]));
 		if (newAmmo) {
 			instanceData->ammo = newAmmo;
 			_MESSAGE("        Ammo: 0x%08X", instanceData->ammo->formID);
@@ -454,8 +752,7 @@ void SAKEData::LoadOverrides_Weapon(TESObjectWEAP * weapForm, json & weaponOverr
 	}
 	// -- NPC ammo leveled list - can be none
 	if (!weaponOverride["npcAmmoLeveledList"].is_null()) {
-		std::string ammoListID = weaponOverride["npcAmmoLeveledList"];
-		TESLevItem * newAmmoList = reinterpret_cast<TESLevItem*>(SAKEUtilities::GetFormFromIdentifier(ammoListID.c_str()));
+		TESLevItem * newAmmoList = reinterpret_cast<TESLevItem*>(GetFormFromIdentifier(weaponOverride["npcAmmoLeveledList"]));
 		instanceData->addAmmoList = newAmmoList;
 		if (instanceData->addAmmoList) {
 			_MESSAGE("        NPC Ammo List: 0x%08X", instanceData->addAmmoList->formID);
@@ -466,11 +763,13 @@ void SAKEData::LoadOverrides_Weapon(TESObjectWEAP * weapForm, json & weaponOverr
 	}
 	// -- impactDataSet
 	if (!weaponOverride["impactDataSet"].is_null()) {
-		std::string impactsID = weaponOverride["impactDataSet"];
-		BGSImpactDataSet * newImpacts = reinterpret_cast<BGSImpactDataSet*>(SAKEUtilities::GetFormFromIdentifier(impactsID.c_str()));
-		if (newImpacts) {
-			instanceData->unk58 = newImpacts;
-			_MESSAGE("        ImpactDataSet: %s", impactsID.c_str());
+		TESForm * newImpactsForm = GetFormFromIdentifier(weaponOverride["impactDataSet"]);
+		if (newImpactsForm) {
+			BGSImpactDataSet * newImpacts = reinterpret_cast<BGSImpactDataSet*>(newImpactsForm);
+			if (newImpacts) {
+				instanceData->impactDataSet = newImpacts;
+				_MESSAGE("        ImpactDataSet: 0x%08X", newImpactsForm->formID);
+			}
 		}
 	}
 	// -- Enchantments
@@ -481,22 +780,10 @@ void SAKEData::LoadOverrides_Weapon(TESObjectWEAP * weapForm, json & weaponOverr
 		for (json::iterator itEnch = weaponOverride["enchantments"].begin(); itEnch != weaponOverride["enchantments"].end(); ++itEnch) {
 			json enchObj = *itEnch;
 			if (!enchObj["formID"].is_null()) {
-				std::string enchID = enchObj["formID"];
-				EnchantmentItem * newEnchantment = reinterpret_cast<EnchantmentItem*>(SAKEUtilities::GetFormFromIdentifier(enchID.c_str()));
+				EnchantmentItem * newEnchantment = reinterpret_cast<EnchantmentItem*>(GetFormFromIdentifier(enchObj["formID"]));
 				if (newEnchantment) {
 					instanceData->enchantments->Push(newEnchantment);
-					_MESSAGE("        Adding Enchantment: %s", enchID.c_str());
-				}
-			}
-		}
-		if (instanceData->enchantments->count != 0) {
-			_MESSAGE("        Final Enchantments list:");
-			for (UInt32 j = 0; j < instanceData->enchantments->count; j++) {
-				EnchantmentItem * tempEnch = nullptr;
-				if (instanceData->enchantments->GetNthItem(j, tempEnch)) {
-					if (tempEnch) {
-						_MESSAGE("          %i:  0x%08X", j, tempEnch->formID);
-					}
+					_MESSAGE("        Added Enchantment: 0x%08X (%s)", newEnchantment->formID, newEnchantment->GetFullName());
 				}
 			}
 		}
@@ -511,8 +798,7 @@ void SAKEData::LoadOverrides_Weapon(TESObjectWEAP * weapForm, json & weaponOverr
 			avObj.clear();
 			avObj = *itAV;
 			if (!avObj["formID"].is_null()) {
-				std::string avID = avObj["formID"];
-				ActorValueInfo * newAV = reinterpret_cast<ActorValueInfo*>(SAKEUtilities::GetFormFromIdentifier(avID.c_str()));
+				ActorValueInfo * newAV = reinterpret_cast<ActorValueInfo*>(GetFormFromIdentifier(avObj["formID"]));
 				if (newAV) {
 					int iAVSet = -1;
 					if (!avObj["set"].is_null()) {
@@ -536,24 +822,14 @@ void SAKEData::LoadOverrides_Weapon(TESObjectWEAP * weapForm, json & weaponOverr
 						}
 					}
 
+
 					int newAVValue = (iAVSet < 0) ? iAVAdd : (iAVSet + iAVAdd);
 					if (newAVValue > 0) {
 						TBO_InstanceData::ValueModifier newAVMod;
 						newAVMod.avInfo = newAV;
 						newAVMod.unk08 = (UInt32)newAVValue;
 						instanceData->modifiers->Push(newAVMod);
-						_MESSAGE("        Adding actorValueMod: %s - set: %i, add: %i", avID.c_str(), iAVSet, iAVAdd);
-					}
-				}
-			}
-		}
-		_MESSAGE("        Final ActorValue Modifiers:");
-		if (instanceData->modifiers->count != 0) {
-			for (UInt32 j = 0; j < instanceData->modifiers->count; j++) {
-				TBO_InstanceData::ValueModifier checkAVMod;
-				if (instanceData->modifiers->GetNthItem(j, checkAVMod)) {
-					if (checkAVMod.avInfo) {
-						_MESSAGE("          %i:  0x%08X - %i", j, checkAVMod.avInfo->formID, checkAVMod.unk08);
+						_MESSAGE("        Added actorValueMod: 0x%08X (%s) - set: %i, add: %i", newAV->formID, newAV->avName, iAVSet, iAVAdd);
 					}
 				}
 			}
@@ -567,230 +843,230 @@ void SAKEData::LoadOverrides_Weapon(TESObjectWEAP * weapForm, json & weaponOverr
 		if (!flagsObj["PlayerOnly"].is_null()) {
 			bFlagCheck = flagsObj["PlayerOnly"];
 			if (bFlagCheck) {
-				instanceData->flags |= wFlag_PlayerOnly;
+				instanceData->flags |= TempWEAPInstanceData::kFlag_PlayerOnly;
 			}
 			else {
-				instanceData->flags &= ~wFlag_PlayerOnly;
+				instanceData->flags &= ~TempWEAPInstanceData::kFlag_PlayerOnly;
 			}
 		}
 		// -- NPCsUseAmmo
 		if (!flagsObj["NPCsUseAmmo"].is_null()) {
 			bFlagCheck = flagsObj["NPCsUseAmmo"];
 			if (bFlagCheck) {
-				instanceData->flags |= wFlag_NPCsUseAmmo;
+				instanceData->flags |= TempWEAPInstanceData::kFlag_NPCsUseAmmo;
 			}
 			else {
-				instanceData->flags &= ~wFlag_NPCsUseAmmo;
+				instanceData->flags &= ~TempWEAPInstanceData::kFlag_NPCsUseAmmo;
 			}
 		}
 		// -- NoJamAfterReload
 		if (!flagsObj["NoJamAfterReload"].is_null()) {
 			bFlagCheck = flagsObj["NoJamAfterReload"];
 			if (bFlagCheck) {
-				instanceData->flags |= wFlag_NoJamAfterReload;
+				instanceData->flags |= TempWEAPInstanceData::kFlag_NoJamAfterReload;
 			}
 			else {
-				instanceData->flags &= ~wFlag_NoJamAfterReload;
+				instanceData->flags &= ~TempWEAPInstanceData::kFlag_NoJamAfterReload;
 			}
 		}
 		// -- ChargingReload
 		if (!flagsObj["ChargingReload"].is_null()) {
 			bFlagCheck = flagsObj["ChargingReload"];
 			if (bFlagCheck) {
-				instanceData->flags |= wFlag_ChargingReload;
+				instanceData->flags |= TempWEAPInstanceData::kFlag_ChargingReload;
 			}
 			else {
-				instanceData->flags &= ~wFlag_ChargingReload;
+				instanceData->flags &= ~TempWEAPInstanceData::kFlag_ChargingReload;
 			}
 		}
 		// -- MinorCrime
 		if (!flagsObj["MinorCrime"].is_null()) {
 			bFlagCheck = flagsObj["MinorCrime"];
 			if (bFlagCheck) {
-				instanceData->flags |= wFlag_MinorCrime;
+				instanceData->flags |= TempWEAPInstanceData::kFlag_MinorCrime;
 			}
 			else {
-				instanceData->flags &= ~wFlag_MinorCrime;
+				instanceData->flags &= ~TempWEAPInstanceData::kFlag_MinorCrime;
 			}
 		}
 		// -- FixedRange
 		if (!flagsObj["FixedRange"].is_null()) {
 			bFlagCheck = flagsObj["FixedRange"];
 			if (bFlagCheck) {
-				instanceData->flags |= wFlag_FixedRange;
+				instanceData->flags |= TempWEAPInstanceData::kFlag_FixedRange;
 			}
 			else {
-				instanceData->flags &= ~wFlag_FixedRange;
+				instanceData->flags &= ~TempWEAPInstanceData::kFlag_FixedRange;
 			}
 		}
 		// -- NotUsedInNormalCombat
 		if (!flagsObj["NotUsedInNormalCombat"].is_null()) {
 			bFlagCheck = flagsObj["NotUsedInNormalCombat"];
 			if (bFlagCheck) {
-				instanceData->flags |= wFlag_NotUsedInNormalCombat;
+				instanceData->flags |= TempWEAPInstanceData::kFlag_NotUsedInNormalCombat;
 			}
 			else {
-				instanceData->flags &= ~wFlag_NotUsedInNormalCombat;
+				instanceData->flags &= ~TempWEAPInstanceData::kFlag_NotUsedInNormalCombat;
 			}
 		}
 		// -- CritEffectonDeath
 		if (!flagsObj["CritEffectonDeath"].is_null()) {
 			bFlagCheck = flagsObj["CritEffectonDeath"];
 			if (bFlagCheck) {
-				instanceData->flags |= wFlag_CritEffectonDeath;
+				instanceData->flags |= TempWEAPInstanceData::kFlag_CritEffectonDeath;
 			}
 			else {
-				instanceData->flags &= ~wFlag_CritEffectonDeath;
+				instanceData->flags &= ~TempWEAPInstanceData::kFlag_CritEffectonDeath;
 			}
 		}
 		// -- ChargingAttack
 		if (!flagsObj["ChargingAttack"].is_null()) {
 			bFlagCheck = flagsObj["ChargingAttack"];
 			if (bFlagCheck) {
-				instanceData->flags |= wFlag_ChargingAttack;
+				instanceData->flags |= TempWEAPInstanceData::kFlag_ChargingAttack;
 			}
 			else {
-				instanceData->flags &= ~wFlag_ChargingAttack;
+				instanceData->flags &= ~TempWEAPInstanceData::kFlag_ChargingAttack;
 			}
 		}
 		// -- HoldInputToPower
 		if (!flagsObj["HoldInputToPower"].is_null()) {
 			bFlagCheck = flagsObj["HoldInputToPower"];
 			if (bFlagCheck) {
-				instanceData->flags |= wFlag_HoldInputToPower;
+				instanceData->flags |= TempWEAPInstanceData::kFlag_HoldInputToPower;
 			}
 			else {
-				instanceData->flags &= ~wFlag_HoldInputToPower;
+				instanceData->flags &= ~TempWEAPInstanceData::kFlag_HoldInputToPower;
 			}
 		}
 		// -- NonHostile
 		if (!flagsObj["NonHostile"].is_null()) {
 			bFlagCheck = flagsObj["NonHostile"];
 			if (bFlagCheck) {
-				instanceData->flags |= wFlag_NonHostile;
+				instanceData->flags |= TempWEAPInstanceData::kFlag_NonHostile;
 			}
 			else {
-				instanceData->flags &= ~wFlag_NonHostile;
+				instanceData->flags &= ~TempWEAPInstanceData::kFlag_NonHostile;
 			}
 		}
 		// -- BoundWeapon
 		if (!flagsObj["BoundWeapon"].is_null()) {
 			bFlagCheck = flagsObj["BoundWeapon"];
 			if (bFlagCheck) {
-				instanceData->flags |= wFlag_BoundWeapon;
+				instanceData->flags |= TempWEAPInstanceData::kFlag_BoundWeapon;
 			}
 			else {
-				instanceData->flags &= ~wFlag_BoundWeapon;
+				instanceData->flags &= ~TempWEAPInstanceData::kFlag_BoundWeapon;
 			}
 		}
 		// -- IgnoresNormalResist
 		if (!flagsObj["IgnoresNormalResist"].is_null()) {
 			bFlagCheck = flagsObj["IgnoresNormalResist"];
 			if (bFlagCheck) {
-				instanceData->flags |= wFlag_IgnoresNormalResist;
+				instanceData->flags |= TempWEAPInstanceData::kFlag_IgnoresNormalResist;
 			}
 			else {
-				instanceData->flags &= ~wFlag_IgnoresNormalResist;
+				instanceData->flags &= ~TempWEAPInstanceData::kFlag_IgnoresNormalResist;
 			}
 		}
 		// -- Automatic
 		if (!flagsObj["Automatic"].is_null()) {
 			bFlagCheck = flagsObj["Automatic"];
 			if (bFlagCheck) {
-				instanceData->flags |= wFlag_Automatic;
+				instanceData->flags |= TempWEAPInstanceData::kFlag_Automatic;
 			}
 			else {
-				instanceData->flags &= ~wFlag_Automatic;
+				instanceData->flags &= ~TempWEAPInstanceData::kFlag_Automatic;
 			}
 		}
 		// -- RepeatableSingleFire
 		if (!flagsObj["RepeatableSingleFire"].is_null()) {
 			bFlagCheck = flagsObj["RepeatableSingleFire"];
 			if (bFlagCheck) {
-				instanceData->flags |= wFlag_RepeatableSingleFire;
+				instanceData->flags |= TempWEAPInstanceData::kFlag_RepeatableSingleFire;
 			}
 			else {
-				instanceData->flags &= ~wFlag_RepeatableSingleFire;
+				instanceData->flags &= ~TempWEAPInstanceData::kFlag_RepeatableSingleFire;
 			}
 		}
 		// -- CantDrop
 		if (!flagsObj["CantDrop"].is_null()) {
 			bFlagCheck = flagsObj["CantDrop"];
 			if (bFlagCheck) {
-				instanceData->flags |= wFlag_CantDrop;
+				instanceData->flags |= TempWEAPInstanceData::kFlag_CantDrop;
 			}
 			else {
-				instanceData->flags &= ~wFlag_CantDrop;
+				instanceData->flags &= ~TempWEAPInstanceData::kFlag_CantDrop;
 			}
 		}
 		// -- HideBackpack
 		if (!flagsObj["HideBackpack"].is_null()) {
 			bFlagCheck = flagsObj["HideBackpack"];
 			if (bFlagCheck) {
-				instanceData->flags |= wFlag_HideBackpack;
+				instanceData->flags |= TempWEAPInstanceData::kFlag_HideBackpack;
 			}
 			else {
-				instanceData->flags &= ~wFlag_HideBackpack;
+				instanceData->flags &= ~TempWEAPInstanceData::kFlag_HideBackpack;
 			}
 		}
 		// -- EmbeddedWeapon
 		if (!flagsObj["EmbeddedWeapon"].is_null()) {
 			bFlagCheck = flagsObj["EmbeddedWeapon"];
 			if (bFlagCheck) {
-				instanceData->flags |= wFlag_EmbeddedWeapon;
+				instanceData->flags |= TempWEAPInstanceData::kFlag_EmbeddedWeapon;
 			}
 			else {
-				instanceData->flags &= ~wFlag_EmbeddedWeapon;
+				instanceData->flags &= ~TempWEAPInstanceData::kFlag_EmbeddedWeapon;
 			}
 		}
 		// -- NotPlayable
 		if (!flagsObj["NotPlayable"].is_null()) {
 			bFlagCheck = flagsObj["NotPlayable"];
 			if (bFlagCheck) {
-				instanceData->flags |= wFlag_NotPlayable;
+				instanceData->flags |= TempWEAPInstanceData::kFlag_NotPlayable;
 			}
 			else {
-				instanceData->flags &= ~wFlag_NotPlayable;
+				instanceData->flags &= ~TempWEAPInstanceData::kFlag_NotPlayable;
 			}
 		}
 		// -- HasScope
 		if (!flagsObj["HasScope"].is_null()) {
 			bFlagCheck = flagsObj["HasScope"];
 			if (bFlagCheck) {
-				instanceData->flags |= wFlag_HasScope;
+				instanceData->flags |= TempWEAPInstanceData::kFlag_HasScope;
 			}
 			else {
-				instanceData->flags &= ~wFlag_HasScope;
+				instanceData->flags &= ~TempWEAPInstanceData::kFlag_HasScope;
 			}
 		}
 		// -- BoltAction
 		if (!flagsObj["BoltAction"].is_null()) {
 			bFlagCheck = flagsObj["BoltAction"];
 			if (bFlagCheck) {
-				instanceData->flags |= wFlag_BoltAction;
+				instanceData->flags |= TempWEAPInstanceData::kFlag_BoltAction;
 			}
 			else {
-				instanceData->flags &= ~wFlag_BoltAction;
+				instanceData->flags &= ~TempWEAPInstanceData::kFlag_BoltAction;
 			}
 		}
 		// -- SecondaryWeapon
 		if (!flagsObj["SecondaryWeapon"].is_null()) {
 			bFlagCheck = flagsObj["SecondaryWeapon"];
 			if (bFlagCheck) {
-				instanceData->flags |= wFlag_SecondaryWeapon;
+				instanceData->flags |= TempWEAPInstanceData::kFlag_SecondaryWeapon;
 			}
 			else {
-				instanceData->flags &= ~wFlag_SecondaryWeapon;
+				instanceData->flags &= ~TempWEAPInstanceData::kFlag_SecondaryWeapon;
 			}
 		}
 		// -- DisableShells
 		if (!flagsObj["DisableShells"].is_null()) {
 			bFlagCheck = flagsObj["DisableShells"];
 			if (bFlagCheck) {
-				instanceData->flags |= wFlag_DisableShells;
+				instanceData->flags |= TempWEAPInstanceData::kFlag_DisableShells;
 			}
 			else {
-				instanceData->flags &= ~wFlag_DisableShells;
+				instanceData->flags &= ~TempWEAPInstanceData::kFlag_DisableShells;
 			}
 		}
 	}
@@ -800,11 +1076,13 @@ void SAKEData::LoadOverrides_Weapon(TESObjectWEAP * weapForm, json & weaponOverr
 
 		// -- AimModel Form
 		if (!aimModelObject["formID"].is_null()) {
-			std::string aimmodelID = aimModelObject["formID"];
-			BGSAimModel * newAimModel = reinterpret_cast<BGSAimModel*>(SAKEUtilities::GetFormFromIdentifier(aimmodelID.c_str()));
-			if (newAimModel) {
-				instanceData->aimModel = newAimModel;
-				_MESSAGE("        Aim Model: %s", aimmodelID.c_str());
+			TESForm * newAimModelForm = GetFormFromIdentifier(aimModelObject["formID"]);
+			if (newAimModelForm) {
+				BGSAimModel * newAimModel = reinterpret_cast<BGSAimModel*>(newAimModelForm);
+				if (newAimModel) {
+					instanceData->aimModel = newAimModel;
+					_MESSAGE("        Aim Model: 0x%08X", newAimModelForm->formID);
+				}
 			}
 		}
 
@@ -956,8 +1234,7 @@ void SAKEData::LoadOverrides_Weapon(TESObjectWEAP * weapForm, json & weaponOverr
 	if (instanceData->firingData) {
 		// -- projectile override - can be none
 		if (!weaponOverride["projectileOverride"].is_null()) {
-			std::string projectileID = weaponOverride["projectileOverride"];
-			BGSProjectile * newProjectile = reinterpret_cast<BGSProjectile*>(SAKEUtilities::GetFormFromIdentifier(projectileID.c_str()));
+			BGSProjectile * newProjectile = reinterpret_cast<BGSProjectile*>(GetFormFromIdentifier(weaponOverride["projectileOverride"]));
 			instanceData->firingData->projectileOverride = newProjectile;
 			if (instanceData->firingData->projectileOverride) {
 				_MESSAGE("        Projectile Override: %s", instanceData->firingData->projectileOverride->formID);
@@ -970,8 +1247,8 @@ void SAKEData::LoadOverrides_Weapon(TESObjectWEAP * weapForm, json & weaponOverr
 }
 
 
-// ---- Armor - ARMO
-void SAKEData::LoadOverrides_Armor(TESObjectARMO * armorForm, json & armorOverride)
+// Armors
+void SAKELoader::LoadOverrides_Armor(TESObjectARMO * armorForm, json & armorOverride)
 {
 	if (!armorForm) {
 		_MESSAGE("        ERROR: No Armor Form! dump: %s", armorOverride.dump().c_str());
@@ -988,8 +1265,7 @@ void SAKEData::LoadOverrides_Armor(TESObjectARMO * armorForm, json & armorOverri
 	}
 	// -- instance naming rules
 	if (!armorOverride["instanceNamingRules"].is_null()) {
-		std::string inrID = armorOverride["instanceNamingRules"];
-		BGSInstanceNamingRules * newNamingRules = reinterpret_cast<BGSInstanceNamingRules*>(SAKEUtilities::GetFormFromIdentifier(inrID.c_str()));
+		BGSInstanceNamingRules * newNamingRules = reinterpret_cast<BGSInstanceNamingRules*>(GetFormFromIdentifier(armorOverride["instanceNamingRules"]));
 		armorForm->namingRules.rules = newNamingRules;
 		if (armorForm->namingRules.rules) {
 			_MESSAGE("        Instance Naming Rules: 0x%08X", armorForm->namingRules.rules->formID);
@@ -1002,19 +1278,13 @@ void SAKEData::LoadOverrides_Armor(TESObjectARMO * armorForm, json & armorOverri
 	if (!armorOverride["keywords"].is_null()) {
 		json keywordsObj = armorOverride["keywords"];
 		LoadData_KeywordForm(&armorForm->keywordForm, keywordsObj);
-		if (armorForm->keywordForm.numKeywords != 0) {
-			_MESSAGE("        Final Keywords list:");
-			for (UInt32 j = 0; j < armorForm->keywordForm.numKeywords; j++) {
-				_MESSAGE("          %i: 0x%08X (%s)", j, armorForm->keywordForm.keywords[j]->formID, armorForm->keywordForm.keywords[j]->keyword.c_str());
-			}
-		}
 	}
 
 	// ---- Armor.InstanceData - anything past here is only processed if the armor has default mods
 	// unk10 = enchantments
 	// unk18 = materialswaps
 	// unk38 = actorvaluemods
-	TESObjectARMO::InstanceData *instanceData = &armorForm->instanceData;
+	TempARMOInstanceData *instanceData = reinterpret_cast<TempARMOInstanceData*>(&armorForm->instanceData);
 	if (!instanceData) {
 		_MESSAGE("\n      WARNING: Armor has no instanceData!");
 		return;
@@ -1063,76 +1333,37 @@ void SAKEData::LoadOverrides_Armor(TESObjectARMO * armorForm, json & armorOverri
 			instanceData->damageTypes = new tArray<TBO_InstanceData::DamageTypes>();
 		}
 		LoadData_DamageTypes(instanceData->damageTypes, damageResistsObject, clearExisting);
-
-		if (instanceData->damageTypes && (instanceData->damageTypes->count != 0)) {
-			_MESSAGE("        Final DR list:");
-			for (UInt32 j = 0; j < instanceData->damageTypes->count; j++) {
-				TBO_InstanceData::DamageTypes checkDT;
-				if (instanceData->damageTypes->GetNthItem(j, checkDT)) {
-					_MESSAGE("          %i:  0x%08X - %i", j, checkDT.damageType->formID, checkDT.value);
-				}
-			}
-		}
 	}
 	// -- Enchantments (unk10)
 	if (armorOverride["enchantments"].is_array() && !armorOverride["enchantments"].empty()) {
-		tArray<EnchantmentItem*> * tempEnchantments = nullptr;
-		if (instanceData->unk10 == 0) {
-			tempEnchantments = new tArray<EnchantmentItem*>();
+		if (!instanceData->enchantments) {
+			instanceData->enchantments = new tArray<EnchantmentItem*>();
 		}
-		else {
-			tempEnchantments = reinterpret_cast<tArray<EnchantmentItem*>*>(instanceData->unk10);
-		}
-		if (tempEnchantments) {
+		if (instanceData->enchantments) {
 			for (json::iterator itEnch = armorOverride["enchantments"].begin(); itEnch != armorOverride["enchantments"].end(); ++itEnch) {
 				json enchObj = *itEnch;
 				if (!enchObj["formID"].is_null()) {
-					std::string enchID = enchObj["formID"];
-					EnchantmentItem * newEnchantment = reinterpret_cast<EnchantmentItem*>(SAKEUtilities::GetFormFromIdentifier(enchID.c_str()));
+					EnchantmentItem * newEnchantment = reinterpret_cast<EnchantmentItem*>(GetFormFromIdentifier(enchObj["formID"]));
 					if (newEnchantment) {
-						tempEnchantments->Push(newEnchantment);
-						_MESSAGE("        Adding Enchantment: %s", enchID.c_str());
+						instanceData->enchantments->Push(newEnchantment);
+						_MESSAGE("        Adding Enchantment: 0x%08X (%s)", newEnchantment->formID, newEnchantment->GetFullName());
 					}
 				}
-			}
-			if (tempEnchantments->count != 0) {
-				instanceData->unk10 = (UInt64)tempEnchantments;
-				tArray<EnchantmentItem*> * testEnchantments = reinterpret_cast<tArray<EnchantmentItem*>*>(instanceData->unk10);
-				if (testEnchantments && testEnchantments->count != 0) {
-					_MESSAGE("        Final Enchantments list (0x%016X):", instanceData->unk10);
-					for (UInt32 j = 0; j < testEnchantments->count; j++) {
-						EnchantmentItem * tempEnch = nullptr;
-						if (testEnchantments->GetNthItem(j, tempEnch)) {
-							if (tempEnch) {
-								_MESSAGE("          %i:  0x%08X", j, tempEnch->formID);
-							}
-						}
-					}
-				}
-				
-			}
-			else {
-				instanceData->unk10 = 0;
 			}
 		}
 	}
 	// -- ActorValue modifiers (unk38)
 	if (armorOverride["actorValues"].is_array() && !armorOverride["actorValues"].empty()) {
-		tArray<TBO_InstanceData::ValueModifier> * tempModifiers = nullptr;
-		if (instanceData->unk38 == 0) {
-			tempModifiers = new tArray<TBO_InstanceData::ValueModifier>();
+		if (!instanceData->modifiers) {
+			instanceData->modifiers = new tArray<TBO_InstanceData::ValueModifier>();
 		}
-		else {
-			tempModifiers = reinterpret_cast<tArray<TBO_InstanceData::ValueModifier>*>(instanceData->unk38);
-		}
-		if (tempModifiers) {
+		if (instanceData->modifiers) {
 			json avObj;
 			for (json::iterator itAV = armorOverride["actorValues"].begin(); itAV != armorOverride["actorValues"].end(); ++itAV) {
 				avObj.clear();
 				avObj = *itAV;
 				if (!avObj["formID"].is_null()) {
-					std::string avID = avObj["formID"];
-					ActorValueInfo * newAV = reinterpret_cast<ActorValueInfo*>(SAKEUtilities::GetFormFromIdentifier(avID.c_str()));
+					ActorValueInfo * newAV = reinterpret_cast<ActorValueInfo*>(GetFormFromIdentifier(avObj["formID"]));
 					if (newAV) {
 						int iAVSet = -1;
 						if (!avObj["set"].is_null()) {
@@ -1142,14 +1373,14 @@ void SAKEData::LoadOverrides_Armor(TESObjectARMO * armorForm, json & armorOverri
 						if (!avObj["add"].is_null()) {
 							iAVAdd = avObj["add"];
 						}
-						for (UInt32 j = 0; j < tempModifiers->count; j++) {
+						for (UInt32 j = 0; j < instanceData->modifiers->count; j++) {
 							TBO_InstanceData::ValueModifier checkAVMod;
-							if (tempModifiers->GetNthItem(j, checkAVMod)) {
+							if (instanceData->modifiers->GetNthItem(j, checkAVMod)) {
 								if (checkAVMod.avInfo->formID == newAV->formID) {
 									if (iAVSet < 0) {
 										iAVSet = checkAVMod.unk08;
 									}
-									tempModifiers->Remove(j);
+									instanceData->modifiers->Remove(j);
 									break;
 								}
 							}
@@ -1160,38 +1391,19 @@ void SAKEData::LoadOverrides_Armor(TESObjectARMO * armorForm, json & armorOverri
 							TBO_InstanceData::ValueModifier newAVMod;
 							newAVMod.avInfo = newAV;
 							newAVMod.unk08 = (UInt32)newAVValue;
-							tempModifiers->Push(newAVMod);
-							_MESSAGE("        Adding actorValueMod: %s - set: %i, add: %i", avID.c_str(), iAVSet, iAVAdd);
+							instanceData->modifiers->Push(newAVMod);
+							_MESSAGE("        Adding actorValueMod: 0x%08X (%s) - set: %i, add: %i", newAV->formID, newAV->avName, iAVSet, iAVAdd);
 						}
 					}
 				}
-			}
-
-			if (tempModifiers->count != 0) {
-				instanceData->unk38 = (UInt64)tempModifiers;
-				tArray<TBO_InstanceData::ValueModifier> * testModifiers = reinterpret_cast<tArray<TBO_InstanceData::ValueModifier>*>(instanceData->unk38);
-				_MESSAGE("        Final ActorValue Modifiers (0x%016X):", instanceData->unk38);
-				if (testModifiers->count != 0) {
-					for (UInt32 j = 0; j < testModifiers->count; j++) {
-						TBO_InstanceData::ValueModifier checkAVMod;
-						if (testModifiers->GetNthItem(j, checkAVMod)) {
-							if (checkAVMod.avInfo) {
-								_MESSAGE("          %i:  0x%08X - %i", j, checkAVMod.avInfo->formID, checkAVMod.unk08);
-							}
-						}
-					}
-				}
-			}
-			else {
-				instanceData->unk38 = 0;
 			}
 		}
 	}
 }
 
 
-// ---- Race
-void SAKEData::LoadOverrides_Race(TESRace * raceForm, json & raceOverride)
+// Races
+void SAKELoader::LoadOverrides_Race(TESRace * raceForm, json & raceOverride)
 {
 	if (!raceForm) {
 		_MESSAGE("        ERROR: No Race Form! dump: %s", raceOverride.dump().c_str());
@@ -1199,80 +1411,23 @@ void SAKEData::LoadOverrides_Race(TESRace * raceForm, json & raceOverride)
 	}
 	_MESSAGE("\n      Editing Race - 0x%08X (%s)", raceForm->formID, raceForm->GetFullName());
 
-	// -- ActorValues
+	// ActorValues
 	if (!raceOverride["actorValues"].is_null()) {
-		if (raceOverride["actorValues"].is_array() && !raceOverride["actorValues"].empty()) {
-			if (!raceForm->propertySheet.sheet) {
-				raceForm->propertySheet.sheet = new tArray<BGSPropertySheet::AVIFProperty>();
-			}
-			json curAV;
-			for (json::iterator itAVs = raceOverride["actorValues"].begin(); itAVs != raceOverride["actorValues"].end(); ++itAVs) {
-				curAV.clear();
-				curAV = *itAVs;
-				if (!curAV["formID"].is_null()) {
-					std::string avIDStr = curAV["formID"];
-					ActorValueInfo * newAV = reinterpret_cast<ActorValueInfo*>(SAKEUtilities::GetFormFromIdentifier(avIDStr));
-					if (newAV) {
-						float fAVSet = -1.0;
-						if (!curAV["set"].is_null()) {
-							fAVSet = curAV["set"];
-						}
-						float fAVAdd = 0.0;
-						if (!curAV["add"].is_null()) {
-							fAVAdd = curAV["add"];
-						}
-
-						bool bFoundAV = false;
-						if (raceForm->propertySheet.sheet->count != 0) {
-							for (UInt32 i = 0; i < raceForm->propertySheet.sheet->count; i++) {
-								BGSPropertySheet::AVIFProperty checkAVProp;
-								if (raceForm->propertySheet.sheet->GetNthItem(i, checkAVProp)) {
-									if (checkAVProp.actorValue->formID == newAV->formID) {
-										checkAVProp.value = max(0.0, ((fAVSet < 0.0) ? (checkAVProp.value + fAVAdd) : (fAVSet + fAVAdd)));
-										_MESSAGE("        Editing ActorValue %s - set: %.2f, add: %.2f", avIDStr.c_str(), fAVSet, fAVAdd);
-										bFoundAV = true;
-										break;
-									}
-								}
-							}
-							if (bFoundAV) {
-								continue;
-							}
-						}
-
-						BGSPropertySheet::AVIFProperty newAVProp;
-						newAVProp.actorValue = newAV;
-						newAVProp.value = (fAVSet < 0.0) ? fAVAdd : (fAVSet + fAVAdd);
-						if (newAVProp.value >= 0.0) {
-							_MESSAGE("        Adding ActorValue %s - set: %.2f, add: %.2f", avIDStr.c_str(), fAVSet, fAVAdd);
-							raceForm->propertySheet.sheet->Push(newAVProp);
-						}
-					}
-				}
-			}
-
-			if (raceForm->propertySheet.sheet->count != 0) {
-				_MESSAGE("        Final ActorValues list:");
-				for (UInt32 i = 0; i < raceForm->propertySheet.sheet->count; i++) {
-					BGSPropertySheet::AVIFProperty checkAVProp;
-					if (raceForm->propertySheet.sheet->GetNthItem(i, checkAVProp)) {
-						_MESSAGE("          %i: 0x%08X - %.2f", i, checkAVProp.actorValue->formID, checkAVProp.value);
-					}
-				}
-			}
-		}
+		LoadData_PropertySheet(raceForm->propertySheet.sheet, raceOverride["actorValues"]);
 	}
 	// -- Spells/Abilities
 	if (!raceOverride["spells"].is_null()) {
 		if (raceOverride["spells"].is_array() && !raceOverride["spells"].empty()) {
 			std::vector<SpellItem*> spellsList;
-			for (json::iterator it = raceOverride["spells"].begin(); it != raceOverride["spells"].end(); ++it) {
-				std::string spellIDStr = it.value()["formID"];
-				if (!spellIDStr.empty()) {
-					SpellItem * newSpell = reinterpret_cast<SpellItem*>(SAKEUtilities::GetFormFromIdentifier(spellIDStr.c_str()));
-					if (newSpell && (std::find(spellsList.begin(), spellsList.end(), newSpell) == spellsList.end())) {
-						spellsList.push_back(newSpell);
-					}
+			json spellsObj;
+			for (json::iterator spellsIt = raceOverride["spells"].begin(); spellsIt != raceOverride["spells"].end(); ++spellsIt) {
+				spellsObj = *spellsIt;
+				if (spellsObj["formID"].is_null()) {
+					continue;
+				}
+				SpellItem * newSpell = reinterpret_cast<SpellItem*>(GetFormFromIdentifier(spellsObj["formID"]));
+				if (newSpell && (std::find(spellsList.begin(), spellsList.end(), newSpell) == spellsList.end())) {
+					spellsList.push_back(newSpell);
 				}
 			}
 			if (!spellsList.empty()) {
@@ -1287,25 +1442,19 @@ void SAKEData::LoadOverrides_Race(TESRace * raceForm, json & raceOverride)
 	// -- keywords
 	if (!raceOverride["keywords"].is_null()) {
 		LoadData_KeywordForm(&raceForm->keywordForm, raceOverride["keywords"]);
-		if (raceForm->keywordForm.numKeywords != 0) {
-			_MESSAGE("        Final Keywords list:");
-			for (UInt32 j = 0; j < raceForm->keywordForm.numKeywords; j++) {
-				_MESSAGE("          %i: 0x%08X (%s)", j, raceForm->keywordForm.keywords[j]->formID, raceForm->keywordForm.keywords[j]->keyword.c_str());
-			}
-		}
 	}
 }
 
 
-// ---- Actor - NPC_
-void SAKEData::LoadOverrides_Actor(TESNPC * actorForm, json & actorOverride)
+// Actors (base)
+void SAKELoader::LoadOverrides_Actor(TESNPC * actorForm, json & actorOverride)
 {
 	if (!actorForm) {
 		_MESSAGE("        ERROR: No Actor Form! dump: %s", actorOverride.dump().c_str());
 		return;
 	}
 	_MESSAGE("\n      Editing Actor - 0x%08X (%s)", actorForm->formID, actorForm->GetFullName());
-	
+
 	// -- Name
 	if (!actorOverride["name"].is_null()) {
 		std::string actorName = actorOverride["name"];
@@ -1314,56 +1463,23 @@ void SAKEData::LoadOverrides_Actor(TESNPC * actorForm, json & actorOverride)
 	}
 	// -- ActorValues
 	if (!actorOverride["actorValues"].is_null()) {
-		if (actorOverride["actorValues"].is_array() && !actorOverride["actorValues"].empty()) {
-			json curAV;
-			for (json::iterator itAVs = actorOverride["actorValues"].begin(); itAVs != actorOverride["actorValues"].end(); ++itAVs) {
-				curAV.clear();
-				curAV = *itAVs;
-				if (!curAV["formID"].is_null()) {
-					std::string avIDStr = curAV["formID"];
-					ActorValueInfo * newAV = reinterpret_cast<ActorValueInfo*>(SAKEUtilities::GetFormFromIdentifier(avIDStr));
-					if (newAV) {
-						float fAVSet = -1.0;
-						if (!curAV["set"].is_null()) {
-							fAVSet = curAV["set"];
-						}
-						float fAVAdd = 0.0;
-						if (!curAV["add"].is_null()) {
-							fAVAdd = curAV["add"];
-						}
-
-						float newAVValue = (fAVSet < 0.0) ? fAVAdd : (fAVSet + fAVAdd);
-						if (newAVValue >= 0.0) {
-							_MESSAGE("        Adding ActorValue %s - set: %.2f, add: %.2f", avIDStr.c_str(), fAVSet, fAVAdd);
-							actorForm->actorValueOwner.SetBase(newAV, newAVValue);
-						}
-
-						if (actorForm->propertySheet.sheet->count != 0) {
-							_MESSAGE("        Final ActorValues list:");
-							for (UInt32 i = 0; i < actorForm->propertySheet.sheet->count; i++) {
-								BGSPropertySheet::AVIFProperty checkAVProp;
-								if (actorForm->propertySheet.sheet->GetNthItem(i, checkAVProp)) {
-									_MESSAGE("          %i: 0x%08X - %.2f", i, checkAVProp.actorValue->formID, checkAVProp.value);
-								}
-							}
-						}
-					}
-				}
-			}
-		}
+		LoadData_PropertySheet(actorForm->propertySheet.sheet, actorOverride["actorValues"]);
 	}
 	// -- Spells/Abilities
 	if (!actorOverride["spells"].is_null()) {
 		if (actorOverride["spells"].is_array() && !actorOverride["spells"].empty()) {
 			std::vector<SpellItem*> spellsList;
-			for (json::iterator it = actorOverride["spells"].begin(); it != actorOverride["spells"].end(); ++it) {
-				std::string spellIDStr = it.value()["formID"];
-				if (!spellIDStr.empty()) {
-					SpellItem * newSpell = reinterpret_cast<SpellItem*>(SAKEUtilities::GetFormFromIdentifier(spellIDStr.c_str()));
-					if (newSpell && (std::find(spellsList.begin(), spellsList.end(), newSpell) == spellsList.end())) {
-						spellsList.push_back(newSpell);
-					}
+			json spellsObj;
+			for (json::iterator spellsIt = actorOverride["spells"].begin(); spellsIt != actorOverride["spells"].end(); ++spellsIt) {
+				spellsObj = *spellsIt;
+				if (spellsObj.is_null() || spellsObj["formID"].is_null()) {
+					continue;
 				}
+				SpellItem * newSpell = reinterpret_cast<SpellItem*>(GetFormFromIdentifier(spellsObj["formID"]));
+				if (newSpell && (std::find(spellsList.begin(), spellsList.end(), newSpell) == spellsList.end())) {
+					spellsList.push_back(newSpell);
+				}
+
 			}
 			if (!spellsList.empty()) {
 				LoadData_Spells(spellsList, nullptr, actorForm);
@@ -1377,35 +1493,32 @@ void SAKEData::LoadOverrides_Actor(TESNPC * actorForm, json & actorOverride)
 	// -- keywords
 	if (!actorOverride["keywords"].is_null()) {
 		LoadData_KeywordForm(&actorForm->keywords, actorOverride["keywords"]);
-		if (actorForm->keywords.numKeywords != 0) {
-			_MESSAGE("        Final Keywords list:");
-			for (UInt32 j = 0; j < actorForm->keywords.numKeywords; j++) {
-				_MESSAGE("          %i: 0x%08X (%s)", j, actorForm->keywords.keywords[j]->formID, actorForm->keywords.keywords[j]->keyword.c_str());
-			}
-		}
 	}
 	// -- Class
 	if (!actorOverride["npcClass"].is_null()) {
-		std::string classFormID = actorOverride["npcClass"];
-		TESClass * newClassForm = reinterpret_cast<TESClass*>(SAKEUtilities::GetFormFromIdentifier(classFormID.c_str()));
-		if (newClassForm) {
-			actorForm->npcClass = newClassForm;
-			_MESSAGE("        Edited NPC Class : %s", classFormID.c_str());
+		TESForm * newNPCClassForm = GetFormFromIdentifier(actorOverride["npcClass"]);
+		if (newNPCClassForm) {
+			TESClass * newNPCClass = reinterpret_cast<TESClass*>(newNPCClassForm);
+			if (newNPCClass) {
+				actorForm->npcClass = newNPCClass;
+				_MESSAGE("        Edited NPC Class : 0x%08X", newNPCClassForm->formID);
+			}
 		}
 	}
 	// -- CombatStyle
 	if (!actorOverride["combatStyle"].is_null()) {
-		std::string csFormID = actorOverride["combatStyle"];
-		TESCombatStyle * newCSForm = reinterpret_cast<TESCombatStyle*>(SAKEUtilities::GetFormFromIdentifier(csFormID.c_str()));
-		if (newCSForm) {
-			actorForm->combatStyle = newCSForm;
-			_MESSAGE("        Combat Style : %s", csFormID.c_str());
+		TESForm * newCombatStyleForm = GetFormFromIdentifier(actorOverride["combatStyle"]);
+		if (newCombatStyleForm) {
+			TESCombatStyle * newCombatStyle = reinterpret_cast<TESCombatStyle*>(newCombatStyleForm);
+			if (newCombatStyle) {
+				actorForm->combatStyle = newCombatStyle;
+				_MESSAGE("        Combat Style : 0x%08X", newCombatStyleForm->formID);
+			}
 		}
 	}
 	// -- Default Outfit
 	if (!actorOverride["outfitDefault"].is_null()) {
-		std::string outfit1FormID = actorOverride["outfitDefault"];
-		BGSOutfit * newOutfitDef = reinterpret_cast<BGSOutfit*>(SAKEUtilities::GetFormFromIdentifier(outfit1FormID.c_str()));
+		BGSOutfit * newOutfitDef = reinterpret_cast<BGSOutfit*>(GetFormFromIdentifier(actorOverride["outfitDefault"]));
 		if (newOutfitDef) {
 			actorForm->outfit[0] = newOutfitDef;
 			_MESSAGE("        Default Outfit : 0x%08X", newOutfitDef->formID);
@@ -1413,18 +1526,120 @@ void SAKEData::LoadOverrides_Actor(TESNPC * actorForm, json & actorOverride)
 	}
 	// -- Sleep Outfit
 	if (!actorOverride["outfitSleep"].is_null()) {
-		std::string outfit2FormID = actorOverride["outfitSleep"];
-		BGSOutfit * newOutfitSlp = reinterpret_cast<BGSOutfit*>(SAKEUtilities::GetFormFromIdentifier(outfit2FormID.c_str()));
+		BGSOutfit * newOutfitSlp = reinterpret_cast<BGSOutfit*>(GetFormFromIdentifier(actorOverride["outfitSleep"]));
 		if (newOutfitSlp) {
 			actorForm->outfit[1] = newOutfitSlp;
 			_MESSAGE("        Sleep Outfit : 0x%08X", newOutfitSlp->formID);
 		}
 	}
+
+	// -- Perks
+	if (!actorOverride["perks"].is_null() && !actorOverride["perks"].empty()) {
+		TempBGSPerkRankArray * perkRankArray = reinterpret_cast<TempBGSPerkRankArray*>(&actorForm->perkRankArray);
+		// no point in going on if the cast didn't work for some reason
+		if (perkRankArray) {
+			bool skipEntry = false;
+			std::vector<TempPerkRankEntry> perksList;
+			BGSPerk * perkAdd = nullptr;
+
+			// copy existing perks
+			if (perkRankArray->unk08 && (perkRankArray->unk10 != 0)) {
+				UInt32 rankAdd = 0;
+				for (UInt32 i = 0; i < perkRankArray->unk10 * 2; i++) {
+					if (!skipEntry) {
+						perkAdd = reinterpret_cast<BGSPerk*>(perkRankArray->unk08[i]);
+					}
+					else {
+						if (perkAdd) {
+							TempPerkRankEntry perkEntryAdd;
+							perkEntryAdd.rank = perkRankArray->unk08[i];
+							if (perkEntryAdd.rank != 0) {
+								perkEntryAdd.perk = perkAdd;
+								perksList.push_back(perkEntryAdd);
+								//_MESSAGE("        Read existing perk: 0x%08X (%s), rank %i",
+								//	perkEntryAdd.perk->formID, perkEntryAdd.perk->GetFullName(), perkEntryAdd.rank
+								//);
+							}
+						}
+					}
+					skipEntry = !skipEntry;
+				}
+			}
+
+			// add new perks to temp List
+			int newPerksCount = 0;
+			json perkObj;
+			bool bPerkAlreadyExists = false;
+			for (json::iterator itPerk = actorOverride["perks"].begin(); itPerk != actorOverride["perks"].end(); ++itPerk) {
+				bPerkAlreadyExists = false;
+				perkObj = *itPerk;
+				if (perkObj.is_null() || perkObj["formID"].is_null()) {
+					_MESSAGE("        WARNING: Failed to read perk data!");
+					continue;
+				}
+				TempPerkRankEntry perkEntryAdd;
+				perkEntryAdd.perk = reinterpret_cast<BGSPerk*>(GetFormFromIdentifier(perkObj["formID"]));
+				if (!perkEntryAdd.perk) {
+					_MESSAGE("        WARNING: Perk was null!");
+					continue;
+				}
+				if (!perkObj["rank"].is_null()) {
+					perkEntryAdd.rank = perkObj["rank"];
+				}
+				if (perkEntryAdd.rank != 0) {
+					for (UInt32 i = 0; i < perksList.size(); i++) {
+						if (perksList[i].perk && (perksList[i].perk == perkEntryAdd.perk)) {
+							bPerkAlreadyExists = true;
+							break;
+						}
+					}
+					if (!bPerkAlreadyExists) {
+						perksList.push_back(perkEntryAdd);
+						_MESSAGE("        Adding perk: 0x%08X (%s), rank %i",
+							perkEntryAdd.perk->formID, perkEntryAdd.perk->GetFullName(), perkEntryAdd.rank
+						);
+						newPerksCount += 1;
+					}
+					else {
+						_MESSAGE("        WARNING: Actor already has the perk!");
+					}
+				}
+			}
+
+			// rebuild the perks array
+			int curEntry = 0;
+			if (newPerksCount == 0) {
+				_MESSAGE("        WARNING: No perks to add!");
+			}
+			else {
+				skipEntry = false;
+				UInt32 newSize = perksList.size();
+				perkRankArray->unk08 = new UInt64[newSize * 2];
+				perkRankArray->unk10 = newSize;
+				for (UInt32 i = 0; i < newSize * 2; i++) {
+					if (!skipEntry) {
+						perkRankArray->unk08[i] = (UInt64)perksList[curEntry].perk;
+					}
+					else {
+						perkRankArray->unk08[i] = perksList[curEntry].rank;
+						curEntry += 1;
+					}
+					skipEntry = !skipEntry;
+				}
+			}
+		}
+	}
+	
+	// starting inventory
+	if (!actorOverride["inventory"].is_null() && !actorOverride["inventory"].empty()) {
+		LoadData_Container_TESNPC(actorForm, actorOverride["inventory"]);
+	}
+
 }
 
 
-// ---- Leveled Item - LVLI
-void SAKEData::LoadOverrides_LeveledItem(TESLevItem * lliForm, json & llOverride)
+// Leveled Items
+void SAKELoader::LoadOverrides_LeveledItem(TESLevItem * lliForm, json & llOverride)
 {
 	//		LeveledItem.leveledList.unk08 = UseGlobal
 	//			- get: (TESGlobal*)TESLevItem.leveledList.unk08
@@ -1461,8 +1676,7 @@ void SAKEData::LoadOverrides_LeveledItem(TESLevItem * lliForm, json & llOverride
 		}
 	}
 	if (!llOverride["useChanceGlobal"].is_null()) {
-		std::string useglobalID = llOverride["useChanceGlobal"];
-		TESGlobal * useglobal = reinterpret_cast<TESGlobal*>(SAKEUtilities::GetFormFromIdentifier(useglobalID));
+		TESGlobal * useglobal = reinterpret_cast<TESGlobal*>(GetFormFromIdentifier(llOverride["useChanceGlobal"]));
 		if (useglobal) {
 			lliForm->leveledList.unk08 = (UInt64)useglobal;
 		}
@@ -1490,15 +1704,14 @@ void SAKEData::LoadOverrides_LeveledItem(TESLevItem * lliForm, json & llOverride
 						remEntry.clear();
 						remEntry = *itRemove;
 						if (!remEntry["formID"].is_null() && !remEntry["level"].is_null() && !remEntry["count"].is_null()) {
-							std::string remFormID = remEntry["formID"];
-							remID = SAKEUtilities::GetFormIDFromIdentifier(remFormID.c_str());
+							remID = GetFormIDFromIdentifier(remEntry["formID"]);
 							// require an exact match for now, maybe add more options later
 							if (curEntry.form->formID == remID) {
 								UInt16 checkLevel = remEntry["level"];
 								UInt16 checkCount = remEntry["count"];
 								if (checkLevel == curEntry.level) {
 									if (checkCount == curEntry.count) {
-										_MESSAGE("        Removing entry - ID: 0x%08X, level: %i, count: %i", remFormID.c_str(), curEntry.level, curEntry.count);
+										_MESSAGE("        Removing entry - ID: 0x%08X, level: %i, count: %i", remID, curEntry.level, curEntry.count);
 										bRemove = true;
 										break;
 									}
@@ -1548,9 +1761,8 @@ void SAKEData::LoadOverrides_LeveledItem(TESLevItem * lliForm, json & llOverride
 			addEntry = *itAdd;
 			// make sure all variables exist
 			if (!addEntry["formID"].is_null() && !addEntry["level"].is_null() && !addEntry["count"].is_null()) {
-				std::string entryFormID = addEntry["formID"];
 				TESLeveledList::Entry tempEntry;
-				tempEntry.form = SAKEUtilities::GetFormFromIdentifier(entryFormID.c_str());
+				tempEntry.form = GetFormFromIdentifier(addEntry["formID"]);
 				if (tempEntry.form) {
 					tempEntry.count = addEntry["count"];
 					if (bDoCountMult) {
@@ -1567,7 +1779,7 @@ void SAKEData::LoadOverrides_LeveledItem(TESLevItem * lliForm, json & llOverride
 						curChanceNone = addEntry["chanceNone"];
 					}
 					tempEntry.unk8 = (UInt32)curChanceNone;
-					_MESSAGE("        Adding entry - ID: %s, level: %i, count: %i, chanceNone: %i", entryFormID.c_str(), tempEntry.level, tempEntry.count, tempEntry.unk8);
+					_MESSAGE("        Adding entry - 0x%08X, level: %i, count: %i, chanceNone: %i", tempEntry.form->formID, tempEntry.level, tempEntry.count, tempEntry.unk8);
 					newEntries.push_back(tempEntry);
 					bListModified = true;
 				}
@@ -1585,17 +1797,18 @@ void SAKEData::LoadOverrides_LeveledItem(TESLevItem * lliForm, json & llOverride
 			lliForm->leveledList.entries = new TESLeveledList::Entry[finalCount];
 			lliForm->leveledList.length = finalCount;
 			
-			_MESSAGE("        Final Leveled List:  ChanceNone: %i, UseGlobal: 0x%08X", lliForm->leveledList.unk2A, (UInt32)lliForm->leveledList.unk08);
+			//_MESSAGE("        Final Leveled List:  ChanceNone: %i, UseGlobal: 0x%08X", lliForm->leveledList.unk2A, (UInt32)lliForm->leveledList.unk08);
 			for (UInt8 i = 0; i < finalCount; i++) {
 				lliForm->leveledList.entries[i] = newEntries[i];
-				_MESSAGE("          %i: 0x%08X - level: %i, count: %i, chanceNone: %i", i, newEntries[i].form->formID, newEntries[i].level, newEntries[i].count, newEntries[i].unk8);
+				//_MESSAGE("          %i: 0x%08X - level: %i, count: %i, chanceNone: %i", i, newEntries[i].form->formID, newEntries[i].level, newEntries[i].count, newEntries[i].unk8);
 			}
 		}
 	}
 }
 
-// ---- Leveled NPC - LVLN
-void SAKEData::LoadOverrides_LeveledActor(TESLevCharacter * llcForm, json & llOverride)
+
+// Leveled NPCs
+void SAKELoader::LoadOverrides_LeveledActor(TESLevCharacter * llcForm, json & llOverride)
 {
 	if (!llcForm) {
 		_MESSAGE("        ERROR: No LeveledActor Form! dump: %s", llOverride.dump().c_str());
@@ -1636,13 +1849,12 @@ void SAKEData::LoadOverrides_LeveledActor(TESLevCharacter * llcForm, json & llOv
 						remEntry.clear();
 						remEntry = *itRemove;
 						if (!remEntry["formID"].is_null() && !remEntry["level"].is_null()) {
-							std::string remFormID = remEntry["formID"];
-							remID = SAKEUtilities::GetFormIDFromIdentifier(remFormID.c_str());
+							remID = GetFormIDFromIdentifier(remEntry["formID"]);
 							// require an exact match for now, maybe add more options later
 							if (curEntry.form->formID == remID) {
 								UInt16 checkLevel = remEntry["level"];
 								if (checkLevel == curEntry.level) {
-									_MESSAGE("        Removing entry - ID: 0x%08X, level: %i", remFormID.c_str(), curEntry.level);
+									_MESSAGE("        Removing entry - 0x%08X, level: %i", remID, curEntry.level);
 									bRemove = true;
 									break;
 								}
@@ -1683,9 +1895,8 @@ void SAKEData::LoadOverrides_LeveledActor(TESLevCharacter * llcForm, json & llOv
 			addEntry = *itAdd;
 			// make sure all variables exist
 			if (!addEntry["formID"].is_null() && !addEntry["level"].is_null()) {
-				std::string entryFormID = addEntry["formID"];
 				TESLeveledList::Entry tempEntry;
-				tempEntry.form = SAKEUtilities::GetFormFromIdentifier(entryFormID.c_str());
+				tempEntry.form = GetFormFromIdentifier(addEntry["formID"]);
 				if (tempEntry.form) {
 					if (!bDelevel) {
 						tempEntry.level = addEntry["level"];
@@ -1693,7 +1904,7 @@ void SAKEData::LoadOverrides_LeveledActor(TESLevCharacter * llcForm, json & llOv
 					else {
 						tempEntry.level = 1;
 					}
-					_MESSAGE("        Adding entry - ID: %s, level: %i", entryFormID.c_str(), tempEntry.level);
+					_MESSAGE("        Adding entry - 0x%08X, level: %i", tempEntry.form->formID, tempEntry.level);
 					newEntries.push_back(tempEntry);
 					bListModified = true;
 				}
@@ -1710,18 +1921,94 @@ void SAKEData::LoadOverrides_LeveledActor(TESLevCharacter * llcForm, json & llOv
 			llcForm->leveledList.entries = new TESLeveledList::Entry[finalCount];
 			llcForm->leveledList.length = finalCount;
 
-			_MESSAGE("        Final Leveled List:");
+			//_MESSAGE("        Final Leveled List:");
 			for (UInt8 i = 0; i < finalCount; i++) {
 				llcForm->leveledList.entries[i] = newEntries[i];
-				_MESSAGE("          %i: 0x%08X - level: %i", i, newEntries[i].form->formID, newEntries[i].level);
+				//_MESSAGE("          %i: 0x%08X - level: %i", i, newEntries[i].form->formID, newEntries[i].level);
 			}
 		}
 	}
 }
 
 
-// ---- Ammo
-void SAKEData::LoadOverrides_Ammo(TempTESAmmo * ammoForm, json & ammoOverride)
+// Containers
+void SAKELoader::LoadOverrides_Container(TESObjectCONT * contForm, json & contOverride)
+{
+	if (!contForm) {
+		_MESSAGE("        ERROR: No Container Form! dump: %s", contOverride.dump().c_str());
+		return;
+	}
+	_MESSAGE("\n      Editing Container - 0x%08X (%s)", contForm->formID, contForm->GetFullName());
+
+	// ---- name
+	if (!contOverride["name"].is_null()) {
+		std::string contName = contOverride["name"];
+		contForm->fullName.name = BSFixedString(contName.c_str());
+		_MESSAGE("        Name: %s", contForm->fullName.name.c_str());
+	}
+	// ---- model
+	if (!contOverride["model"].is_null()) {
+		std::string ammoModel = contOverride["model"];
+		contForm->materialSwap.SetModelName(ammoModel.c_str());
+		_MESSAGE("        Model: %s", contForm->materialSwap.GetModelName());
+	}
+	// ---- keywords
+	if (!contOverride["keywords"].is_null()) {
+		LoadData_KeywordForm(&contForm->keywordForm, contOverride["keywords"]);
+	}
+	// ---- bounds
+	if (!contOverride["bounds"].is_null() && !contOverride["bounds"].empty()) {
+		int boundVal = 0;
+		if (!contOverride["bounds"]["x1"].is_null()) {
+			boundVal = contOverride["bounds"]["x1"];
+			contForm->bounds1.x = (UInt16)boundVal;
+		}
+		if (!contOverride["bounds"]["y1"].is_null()) {
+			boundVal = contOverride["bounds"]["y1"];
+			contForm->bounds1.y = (UInt16)boundVal;
+		}
+		if (!contOverride["bounds"]["z1"].is_null()) {
+			boundVal = contOverride["bounds"]["z1"];
+			contForm->bounds1.z = (UInt16)boundVal;
+		}
+		if (!contOverride["bounds"]["x2"].is_null()) {
+			boundVal = contOverride["bounds"]["x2"];
+			contForm->bounds2.x = (UInt16)boundVal;
+		}
+		if (!contOverride["bounds"]["y2"].is_null()) {
+			boundVal = contOverride["bounds"]["y2"];
+			contForm->bounds2.y = (UInt16)boundVal;
+		}
+		if (!contOverride["bounds"]["z2"].is_null()) {
+			boundVal = contOverride["bounds"]["z2"];
+			contForm->bounds2.z = (UInt16)boundVal;
+		}
+		_MESSAGE("        Bounds:\n          x1 - %i, y1 - %i, z1 - %i\n          x2 - %i, y2 - %i, z2 - %i",
+			(int)contForm->bounds1.x, (int)contForm->bounds1.y, (int)contForm->bounds1.z, (int)contForm->bounds2.x, (int)contForm->bounds2.y, (int)contForm->bounds2.z
+		);
+	}
+	// destructibleSource
+	if (!contOverride["destructibleSource"].is_null()) {
+		TESObjectCONT * explSource = reinterpret_cast<TESObjectCONT*>(GetFormFromIdentifier(contOverride["destructibleSource"]));
+		if (explSource) {
+			contForm->destructible = explSource->destructible;
+			_MESSAGE("        Destructible Source: 0x%08X", explSource->formID);
+		}
+	}
+	// starting inventory
+	if (!contOverride["inventory"].is_null() && !contOverride["inventory"].empty()) {
+		LoadData_Container_TESObjectCONT(contForm, contOverride["inventory"]);
+	}
+	// -- ActorValues
+	if (!contOverride["actorValues"].is_null()) {
+		LoadData_PropertySheet(contForm->propertySheet.sheet, contOverride["actorValues"]);
+	}
+
+}
+
+
+// Ammo
+void SAKELoader::LoadOverrides_Ammo(TempTESAmmo * ammoForm, json & ammoOverride)
 {
 	if (!ammoForm) {
 		_MESSAGE("        ERROR: No Ammo Form! dump: %s", ammoOverride.dump().c_str());
@@ -1772,17 +2059,10 @@ void SAKEData::LoadOverrides_Ammo(TempTESAmmo * ammoForm, json & ammoOverride)
 	// ---- keywords
 	if (!ammoOverride["keywords"].is_null()) {
 		LoadData_KeywordForm(&ammoForm->keywordForm, ammoOverride["keywords"]);
-		if (ammoForm->keywordForm.numKeywords != 0) {
-			_MESSAGE("        Keywords:");
-			for (UInt32 j = 0; j < ammoForm->keywordForm.numKeywords; j++) {
-				_MESSAGE("          %i: 0x%08X (%s)", j, ammoForm->keywordForm.keywords[j]->formID, ammoForm->keywordForm.keywords[j]->keyword.c_str());
-			}
-		}
 	}
 	// ---- projectile
 	if (!ammoOverride["projectile"].is_null()) {
-		std::string projID = ammoOverride["projectile"];
-		ammoForm->projectile = reinterpret_cast<BGSProjectile*>(SAKEUtilities::GetFormFromIdentifier(projID));
+		ammoForm->projectile = reinterpret_cast<BGSProjectile*>(GetFormFromIdentifier(ammoOverride["projectile"]));
 		if (ammoForm->projectile) {
 			_MESSAGE("        Projectile: 0x%08X", ammoForm->projectile->formID);
 		}
@@ -1881,8 +2161,7 @@ void SAKEData::LoadOverrides_Ammo(TempTESAmmo * ammoForm, json & ammoOverride)
 	}
 	// ---- destructibleSource
 	if (!ammoOverride["destructibleSource"].is_null()) {
-		std::string destrID = ammoOverride["destructibleSource"];
-		TempTESAmmo * explSource = reinterpret_cast<TempTESAmmo*>(SAKEUtilities::GetFormFromIdentifier(destrID));
+		TempTESAmmo * explSource = reinterpret_cast<TempTESAmmo*>(GetFormFromIdentifier(ammoOverride["destructibleSource"]));
 		if (explSource) {
 			ammoForm->destructible = explSource->destructible;
 			_MESSAGE("        Destructible Source: 0x%08X", explSource->formID);
@@ -1891,8 +2170,8 @@ void SAKEData::LoadOverrides_Ammo(TempTESAmmo * ammoForm, json & ammoOverride)
 }
 
 
-// ---- MiscItem/Junk - MISC
-void SAKEData::LoadOverrides_Misc(TESObjectMISC * miscForm, json & miscOverride)
+// MiscItems/Junk
+void SAKELoader::LoadOverrides_Misc(TESObjectMISC * miscForm, json & miscOverride)
 {
 	if (!miscForm) {
 		_MESSAGE("        ERROR: No MiscItem Form! dump: %s", miscOverride.dump().c_str());
@@ -1962,18 +2241,12 @@ void SAKEData::LoadOverrides_Misc(TESObjectMISC * miscForm, json & miscOverride)
 	// ---- keywords
 	if (!miscOverride["keywords"].is_null()) {
 		LoadData_KeywordForm(&miscForm->keywordForm, miscOverride["keywords"]);
-		if (miscForm->keywordForm.numKeywords != 0) {
-			_MESSAGE("        Keywords:");
-			for (UInt32 j = 0; j < miscForm->keywordForm.numKeywords; j++) {
-				_MESSAGE("          %i: 0x%08X (%s)", j, miscForm->keywordForm.keywords[j]->formID, miscForm->keywordForm.keywords[j]->keyword.c_str());
-			}
-		}
 	}
 	// -- components
 	if (!miscOverride["components"].is_null()) {
 		json composObj = miscOverride["components"];
 		if (!composObj["clear"].is_null()) {
-			bool clearCompos = composObj["clearList"];
+			bool clearCompos = composObj["clear"];
 			if (clearCompos && miscForm->components) {
 				_MESSAGE("        Clearing Components list...");
 				miscForm->components->Clear();
@@ -1989,14 +2262,13 @@ void SAKEData::LoadOverrides_Misc(TESObjectMISC * miscForm, json & miscOverride)
 					for (json::iterator itRem = composObj["remove"].begin(); itRem != composObj["remove"].end(); ++itRem) {
 						remEntry = *itRem;
 						if (!remEntry["formID"].is_null() && !remEntry["count"].is_null()) {
-							std::string compoID = remEntry["formID"];
-							BGSComponent * tempCompo = reinterpret_cast<BGSComponent*>(SAKEUtilities::GetFormFromIdentifier(compoID));
+							BGSComponent * tempCompo = reinterpret_cast<BGSComponent*>(GetFormFromIdentifier(remEntry["formID"]));
 							if (tempCompo) {
 								int tempCount = remEntry["count"];
 								TESObjectMISC::Component curRem;
 								curRem.component = tempCompo;
 								curRem.count = (UInt64)tempCount;
-								_MESSAGE("        Removing compo - ID: %s, count: %i", compoID.c_str(), tempCount);
+								_MESSAGE("        Removing compo - 0x%08X (%s), count: %i", tempCompo->formID, tempCompo->GetFullName(), tempCount);
 								composRemList.push_back(curRem);
 							}
 						}
@@ -2011,14 +2283,13 @@ void SAKEData::LoadOverrides_Misc(TESObjectMISC * miscForm, json & miscOverride)
 				for (json::iterator itAdd = composObj["add"].begin(); itAdd != composObj["add"].end(); ++itAdd) {
 					addEntry = *itAdd;
 					if (!addEntry["formID"].is_null() && !addEntry["count"].is_null()) {
-						std::string compoID = addEntry["formID"];
-						BGSComponent * tempCompo = reinterpret_cast<BGSComponent*>(SAKEUtilities::GetFormFromIdentifier(compoID));
+						BGSComponent * tempCompo = reinterpret_cast<BGSComponent*>(GetFormFromIdentifier(addEntry["formID"]));
 						if (tempCompo) {
 							int tempCount = addEntry["count"];
 							TESObjectMISC::Component curAdd;
 							curAdd.component = tempCompo;
 							curAdd.count = (UInt64)tempCount;
-							_MESSAGE("        Adding compo - ID: %s, count: %i", compoID.c_str(), tempCount);
+							_MESSAGE("        Adding compo - 0x%08X (%s), count: %i", tempCompo->formID, tempCompo->GetFullName(), tempCount);
 							composAddList.push_back(curAdd);
 						}
 					}
@@ -2100,21 +2371,10 @@ void SAKEData::LoadOverrides_Misc(TESObjectMISC * miscForm, json & miscOverride)
 				}
 			}
 		}
-
-		if (miscForm->components->count != 0) {
-			_MESSAGE("        Components:");
-			for (UInt32 i = 0; i < miscForm->components->count; i++) {
-				TESObjectMISC::Component tempCompo;
-				if (miscForm->components->GetNthItem(i, tempCompo)) {
-					_MESSAGE("          %i: 0x%08X x%i", i, tempCompo.component->formID, tempCompo.count);
-				}
-			}
-		}
 	}
 	// ---- destructibleSource
 	if (!miscOverride["destructibleSource"].is_null()) {
-		std::string destrID = miscOverride["destructibleSource"];
-		TESObjectMISC * explSource = reinterpret_cast<TESObjectMISC*>(SAKEUtilities::GetFormFromIdentifier(destrID));
+		TESObjectMISC * explSource = reinterpret_cast<TESObjectMISC*>(GetFormFromIdentifier(miscOverride["destructibleSource"]));
 		if (explSource) {
 			miscForm->destructible = explSource->destructible;
 			_MESSAGE("        Destructible Source: 0x%08X", explSource->formID);
@@ -2123,8 +2383,8 @@ void SAKEData::LoadOverrides_Misc(TESObjectMISC * miscForm, json & miscOverride)
 }
 
 
-// ---- Key - KEYM
-void SAKEData::LoadOverrides_Key(TempTESKey * keyForm, json & miscOverride)
+// Keys
+void SAKELoader::LoadOverrides_Key(TempTESKey * keyForm, json & miscOverride)
 {
 	if (!keyForm) {
 		_MESSAGE("        ERROR: No Key Form! dump: %s", miscOverride.dump().c_str());
@@ -2194,18 +2454,12 @@ void SAKEData::LoadOverrides_Key(TempTESKey * keyForm, json & miscOverride)
 	// -- keywords
 	if (!miscOverride["keywords"].is_null()) {
 		LoadData_KeywordForm(&keyForm->keywordForm, miscOverride["keywords"]);
-		if (keyForm->keywordForm.numKeywords != 0) {
-			_MESSAGE("        Keywords:");
-			for (UInt32 j = 0; j < keyForm->keywordForm.numKeywords; j++) {
-				_MESSAGE("          %i: 0x%08X (%s)", j, keyForm->keywordForm.keywords[j]->formID, keyForm->keywordForm.keywords[j]->keyword.c_str());
-			}
-		}
 	}
 }
 
 
-// ---- Crafting Component - CMPO
-void SAKEData::LoadOverrides_Component(BGSComponent * compoForm, json & compoOverride)
+// Crafting Components
+void SAKELoader::LoadOverrides_Component(BGSComponent * compoForm, json & compoOverride)
 {
 	if (!compoForm) {
 		_MESSAGE("        ERROR: No Component Form! dump: %s", compoOverride.dump().c_str());
@@ -2229,8 +2483,7 @@ void SAKEData::LoadOverrides_Component(BGSComponent * compoForm, json & compoOve
 	}
 	// -- scrap scalar global
 	if (!compoOverride["scrapScalarGlobal"].is_null()) {
-		std::string compoScrapGlobalID = compoOverride["scrapScalarGlobal"];
-		TESGlobal * compoScrapGlobal = reinterpret_cast<TESGlobal*>(SAKEUtilities::GetFormFromIdentifier(compoScrapGlobalID));
+		TESGlobal * compoScrapGlobal = reinterpret_cast<TESGlobal*>(GetFormFromIdentifier(compoOverride["scrapScalarGlobal"]));
 		if (compoScrapGlobal) {
 			compoForm->scrapScalar = compoScrapGlobal;
 			_MESSAGE("        Scrap Scalar Global: 0x%08X", compoForm->scrapScalar->formID);
@@ -2238,8 +2491,7 @@ void SAKEData::LoadOverrides_Component(BGSComponent * compoForm, json & compoOve
 	}
 	// -- scrap misc item
 	if (!compoOverride["scrapMiscItem"].is_null()) {
-		std::string compoScrapMiscItemID = compoOverride["scrapMiscItem"];
-		TESObjectMISC * compoScrapMiscItem = reinterpret_cast<TESObjectMISC*>(SAKEUtilities::GetFormFromIdentifier(compoScrapMiscItemID));
+		TESObjectMISC * compoScrapMiscItem = reinterpret_cast<TESObjectMISC*>(GetFormFromIdentifier(compoOverride["scrapMiscItem"]));
 		if (compoScrapMiscItem) {
 			compoForm->scrapItem = compoScrapMiscItem;
 			_MESSAGE("        Scrap MiscItem: 0x%08X", compoForm->scrapItem->formID);
@@ -2248,8 +2500,8 @@ void SAKEData::LoadOverrides_Component(BGSComponent * compoForm, json & compoOve
 }
 
 
-// ---- Ingestible - ALCH
-void SAKEData::LoadOverrides_Ingestible(AlchemyItem * alchForm, json & alchOverride)
+// Ingestibles
+void SAKELoader::LoadOverrides_Ingestible(AlchemyItem * alchForm, json & alchOverride)
 {
 	if (!alchForm) {
 		_MESSAGE("        ERROR: No Ingestible Form! dump: %s", alchOverride.dump().c_str());
@@ -2319,17 +2571,10 @@ void SAKEData::LoadOverrides_Ingestible(AlchemyItem * alchForm, json & alchOverr
 	// -- keywords
 	if (!alchOverride["keywords"].is_null()) {
 		LoadData_KeywordForm(&alchForm->keywordForm, alchOverride["keywords"]);
-		if (alchForm->keywordForm.numKeywords != 0) {
-			_MESSAGE("        Keywords:");
-			for (UInt32 j = 0; j < alchForm->keywordForm.numKeywords; j++) {
-				_MESSAGE("          %i: 0x%08X (%s)", j, alchForm->keywordForm.keywords[j]->formID, alchForm->keywordForm.keywords[j]->keyword.c_str());
-			}
-		}
 	}
 	// -- destructibleSource
 	if (!alchOverride["destructibleSource"].is_null()) {
-		std::string destrID = alchOverride["destructibleSource"];
-		AlchemyItem * explSource = reinterpret_cast<AlchemyItem*>(SAKEUtilities::GetFormFromIdentifier(destrID));
+		AlchemyItem * explSource = reinterpret_cast<AlchemyItem*>(GetFormFromIdentifier(alchOverride["destructibleSource"]));
 		if (explSource) {
 			alchForm->destructible = explSource->destructible;
 			_MESSAGE("        Destructible Source: 0x%08X", explSource->formID);
@@ -2338,8 +2583,8 @@ void SAKEData::LoadOverrides_Ingestible(AlchemyItem * alchForm, json & alchOverr
 }
 
 
-// ---- Projectile - PROJ
-void SAKEData::LoadOverrides_Projectile(TempBGSProjectile * projForm, json & projOverride)
+// Projectiles
+void SAKELoader::LoadOverrides_Projectile(TempBGSProjectile * projForm, json & projOverride)
 {
 	if (!projForm) {
 		_MESSAGE("        ERROR: No Projectile Form! dump: %s", projOverride.dump().c_str());
@@ -2400,8 +2645,7 @@ void SAKEData::LoadOverrides_Projectile(TempBGSProjectile * projForm, json & pro
 	}
 	// -- light
 	if (!projOverride["light"].is_null()) {
-		std::string lightID = projOverride["light"];
-		projForm->data.light = SAKEUtilities::GetFormFromIdentifier(lightID);
+		projForm->data.light = GetFormFromIdentifier(projOverride["light"]);
 		if (projForm->data.light) {
 			_MESSAGE("        Light: 0x%08X", projForm->data.light->formID);
 		}
@@ -2411,8 +2655,7 @@ void SAKEData::LoadOverrides_Projectile(TempBGSProjectile * projForm, json & pro
 	}
 	// -- sound
 	if (!projOverride["sound"].is_null()) {
-		std::string soundID = projOverride["sound"];
-		projForm->data.sound = reinterpret_cast<BGSSoundDescriptorForm*>(SAKEUtilities::GetFormFromIdentifier(soundID));
+		projForm->data.sound = reinterpret_cast<BGSSoundDescriptorForm*>(GetFormFromIdentifier(projOverride["sound"]));
 		if (projForm->data.sound) {
 			_MESSAGE("        Sound: 0x%08X", projForm->data.sound->formID);
 		}
@@ -2436,8 +2679,7 @@ void SAKEData::LoadOverrides_Projectile(TempBGSProjectile * projForm, json & pro
 	}
 	// -- muzzle flash light
 	if (!projOverride["muzFlashLight"].is_null()) {
-		std::string muzFlashLightID = projOverride["muzFlashLight"];
-		projForm->data.muzFlashLight = SAKEUtilities::GetFormFromIdentifier(muzFlashLightID);
+		projForm->data.muzFlashLight = GetFormFromIdentifier(projOverride["muzFlashLight"]);
 		if (projForm->data.muzFlashLight) {
 			_MESSAGE("        Muzzle Flash Light: 0x%08X", projForm->data.muzFlashLight->formID);
 		}
@@ -2519,8 +2761,7 @@ void SAKEData::LoadOverrides_Projectile(TempBGSProjectile * projForm, json & pro
 	}
 	// -- explosion
 	if (!projOverride["explosion"].is_null()) {
-		std::string explosionID = projOverride["explosion"];
-		projForm->data.explosion = SAKEUtilities::GetFormFromIdentifier(explosionID);
+		projForm->data.explosion = GetFormFromIdentifier(projOverride["explosion"]);
 		if (projForm->data.explosion) {
 			_MESSAGE("        Explosion: 0x%08X", projForm->data.explosion->formID);
 		}
@@ -2546,8 +2787,7 @@ void SAKEData::LoadOverrides_Projectile(TempBGSProjectile * projForm, json & pro
 	}
 	// -- countdownSound
 	if (!projOverride["countdownSound"].is_null()) {
-		std::string countdownSoundID = projOverride["countdownSound"];
-		projForm->data.countdownSound = reinterpret_cast<BGSSoundDescriptorForm*>(SAKEUtilities::GetFormFromIdentifier(countdownSoundID));
+		projForm->data.countdownSound = reinterpret_cast<BGSSoundDescriptorForm*>(GetFormFromIdentifier(projOverride["countdownSound"]));
 		if (projForm->data.countdownSound) {
 			_MESSAGE("        Countdown Sound: 0x%08X", projForm->data.countdownSound->formID);
 		}
@@ -2557,8 +2797,7 @@ void SAKEData::LoadOverrides_Projectile(TempBGSProjectile * projForm, json & pro
 	}
 	// -- disableSound
 	if (!projOverride["disableSound"].is_null()) {
-		std::string disableSoundID = projOverride["disableSound"];
-		projForm->data.disableSound = reinterpret_cast<BGSSoundDescriptorForm*>(SAKEUtilities::GetFormFromIdentifier(disableSoundID));
+		projForm->data.disableSound = reinterpret_cast<BGSSoundDescriptorForm*>(GetFormFromIdentifier(projOverride["disableSound"]));
 		if (projForm->data.disableSound) {
 			_MESSAGE("        Disable Sound: 0x%08X", projForm->data.disableSound->formID);
 		}
@@ -2568,8 +2807,7 @@ void SAKEData::LoadOverrides_Projectile(TempBGSProjectile * projForm, json & pro
 	}
 	// -- weaponSource
 	if (!projOverride["weaponSource"].is_null()) {
-		std::string weaponSourceID = projOverride["weaponSource"];
-		projForm->data.weaponSource = reinterpret_cast<TESObjectWEAP*>(SAKEUtilities::GetFormFromIdentifier(weaponSourceID));
+		projForm->data.weaponSource = reinterpret_cast<TESObjectWEAP*>(GetFormFromIdentifier(projOverride["weaponSource"]));
 		if (projForm->data.weaponSource) {
 			_MESSAGE("        Weapon Source: 0x%08X", projForm->data.weaponSource->formID);
 		}
@@ -2579,8 +2817,7 @@ void SAKEData::LoadOverrides_Projectile(TempBGSProjectile * projForm, json & pro
 	}
 	// -- vatsProjectile
 	if (!projOverride["vatsProjectile"].is_null()) {
-		std::string vatsProjectileID = projOverride["vatsProjectile"];
-		projForm->data.vatsProjectile = reinterpret_cast<BGSProjectile*>(SAKEUtilities::GetFormFromIdentifier(vatsProjectileID));
+		projForm->data.vatsProjectile = reinterpret_cast<BGSProjectile*>(GetFormFromIdentifier(projOverride["vatsProjectile"]));
 		if (projForm->data.vatsProjectile) {
 			_MESSAGE("        VATS Projectile: 0x%08X", projForm->data.vatsProjectile->formID);
 		}
@@ -2606,8 +2843,7 @@ void SAKEData::LoadOverrides_Projectile(TempBGSProjectile * projForm, json & pro
 	}
 	// -- collisionLayer
 	if (!projOverride["collisionLayer"].is_null()) {
-		std::string collisionLayerID = projOverride["collisionLayer"];
-		projForm->data.collisionLayer = SAKEUtilities::GetFormFromIdentifier(collisionLayerID);
+		projForm->data.collisionLayer = GetFormFromIdentifier(projOverride["collisionLayer"]);
 		if (projForm->data.collisionLayer) {
 			_MESSAGE("        CollisionLayer: 0x%08X", projForm->data.collisionLayer->formID);
 		}
@@ -2617,8 +2853,7 @@ void SAKEData::LoadOverrides_Projectile(TempBGSProjectile * projForm, json & pro
 	}
 	// -- decalData
 	if (!projOverride["decalData"].is_null()) {
-		std::string decalDataID = projOverride["decalData"];
-		projForm->data.decalData = SAKEUtilities::GetFormFromIdentifier(decalDataID);
+		projForm->data.decalData = GetFormFromIdentifier(projOverride["decalData"]);
 		if (projForm->data.decalData) {
 			_MESSAGE("        DecalData: 0x%08X", projForm->data.decalData->formID);
 		}
@@ -2802,8 +3037,7 @@ void SAKEData::LoadOverrides_Projectile(TempBGSProjectile * projForm, json & pro
 	}
 	// -- destructibleSource
 	if (!projOverride["destructibleSource"].is_null()) {
-		std::string destrID = projOverride["destructibleSource"];
-		TempBGSProjectile * explSource = reinterpret_cast<TempBGSProjectile*>(SAKEUtilities::GetFormFromIdentifier(destrID));
+		TempBGSProjectile * explSource = reinterpret_cast<TempBGSProjectile*>(GetFormFromIdentifier(projOverride["destructibleSource"]));
 		if (explSource) {
 			projForm->destructible = explSource->destructible;
 			_MESSAGE("        Destructible Source: 0x%08X", explSource->formID);
@@ -2812,8 +3046,385 @@ void SAKEData::LoadOverrides_Projectile(TempBGSProjectile * projForm, json & pro
 }
 
 
-// ---- EncounterZone - ECZN
-void SAKEData::LoadOverrides_EncounterZone(BGSEncounterZone * enczForm, json & enczOverride)
+// Explosions
+void SAKELoader::LoadOverrides_Explosion(TempBGSExplosion * explForm, json & explOverride)
+{
+	if (!explForm) {
+		_MESSAGE("        ERROR: No Explosion Form! dump: %s", explOverride.dump().c_str());
+		return;
+	}
+	_MESSAGE("\n      Editing Explosion - 0x%08X", explForm->formID);
+
+	// -- name
+	if (!explOverride["name"].is_null()) {
+		std::string projName = explOverride["name"];
+		explForm->fullName.name = BSFixedString(projName.c_str());
+		_MESSAGE("        Name: %s", explForm->fullName.name.c_str());
+	}
+	// -- model
+	if (!explOverride["model"].is_null()) {
+		std::string projModel = explOverride["model"];
+		explForm->model.SetModelName(projModel.c_str());
+		_MESSAGE("        Model: %s", explForm->model.GetModelName());
+	}
+	// -- bounds
+	if (!explOverride["bounds"].is_null() && !explOverride["bounds"].empty()) {
+		int boundVal = 0;
+		if (!explOverride["bounds"]["x1"].is_null()) {
+			boundVal = explOverride["bounds"]["x1"];
+			explForm->bounds1.x = (UInt16)boundVal;
+		}
+		if (!explOverride["bounds"]["y1"].is_null()) {
+			boundVal = explOverride["bounds"]["y1"];
+			explForm->bounds1.y = (UInt16)boundVal;
+		}
+		if (!explOverride["bounds"]["z1"].is_null()) {
+			boundVal = explOverride["bounds"]["z1"];
+			explForm->bounds1.z = (UInt16)boundVal;
+		}
+		if (!explOverride["bounds"]["x2"].is_null()) {
+			boundVal = explOverride["bounds"]["x2"];
+			explForm->bounds2.x = (UInt16)boundVal;
+		}
+		if (!explOverride["bounds"]["y2"].is_null()) {
+			boundVal = explOverride["bounds"]["y2"];
+			explForm->bounds2.y = (UInt16)boundVal;
+		}
+		if (!explOverride["bounds"]["z2"].is_null()) {
+			boundVal = explOverride["bounds"]["z2"];
+			explForm->bounds2.z = (UInt16)boundVal;
+		}
+		_MESSAGE("        Bounds:\n          x1 - %i, y1 - %i, z1 - %i\n          x2 - %i, y2 - %i, z2 - %i",
+			(int)explForm->bounds1.x, (int)explForm->bounds1.y, (int)explForm->bounds1.z, (int)explForm->bounds2.x, (int)explForm->bounds2.y, (int)explForm->bounds2.z
+		);
+	}
+	// -- objectEffect
+	if (!explOverride["objectEffect"].is_null()) {
+		explForm->objectEffect = reinterpret_cast<EnchantmentItem*>(GetFormFromIdentifier(explOverride["objectEffect"]));
+		if (explForm->objectEffect) {
+			_MESSAGE("        objectEffect: 0x%08X", explForm->objectEffect->formID);
+		}
+		else {
+			_MESSAGE("        objectEffect: none");
+		}
+	}
+	// -- imageSpaceModifier
+	if (!explOverride["imageSpaceModifier"].is_null()) {
+		TESForm * imageSpaceModForm = GetFormFromIdentifier(explOverride["imageSpaceModifier"]);
+		if (imageSpaceModForm) {
+			explForm->imageSpaceModifier = reinterpret_cast<TESImageSpaceModifier*>(imageSpaceModForm);
+			if (explForm->imageSpaceModifier) {
+				_MESSAGE("        imageSpaceModifier: 0x%08X", imageSpaceModForm->formID);
+			}
+			else {
+				_MESSAGE("        imageSpaceModifier: none");
+			}
+		}
+		else {
+			_MESSAGE("        imageSpaceModifier: none");
+		}
+	}
+	// -- light
+	if (!explOverride["light"].is_null()) {
+		explForm->data.light = GetFormFromIdentifier(explOverride["light"]);
+		if (explForm->data.light) {
+			_MESSAGE("        Light: 0x%08X", explForm->data.light->formID);
+		}
+		else {
+			_MESSAGE("        Light: none");
+		}
+	}
+	// -- sound1
+	if (!explOverride["sound1"].is_null()) {
+		explForm->data.sound1 = reinterpret_cast<BGSSoundDescriptorForm*>(GetFormFromIdentifier(explOverride["sound1"]));
+		if (explForm->data.sound1) {
+			_MESSAGE("        Sound 1: 0x%08X", explForm->data.sound1->formID);
+		}
+		else {
+			_MESSAGE("        Sound 1: none");
+		}
+	}
+	// -- sound2
+	if (!explOverride["sound2"].is_null()) {
+		explForm->data.sound2 = reinterpret_cast<BGSSoundDescriptorForm*>(GetFormFromIdentifier(explOverride["sound2"]));
+		if (explForm->data.sound2) {
+			_MESSAGE("        Sound 2: 0x%08X", explForm->data.sound2->formID);
+		}
+		else {
+			_MESSAGE("        Sound 2: none");
+		}
+	}
+	// -- impactDataSet
+	if (!explOverride["impactDataSet"].is_null()) {
+		explForm->data.impactDataSet = GetFormFromIdentifier(explOverride["impactDataSet"]);
+		if (explForm->data.impactDataSet) {
+			_MESSAGE("        impactDataSet: 0x%08X", explForm->data.impactDataSet->formID);
+		}
+		else {
+			_MESSAGE("        impactDataSet: none");
+		}
+	}
+	// -- placedObject
+	if (!explOverride["placedObject"].is_null()) {
+		explForm->data.placedObject = GetFormFromIdentifier(explOverride["placedObject"]);
+		if (explForm->data.placedObject) {
+			_MESSAGE("        placedObject: 0x%08X", explForm->data.placedObject->formID);
+		}
+		else {
+			_MESSAGE("        placedObject: none");
+		}
+	}
+	// -- spawnProjectile
+	if (!explOverride["spawnProjectile"].is_null()) {
+		explForm->data.spawnProjectile = reinterpret_cast<BGSProjectile*>(GetFormFromIdentifier(explOverride["spawnProjectile"]));
+		if (explForm->data.spawnProjectile) {
+			_MESSAGE("        spawnProjectile: 0x%08X", explForm->data.spawnProjectile->formID);
+		}
+		else {
+			_MESSAGE("        spawnProjectile: none");
+		}
+	}
+	// -- spawnX
+	if (!explOverride["spawnX"].is_null()) {
+		explForm->data.spawnX = explOverride["spawnX"];
+		_MESSAGE("        spawnX: %f", explForm->data.spawnX);
+	}
+	// -- spawnY
+	if (!explOverride["spawnY"].is_null()) {
+		explForm->data.spawnY = explOverride["spawnY"];
+		_MESSAGE("        spawnY: %f", explForm->data.spawnY);
+	}
+	// -- spawnZ
+	if (!explOverride["spawnZ"].is_null()) {
+		explForm->data.spawnZ = explOverride["spawnZ"];
+		_MESSAGE("        spawnZ: %f", explForm->data.spawnZ);
+	}
+	// -- spawnSpreadDeg
+	if (!explOverride["spawnSpreadDeg"].is_null()) {
+		explForm->data.spawnSpreadDeg = explOverride["spawnSpreadDeg"];
+		_MESSAGE("        spawnSpreadDeg: %f", explForm->data.spawnSpreadDeg);
+	}
+	// -- spawnCount
+	if (!explOverride["spawnCount"].is_null()) {
+		int spawnCount = explOverride["spawnCount"];
+		if (spawnCount > -1) {
+			explForm->data.spawnCount = spawnCount;
+			_MESSAGE("        spawnCount: %f", explForm->data.spawnCount);
+		}
+	}
+	// -- force
+	if (!explOverride["force"].is_null()) {
+		float force = explOverride["force"];
+		if (force >= 0.0) {
+			explForm->data.force = force;
+			_MESSAGE("        force: %f", explForm->data.force);
+		}
+	}
+	// -- damage
+	if (!explOverride["damage"].is_null()) {
+		float damage = explOverride["damage"];
+		if (damage >= 0.0) {
+			explForm->data.damage = damage;
+			_MESSAGE("        damage: %f", explForm->data.damage);
+		}
+	}
+	// -- innerRadius
+	if (!explOverride["innerRadius"].is_null()) {
+		float innerRadius = explOverride["innerRadius"];
+		if (innerRadius >= 0.0) {
+			explForm->data.innerRadius = innerRadius;
+			_MESSAGE("        innerRadius: %f", explForm->data.innerRadius);
+		}
+	}
+	// -- outerRadius
+	if (!explOverride["outerRadius"].is_null()) {
+		float outerRadius = explOverride["outerRadius"];
+		if (outerRadius >= 0.0) {
+			explForm->data.outerRadius = outerRadius;
+			_MESSAGE("        outerRadius: %f", explForm->data.outerRadius);
+		}
+	}
+	// -- isRadius
+	if (!explOverride["isRadius"].is_null()) {
+		float isRadius = explOverride["isRadius"];
+		if (isRadius >= 0.0) {
+			explForm->data.isRadius = isRadius;
+			_MESSAGE("        isRadius: %f", explForm->data.isRadius);
+		}
+	}
+	// -- verticalOffset
+	if (!explOverride["verticalOffset"].is_null()) {
+		explForm->data.verticalOffset = explOverride["verticalOffset"];
+		_MESSAGE("        verticalOffset: %f", explForm->data.verticalOffset);
+	}
+	// -- soundLevel
+	if (!explOverride["soundLevel"].is_null()) {
+		int soundLevel = explOverride["soundLevel"];
+		if (soundLevel > -1) {
+			explForm->data.soundLevel = soundLevel;
+			_MESSAGE("        soundLevel: %f", explForm->data.soundLevel);
+		}
+	}
+	// -- placedObjFadeDelay
+	if (!explOverride["placedObjFadeDelay"].is_null()) {
+		float placedObjFadeDelay = explOverride["placedObjFadeDelay"];
+		if (placedObjFadeDelay >= 0.0) {
+			explForm->data.placedObjFadeDelay = placedObjFadeDelay;
+			_MESSAGE("        placedObjFadeDelay: %f", explForm->data.placedObjFadeDelay);
+		}
+	}
+	// -- stagger
+	if (!explOverride["stagger"].is_null()) {
+		int stagger = explOverride["stagger"];
+		if (stagger > -1) {
+			explForm->data.stagger = stagger;
+			_MESSAGE("        stagger: %f", explForm->data.stagger);
+		}
+	}
+	// ---- Flags:
+	if (!explOverride["flags"].is_null()) {
+		json flagsObj = explOverride["flags"];
+		bool bFlagCheck = false;
+		_MESSAGE("        Flags:");
+		// -- Unknown0
+		if (!flagsObj["Unknown0"].is_null()) {
+			bFlagCheck = flagsObj["Unknown0"];
+			if (bFlagCheck) {
+				explForm->data.flags |= TempBGSExplosion::xFlag_Unknown0;
+				_MESSAGE("          Unknown0: true");
+			}
+			else {
+				explForm->data.flags &= ~TempBGSExplosion::xFlag_Unknown0;
+				_MESSAGE("          Unknown0: false");
+			}
+		}
+		// -- AlwaysUseWorldOrientation
+		if (!flagsObj["AlwaysUseWorldOrientation"].is_null()) {
+			bFlagCheck = flagsObj["AlwaysUseWorldOrientation"];
+			if (bFlagCheck) {
+				explForm->data.flags |= TempBGSExplosion::xFlag_AlwaysUseWorldOrientation;
+				_MESSAGE("          AlwaysUseWorldOrientation: true");
+			}
+			else {
+				explForm->data.flags &= ~TempBGSExplosion::xFlag_AlwaysUseWorldOrientation;
+				_MESSAGE("          AlwaysUseWorldOrientation: false");
+			}
+		}
+		// -- KnockDownAlways
+		if (!flagsObj["KnockDownAlways"].is_null()) {
+			bFlagCheck = flagsObj["KnockDownAlways"];
+			if (bFlagCheck) {
+				explForm->data.flags |= TempBGSExplosion::xFlag_KnockDownAlways;
+				_MESSAGE("          KnockDownAlways: true");
+			}
+			else {
+				explForm->data.flags &= ~TempBGSExplosion::xFlag_KnockDownAlways;
+				_MESSAGE("          KnockDownAlways: false");
+			}
+		}
+		// -- KnockDownByFormula
+		if (!flagsObj["KnockDownByFormula"].is_null()) {
+			bFlagCheck = flagsObj["KnockDownByFormula"];
+			if (bFlagCheck) {
+				explForm->data.flags |= TempBGSExplosion::xFlag_KnockDownByFormula;
+				_MESSAGE("          KnockDownByFormula: true");
+			}
+			else {
+				explForm->data.flags &= ~TempBGSExplosion::xFlag_KnockDownByFormula;
+				_MESSAGE("          KnockDownByFormula: false");
+			}
+		}
+		// -- IgnoreLOSCheck
+		if (!flagsObj["IgnoreLOSCheck"].is_null()) {
+			bFlagCheck = flagsObj["IgnoreLOSCheck"];
+			if (bFlagCheck) {
+				explForm->data.flags |= TempBGSExplosion::xFlag_IgnoreLOSCheck;
+				_MESSAGE("          IgnoreLOSCheck: true");
+			}
+			else {
+				explForm->data.flags &= ~TempBGSExplosion::xFlag_IgnoreLOSCheck;
+				_MESSAGE("          IgnoreLOSCheck: false");
+			}
+		}
+		// -- PushExplSourceRefOnly
+		if (!flagsObj["PushExplSourceRefOnly"].is_null()) {
+			bFlagCheck = flagsObj["PushExplSourceRefOnly"];
+			if (bFlagCheck) {
+				explForm->data.flags |= TempBGSExplosion::xFlag_PushExplSourceRefOnly;
+				_MESSAGE("          PushExplSourceRefOnly: true");
+			}
+			else {
+				explForm->data.flags &= ~TempBGSExplosion::xFlag_PushExplSourceRefOnly;
+				_MESSAGE("          PushExplSourceRefOnly: false");
+			}
+		}
+		// -- IgnoreImageSpaceSwap
+		if (!flagsObj["IgnoreImageSpaceSwap"].is_null()) {
+			bFlagCheck = flagsObj["IgnoreImageSpaceSwap"];
+			if (bFlagCheck) {
+				explForm->data.flags |= TempBGSExplosion::xFlag_IgnoreImageSpaceSwap;
+				_MESSAGE("          IgnoreImageSpaceSwap: true");
+			}
+			else {
+				explForm->data.flags &= ~TempBGSExplosion::xFlag_IgnoreImageSpaceSwap;
+				_MESSAGE("          IgnoreImageSpaceSwap: false");
+			}
+		}
+		// -- Chain
+		if (!flagsObj["Chain"].is_null()) {
+			bFlagCheck = flagsObj["Chain"];
+			if (bFlagCheck) {
+				explForm->data.flags |= TempBGSExplosion::xFlag_Chain;
+				_MESSAGE("          Chain: true");
+			}
+			else {
+				explForm->data.flags &= ~TempBGSExplosion::xFlag_Chain;
+				_MESSAGE("          Chain: false");
+			}
+		}
+		// -- NoControllerVibration
+		if (!flagsObj["NoControllerVibration"].is_null()) {
+			bFlagCheck = flagsObj["NoControllerVibration"];
+			if (bFlagCheck) {
+				explForm->data.flags |= TempBGSExplosion::xFlag_NoControllerVibration;
+				_MESSAGE("          NoControllerVibration: true");
+			}
+			else {
+				explForm->data.flags &= ~TempBGSExplosion::xFlag_NoControllerVibration;
+				_MESSAGE("          NoControllerVibration: false");
+			}
+		}
+		// -- PlacedObjectPersists
+		if (!flagsObj["PlacedObjectPersists"].is_null()) {
+			bFlagCheck = flagsObj["PlacedObjectPersists"];
+			if (bFlagCheck) {
+				explForm->data.flags |= TempBGSExplosion::xFlag_PlacedObjectPersists;
+				_MESSAGE("          PlacedObjectPersists: true");
+			}
+			else {
+				explForm->data.flags &= ~TempBGSExplosion::xFlag_PlacedObjectPersists;
+				_MESSAGE("          PlacedObjectPersists: false");
+			}
+		}
+		// -- SkipUnderwaterTests
+		if (!flagsObj["SkipUnderwaterTests"].is_null()) {
+			bFlagCheck = flagsObj["SkipUnderwaterTests"];
+			if (bFlagCheck) {
+				explForm->data.flags |= TempBGSExplosion::xFlag_SkipUnderwaterTests;
+				_MESSAGE("          SkipUnderwaterTests: true");
+			}
+			else {
+				explForm->data.flags &= ~TempBGSExplosion::xFlag_SkipUnderwaterTests;
+				_MESSAGE("          SkipUnderwaterTests: false");
+			}
+		}
+	}
+
+}
+
+
+// EncounterZones
+void SAKELoader::LoadOverrides_EncounterZone(BGSEncounterZone * enczForm, json & enczOverride)
 {
 	if (!enczForm) {
 		_MESSAGE("        ERROR: No EncounterZone Form! dump: %s", enczOverride.dump().c_str());
@@ -2839,8 +3450,8 @@ void SAKEData::LoadOverrides_EncounterZone(BGSEncounterZone * enczForm, json & e
 }
 
 
-// ---- Name Prefixes - any item Forms
-void SAKEData::LoadNamePrefix(TESForm * targetForm, const std::string & prefixStr)
+// Name Prefixes - any item Forms
+void SAKELoader::LoadNamePrefix(TESForm * targetForm, const std::string & prefixStr)
 {
 	if (!targetForm || prefixStr.empty()) {
 		return;
@@ -2882,8 +3493,8 @@ void SAKEData::LoadNamePrefix(TESForm * targetForm, const std::string & prefixSt
 }
 
 
-// ---- Game Settings - GMST
-void SAKEData::LoadGameSettings(json & settingOverrides)
+// Game Settings
+void SAKELoader::LoadGameSettings(json & settingOverrides)
 {
 	if (settingOverrides.empty() || !settingOverrides.is_array()) {
 		return;

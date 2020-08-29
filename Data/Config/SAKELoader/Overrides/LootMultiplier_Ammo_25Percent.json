@@ -1,0 +1,20 @@
+{
+	"info": "Ammo Loot/Vendor Lists Count Multiplier",
+	
+	"overrides": [
+		{"info": "LL_Ammo_RareTypes", "formID": "Fallout4.esm|18ABE3", "countMult": 0.25},
+		{"info": "LLI_Loot_Ammo_Basic", "formID": "Fallout4.esm|CFC91", "countMult": 0.25},
+		{"info": "LLI_Loot_Ammo_Rare", "formID": "Fallout4.esm|CFC90", "countMult": 0.25},
+		{"info": "LLI_Loot_Ammo_Unique", "formID": "Fallout4.esm|CFC8F", "countMult": 0.25},
+		
+		{"info": "LL_Ammo_ShopRareTypes", "formID": "Fallout4.esm|18F659", "countMult": 0.25},
+		{"info": "LLI_Vendor_Ammo_Basic", "formID": "Fallout4.esm|7580A", "countMult": 0.25},
+		{"info": "LLI_Vendor_Ammo_Unique", "formID": "Fallout4.esm|7580C", "countMult": 0.25},
+		{"info": "LLI_Vendor_Ammo_Rare", "formID": "Fallout4.esm|7580B", "countMult": 0.25},
+		{"info": "LLI_Vendor_Ammo_HighLevelAmmo", "formID": "Fallout4.esm|225A56", "countMult": 0.25},
+		{"info": "LLC_DCShopAmmo", "formID": "Fallout4.esm|18F658", "countMult": 0.25},
+		{"info": "RECampSC03MerchantAmmo", "formID": "Fallout4.esm|3D63C", "countMult": 0.25},
+		{"info": "LLI_Vendor_Ammo_Base", "formID": "Fallout4.esm|1FE31C", "countMult": 0.25},
+		{"info": "LLI_Vendor_Ammo_WeaponStore", "formID": "Fallout4.esm|1FE31D", "countMult": 0.25}
+	]
+}

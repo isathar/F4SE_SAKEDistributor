@@ -1,0 +1,6 @@
+{
+	"activeOverrides": [
+		{"path": "TweaksFramework\\DamageTweaks", "includeIf": ["TweaksFramework.esm"]},
+		{"path": "TweaksFramework\\BetterCriticals", "includeIf": ["TweaksFramework.esm", "BetterCriticals.esp"]}
+	]
+}

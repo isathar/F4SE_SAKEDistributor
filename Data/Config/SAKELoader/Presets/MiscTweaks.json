@@ -1,0 +1,23 @@
+{
+	"info": "Example configuration with a mix of overrides.",
+	
+	"activeOverrides": [
+		{"path": "AdditionalDRTypes"},
+		
+		{"path": "AddLuck_Actors_Humanoid.json"},
+		{"path": "AddCritChance_Actors_Humanoid.json", "excludeIf": ["BetterCriticals.esp"]},
+		
+		{"path": "NPCsUseAmmo"},
+		
+		{"path": "DLCItemDistribution"},
+		
+		{"path": "MoreSupermutantWeaponAnims\\LeveledLists_Vanilla.json", "includeIf": ["SM More Weapon Level Lists.esp"]},
+		{"path": "MoreSupermutantWeaponAnims\\LeveledLists_DLC.json", "includeIf": ["SM More Weapon Anims - All Dlc.esp"]},
+		
+		{"path": "LootMultiplier_Ammo_25Percent.json"},
+		
+		{"path": "TweakedHealthAndDamageMults.json"},
+		{"path": "TweakedLevelScaling.json"},
+		{"path": "TweakedMiscSettings.json"}
+	]
+}

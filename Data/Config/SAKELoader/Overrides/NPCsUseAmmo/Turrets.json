@@ -1,0 +1,59 @@
+{
+	"info": "Turrets Use Ammo",
+	
+	"overrides": [
+		{
+			"info": "TurretBallistic3Shot", "formID": "Fallout4.esm|1BBF99", 
+			"flags": {"NPCsUseAmmo": true}
+		},
+		{
+			"info": "TurretMountedBallistic", "formID": "Fallout4.esm|1BBF98", 
+			"flags": {"NPCsUseAmmo": true}
+		},
+		{
+			"info": "TurretTripodMachineGunMkI", "formID": "Fallout4.esm|BB6C0", 
+			"flags": {"NPCsUseAmmo": true}
+		},
+		{
+			"info": "TurretTripodMachineGunMkIII", "formID": "Fallout4.esm|1B5ED8", 
+			"flags": {"NPCsUseAmmo": true}
+		},
+		{
+			"info": "TurretTripodMachineGunMkV", "formID": "Fallout4.esm|1B5EDA",
+			"flags": {"NPCsUseAmmo": true}
+		},
+		{
+			"info": "TurretTripodMachineGunMkVII", "formID": "Fallout4.esm|1B5EDD", 
+			"flags": {"NPCsUseAmmo": true}
+		},
+		{
+			"info": "TurretMountedShotgun01", "formID": "Fallout4.esm|22B18B",
+			"flags": {"NPCsUseAmmo": true}
+		},
+		
+		{
+			"info": "TurretMountedLaserGun6shot", "formID": "Fallout4.esm|1BBF9E", 
+			"flags": {"NPCsUseAmmo": true}
+		},
+		{
+			"info": "TurretMountedLaserGun01", "formID": "Fallout4.esm|BB6C1",
+			"flags": {"NPCsUseAmmo": true}
+		},
+		{
+			"info": "TurretMountedLaserGun02", "formID": "Fallout4.esm|19B47",
+			"flags": {"NPCsUseAmmo": true}
+		},
+		{
+			"info": "TurretMountedLaserGun03", "formID": "Fallout4.esm|19B4E",
+			"flags": {"NPCsUseAmmo": true}
+		},
+		{
+			"info": "TurretBubbleLaserGun04", "formID": "Fallout4.esm|19B52",
+			"flags": {"NPCsUseAmmo": true}
+		},
+		{
+			"info": "TurretMountedLaserGunLtBlue", "formID": "Fallout4.esm|1262F3",
+			"flags": {"NPCsUseAmmo": true}
+		}
+	]
+}

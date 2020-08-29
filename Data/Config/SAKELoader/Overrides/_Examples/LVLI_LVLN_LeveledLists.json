@@ -1,0 +1,41 @@
+{
+	"info": "Edits some leveled lists for testing.",
+	
+	"overrides": [
+		{
+			"info": "LeveledItem (Container_Loot_Mirror) - Adds 10 stimpacks",
+			"formID": "Fallout4.esm|24087F",
+			"add": [
+				{"formID": "Fallout4.esm|23736", "level": 1, "count": 10, "info": "Stimpack"}
+			]
+		},
+		
+		{
+			"info": [
+				"LeveledNPC (LCharBloatfly)",
+				"Adds an Assaultron to a low level encounter NPC list for FUN (eventually... depending on RNG)"
+			],
+			"formID": "Fallout4.esm|33208",
+			"add": [
+				{"formID": "Fallout4.esm|121D52", "level": 1, "info": "EncAssaultron01Template"}
+			]
+		},
+		
+		{
+			"info": "LeveledItem (LLI_Loot_Ammo_Basic) - delevels the basic ammo loot list",
+			"formID": "Fallout4.esm|CFC91", "delevel": true
+		},
+		
+		{
+			"info": [
+				"LeveledItem (LLI_Loot_Ammo_Unique)",
+				"Rebuilds the unique ammo loot list, replacing Mininukes with their leveled item version"
+			], 
+			"formID": "Fallout4.esm|CFC8F", "clear": true,
+			"add": [
+				{"formID": "Fallout4.esm|18ABE1", "level": 9, "count": 1, "info": "LL_Ammo_FusionCore"},
+				{"formID": "Fallout4.esm|1C6C0F", "level": 13, "count": 1, "info": "LL_Ammo_Fatman"}
+			]
+		}
+	]
+}

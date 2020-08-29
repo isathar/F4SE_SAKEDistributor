@@ -2,7 +2,7 @@
 
 
 // returns a form's plugin name or "Ref" if it's not a base form
-const char * SAKEUtilities::GetPluginNameFromFormID(UInt32 formID)
+const char * SAKELoader::GetPluginNameFromFormID(UInt32 formID)
 {
 	if (formID > 0x0) {
 		char varVal[9] = "00000000";
@@ -41,7 +41,7 @@ const char * SAKEUtilities::GetPluginNameFromFormID(UInt32 formID)
 
 
 // returns a formatted string containing (string=pluginName|UInt=formID without loadorder) 
-const char * SAKEUtilities::GetIdentifierFromFormID(UInt32 formID)
+const char * SAKELoader::GetIdentifierFromFormID(UInt32 formID)
 {
 	if (formID > 0x0) {
 		std::string finalFormString = GetPluginNameFromFormID(formID);
@@ -61,7 +61,7 @@ const char * SAKEUtilities::GetIdentifierFromFormID(UInt32 formID)
 
 
 // returns a formID from a formatted string
-UInt32 SAKEUtilities::GetFormIDFromIdentifier(const std::string & formIdentifier)
+UInt32 SAKELoader::GetFormIDFromIdentifier(const std::string & formIdentifier)
 {
 	UInt32 formId = 0;
 	if (formIdentifier.c_str() != "none") {
@@ -92,7 +92,7 @@ UInt32 SAKEUtilities::GetFormIDFromIdentifier(const std::string & formIdentifier
 
 
 // returns a form from a formatted string
-TESForm * SAKEUtilities::GetFormFromIdentifier(const std::string & formIdentifier)
+TESForm * SAKELoader::GetFormFromIdentifier(const std::string & formIdentifier)
 {
 	UInt32 formId = GetFormIDFromIdentifier(formIdentifier);
 	return (formId != 0x0) ? LookupFormByID(formId) : nullptr;
@@ -100,7 +100,7 @@ TESForm * SAKEUtilities::GetFormFromIdentifier(const std::string & formIdentifie
 
 
 // returns true if the passed mod is loaded
-bool SAKEUtilities::IsModLoaded(const std::string & modName)
+bool SAKELoader::IsModLoaded(const std::string & modName)
 {
 	if ((*g_dataHandler)->GetLoadedModIndex(modName.c_str()) != (UInt8)-1) {
 		return true;
@@ -110,7 +110,7 @@ bool SAKEUtilities::IsModLoaded(const std::string & modName)
 
 
 // returns a list of json file names at the passed path
-std::vector<std::string> SAKEUtilities::GetFileNames(const std::string & folder)
+std::vector<std::string> SAKELoader::GetFileNames(const std::string & folder)
 {
 	std::vector<std::string> names;
 	std::string search_path = folder + "/*.json";
@@ -129,7 +129,7 @@ std::vector<std::string> SAKEUtilities::GetFileNames(const std::string & folder)
 
 
 // returns true if the passed path/filename exists
-bool SAKEUtilities::IsPathValid(const std::string & path)
+bool SAKELoader::IsPathValid(const std::string & path)
 {
 	std::string search_path = path + "*";
 	WIN32_FIND_DATA fd;

@@ -1,0 +1,62 @@
+{
+	"info": "NPCs Use Ammo - Guns",
+	
+	"overrides": [
+		{
+			"info": "10mm Pistol", "formID": "Fallout4.esm|4822", 
+			"flags": {"NPCsUseAmmo": true}
+		},
+		{
+			"info": ".44 Revolver", "formID": "Fallout4.esm|CE97D", 
+			"flags": {"NPCsUseAmmo": true}
+		},
+		{
+			"info": "Deliverer", "formID": "Fallout4.esm|DC8E7", 
+			"flags": {"NPCsUseAmmo": true}
+		},
+		{
+			"info": "Pipe Gun", "formID": "Fallout4.esm|24F55", 
+			"flags": {"NPCsUseAmmo": true}
+		},
+		{
+			"info": "Pipe Bolt-Action", "formID": "Fallout4.esm|14831A", 
+			"flags": {"NPCsUseAmmo": true}
+		},
+		{
+			"info": "Pipe Revolver", "formID": "Fallout4.esm|14831B", 
+			"flags": {"NPCsUseAmmo": true}
+		},
+		{
+			"info": "Double-Barreled Shotgun", "formID": "Fallout4.esm|92217", 
+			"flags": {"NPCsUseAmmo": true}
+		},
+		{
+			"info": "Submachine Gun", "formID": "Fallout4.esm|15B043", 
+			"flags": {"NPCsUseAmmo": true}
+		},
+		{
+			"info": "Assault Rifle", "formID": "Fallout4.esm|463F", 
+			"flags": {"NPCsUseAmmo": true}
+		},
+		{
+			"info": "Combat Rifle", "formID": "Fallout4.esm|DF42E", 
+			"flags": {"NPCsUseAmmo": true}
+		},
+		{
+			"info": "Combat Shotgun", "formID": "Fallout4.esm|14831C", 
+			"flags": {"NPCsUseAmmo": true}
+		},
+		{
+			"info": "Hunting Rifle", "formID": "Fallout4.esm|4F46A", 
+			"flags": {"NPCsUseAmmo": true}
+		},
+		{
+			"info": "Laser Gun", "formID": "Fallout4.esm|9983B", 
+			"flags": {"NPCsUseAmmo": true}
+		},
+		{
+			"info": "Institute Laser", "formID": "Fallout4.esm|1633CC", 
+			"flags": {"NPCsUseAmmo": true}
+		}
+	]
+}

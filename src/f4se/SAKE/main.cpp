@@ -13,7 +13,7 @@ void F4SEMessageHandler(F4SEMessagingInterface::Message* msg)
 {
 	if (msg->type == F4SEMessagingInterface::kMessage_GameDataReady) {
 		if (msg->data == (void*)true) {
-			SAKEFileReader::LoadGameData();
+			SAKELoader::LoadGameData();
 		}
 	}
 }
@@ -24,7 +24,7 @@ extern "C"
 
 bool F4SEPlugin_Query(const F4SEInterface * f4se, PluginInfo * info)
 {
-	gLog.OpenRelative(CSIDL_MYDOCUMENTS, "\\My Games\\Fallout4\\F4SE\\SAKE.log");
+	gLog.OpenRelative(CSIDL_MYDOCUMENTS, "\\My Games\\Fallout4\\F4SE\\SAKELoader.log");
 
 	info->infoVersion = PluginInfo::kInfoVersion;
 	info->name =		PLUGIN_NAME_SHORT;
@@ -33,7 +33,7 @@ bool F4SEPlugin_Query(const F4SEInterface * f4se, PluginInfo * info)
 	// version check
 	if (f4se->runtimeVersion != SUPPORTED_RUNTIME_VERSION) {
 		char buf[512];
-		sprintf_s(buf, "Game version mismatch - SAKE Distributor!\n  Expected: %d.%d.%d.%d - Current: %d.%d.%d.%d\n\nThis version of the SAKE Distributor will not run on the installed version of Fallout 4.",
+		sprintf_s(buf, "Game version mismatch - SAKE Loader!\n  Expected: %d.%d.%d.%d - Current: %d.%d.%d.%d\n\nThis version of the SAKE Distributor will not run on the installed version of Fallout 4.",
 			GET_EXE_VERSION_MAJOR(SUPPORTED_RUNTIME_VERSION),
 			GET_EXE_VERSION_MINOR(SUPPORTED_RUNTIME_VERSION),
 			GET_EXE_VERSION_BUILD(SUPPORTED_RUNTIME_VERSION),

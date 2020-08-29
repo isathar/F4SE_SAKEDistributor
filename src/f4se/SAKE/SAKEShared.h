@@ -1,6 +1,7 @@
 #pragma once
 #include "f4se/GameData.h"
 #include "f4se/GameFormComponents.h"
+#include "f4se/GameForms.h"
 #include "f4se/GameSettings.h"
 #include "f4se/GameTypes.h"
 #include "f4se/GameRTTI.h"
@@ -144,7 +145,72 @@ public:
 
 	ProjectileData				data;					// C0
 	TESModel					muzFlashModel;			// 150
-	UInt32						soundLevel;				// 180
+	UInt32						soundLevel;				// 180 - 0=loud, 1=normal, 2=silent, 3=very loud, 4=quiet
+};
+
+
+/* BGSExplosion
+144? */
+class TempBGSExplosion : public TESBoundObject
+{
+public:
+	enum { 
+		kTypeID = kFormType_EXPL,
+
+		xFlag_Unknown0 = 0x0001,
+		xFlag_AlwaysUseWorldOrientation = 0x0002,
+		xFlag_KnockDownAlways = 0x0004,
+		xFlag_KnockDownByFormula = 0x0008,
+		xFlag_IgnoreLOSCheck = 0x0010,
+		xFlag_PushExplSourceRefOnly = 0x0020,
+		xFlag_IgnoreImageSpaceSwap = 0x0040,
+		xFlag_Chain = 0x0080,
+		xFlag_NoControllerVibration = 0x0100,
+		xFlag_PlacedObjectPersists = 0x0200,
+		xFlag_SkipUnderwaterTests = 0x0400
+	};
+
+	TESFullName				fullName;				// 68
+	TESModel				model;					// 78
+	BGSPreloadable			preloadable;			// A8
+
+	EnchantmentItem *		objectEffect;			// B0
+	UInt64					unkB8;					// B8
+	UInt64					unkC0;					// C0
+	UInt64					unkC8;					// C8
+
+	TESImageSpaceModifier * imageSpaceModifier;		// D0
+
+	// 6C
+	struct ExplosionData
+	{
+		TESForm					* light;			// 00
+		BGSSoundDescriptorForm	* sound1;			// 08
+		BGSSoundDescriptorForm	* sound2;			// 10
+		TESForm					* impactDataSet;	// 18
+		TESForm					* placedObject;		// 20
+
+		BGSProjectile			* spawnProjectile;	// 28
+		float					spawnX;				// 30
+		float					spawnY;				// 34
+		float					spawnZ;				// 38
+		float					spawnSpreadDeg;		// 3C
+		UInt32					spawnCount;			// 40
+
+		float					force;				// 44
+		float					damage;				// 48
+		float					innerRadius;		// 4C
+		float					outerRadius;		// 50
+		float					isRadius;			// 54
+		float					verticalOffset;		// 58
+
+		UInt32					flags;				// 5C
+		UInt32					soundLevel;			// 60
+		float					placedObjFadeDelay;	// 64
+		UInt32					stagger;			// 68
+	};
+
+	ExplosionData			data;					// D8
 };
 
 
@@ -182,9 +248,172 @@ public:
 };
 
 
-
-namespace SAKEUtilities
+// 150
+struct TempWEAPInstanceData : public TBO_InstanceData
 {
+public:
+	BGSSoundDescriptorForm		* unk10;					// 10 BGSSoundDescriptorForm *
+	UInt64						unk18;						// 18
+	UInt64						unk20;						// 20
+	BGSSoundDescriptorForm		*unk28;						// 28 BGSSoundDescriptorForm *
+	BGSSoundDescriptorForm		* unk30;					// 30 BGSSoundDescriptorForm *
+	BGSSoundDescriptorForm		* unk38;					// 38 BGSSoundDescriptorForm *
+	BGSSoundDescriptorForm		* unk40;					// 40 BGSSoundDescriptorForm * 
+	BGSSoundDescriptorForm		* unk48;					// 48 BGSSoundDescriptorForm *
+	UInt64						unk50;						// 50
+	BGSImpactDataSet			* impactDataSet;			// 58 BGSImpactDataSet*
+	TESLevItem					* addAmmoList;				// 60 TESLevItem *
+	TESAmmo						* ammo;						// 68 TESAmmo *
+	BGSEquipSlot				* equipSlot;				// 70 BGSEquipSlot*
+	SpellItem					* unk78;					// 78 SpellItem*
+	BGSKeywordForm				* keywords;					// 80
+	BGSAimModel					* aimModel;					// 88 BGSAimModel *
+	BGSZoomData					* zoomData;					// 90 BGSZoomData*
+
+	struct FiringData
+	{
+		BGSProjectile	* projectileOverride;	// 00
+		float			unk00;					// 08
+		float			leftMotorStrength;		// 0C
+		float			rightMotorStrength;		// 10
+		float			duration;				// 14
+		float			unk18;					// 18
+		float			unk1C;					// 1C
+		float			sightedTransition;		// 20
+		UInt32			period;					// 24
+		UInt32			unk28;					// 28
+
+		UInt16			unk2A;					// 2C - start of old numProjectiles
+		UInt8			unk2B;					// 2E
+		UInt8			numProjectiles;			// 2F
+	};
+
+	FiringData					* firingData;				// 98
+	tArray<EnchantmentItem*>	* enchantments;				// A0
+	tArray<BGSMaterialSwap*>	* materialSwaps;			// A8
+	tArray<DamageTypes>			* damageTypes;				// B0
+	tArray<ValueModifier>		* modifiers;				// B8
+	float						unkC0;						// C0
+	float						reloadSpeed;				// C4
+	float						speed;						// C8
+	float						reach;						// CC
+	float						minRange;					// D0
+	float						maxRange;					// D4
+	float						attackDelay;				// D8
+	float						unkD8;						// DC
+	float						outOfRangeMultiplier;		// E0
+	float						secondary;					// E4
+	float						critChargeBonus;			// E8
+	float						weight;						// EC
+	float						unkEC;						// F0
+	float						actionCost;					// F4
+	float						fullPowerSeconds;			// F8
+	float						minPowerShot;				// FC
+	UInt32						unk100;						// 100
+	float						critDamageMult;				// 104
+	UInt32						stagger;					// 108
+	UInt32						value;						// 10C
+
+	// updated flags
+	enum WeaponFlags
+	{
+		kFlag_PlayerOnly = 0x00000001,
+		kFlag_NPCsUseAmmo = 0x00000002,
+		kFlag_NoJamAfterReload = 0x00000004,
+		kFlag_ChargingReload = 0x00000008,
+		kFlag_MinorCrime = 0x00000010,
+		kFlag_FixedRange = 0x00000020,
+		kFlag_NotUsedInNormalCombat = 0x00000040,
+		kFlag_Unknown8 = 0x00000080,
+		kFlag_CritEffectonDeath = 0x00000100,
+		kFlag_ChargingAttack = 0x00000200,
+		kFlag_Unknown11 = 0x00000400,
+		kFlag_HoldInputToPower = 0x00000800,
+		kFlag_NonHostile = 0x00001000,
+		kFlag_BoundWeapon = 0x00002000,
+		kFlag_IgnoresNormalResist = 0x00004000,
+		kFlag_Automatic = 0x00008000,
+		kFlag_RepeatableSingleFire = 0x00010000,
+		kFlag_CantDrop = 0x00020000,
+		kFlag_HideBackpack = 0x00040000,
+		kFlag_EmbeddedWeapon = 0x00080000,
+		kFlag_NotPlayable = 0x00100000,
+		kFlag_HasScope = 0x00200000,
+		kFlag_BoltAction = 0x00400000,
+		kFlag_SecondaryWeapon = 0x00800000,
+		kFlag_DisableShells = 0x01000000,
+		kFlag_Unknown26 = 0x02000000,
+		kFlag_Unknown27 = 0x04000000,
+		kFlag_Unknown28 = 0x08000000,
+		kFlag_Unknown29 = 0x10000000,
+		kFlag_Unknown30 = 0x20000000,
+		kFlag_Unknown31 = 0x40000000,
+		kFlag_Unknown32 = 0x80000000
+	};
+
+	UInt32						flags;						// 110
+	UInt32						unk114;						// 114
+	UInt32						unk118;						// 118
+	UInt32						unk11C;						// 11C
+	ActorValueInfo				* skill;					// 120
+	ActorValueInfo				* damageResist;				// 128
+	UInt16						ammoCapacity;				// 130
+	UInt16						baseDamage;					// 132
+	UInt16						unk134;						// 134
+	UInt8						accuracyBonus;				// 136
+	UInt8						unk137;						// 137
+
+	BGSModelMaterialSwap*		swap138;					// 138
+	UInt64						unk140;						// 140
+	BGSMod::Attachment::Mod*	embeddedMod;				// 148
+};
+
+
+// 58
+struct TempARMOInstanceData : public TBO_InstanceData
+{
+public:
+	tArray<EnchantmentItem*> * enchantments;	// 10
+	UInt64 unk18;								// 18
+	UInt64 unk20;								// 20
+	BGSKeywordForm * keywords;					// 28
+	tArray<DamageTypes>	* damageTypes;			// 30
+	tArray<TBO_InstanceData::ValueModifier> * modifiers; // 38
+	float weight;								// 40
+	SInt32 pad44;								// 44
+	UInt32 value;								// 48
+	UInt32 health;								// 4C
+	UInt32 unk50;								// 50
+	UInt16 armorRating;							// 54
+	UInt16 unk56;								// 56
+};
+
+
+// BGSPerkRankArray
+// 18
+class TempBGSPerkRankArray : public BaseFormComponent
+{
+public:
+	UInt64 * unk08;		// 08 - an array of Perk, Rank, Perk, Rank, etc. - could be a hashset, but a tHashSet won't work here
+	UInt32	unk10;		// 10
+	UInt32	pad14;		// 14
+};
+
+
+// not a base game struct - used to edit perk lists
+struct TempPerkRankEntry
+{
+	BGSPerk * perk = nullptr;
+	UInt32 rank = 1;
+};
+
+
+
+
+namespace SAKELoader
+{
+	// file and form operations:
+
 	const char * GetPluginNameFromFormID(UInt32 formID);
 	const char * GetIdentifierFromFormID(UInt32 formID);
 	UInt32 GetFormIDFromIdentifier(const std::string & formIdentifier);
@@ -192,38 +421,8 @@ namespace SAKEUtilities
 	bool IsModLoaded(const std::string & modName);
 	std::vector<std::string> GetFileNames(const std::string & folder);
 	bool IsPathValid(const std::string & path);
-}
 
-
-namespace SAKEData
-{
-	// updated weapon flags
-	enum
-	{
-		wFlag_PlayerOnly = 0x0000001,
-		wFlag_NPCsUseAmmo = 0x0000002,
-		wFlag_NoJamAfterReload = 0x0000004,
-		wFlag_ChargingReload = 0x0000008,
-		wFlag_MinorCrime = 0x0000010,
-		wFlag_FixedRange = 0x0000020,
-		wFlag_NotUsedInNormalCombat = 0x0000040,
-		wFlag_CritEffectonDeath = 0x0000100,
-		wFlag_ChargingAttack = 0x0000200,
-		wFlag_HoldInputToPower = 0x0000800,
-		wFlag_NonHostile = 0x0001000,
-		wFlag_BoundWeapon = 0x0002000,
-		wFlag_IgnoresNormalResist = 0x0004000,
-		wFlag_Automatic = 0x0008000,
-		wFlag_RepeatableSingleFire = 0x0010000,
-		wFlag_CantDrop = 0x0020000,
-		wFlag_HideBackpack = 0x0040000,
-		wFlag_EmbeddedWeapon = 0x0080000,
-		wFlag_NotPlayable = 0x0100000,
-		wFlag_HasScope = 0x0200000,
-		wFlag_BoltAction = 0x0400000,
-		wFlag_SecondaryWeapon = 0x0800000,
-		wFlag_DisableShells = 0x1000000
-	};
+	// form overrides:
 
 	void LoadOverrides_Weapon(TESObjectWEAP * weapForm, json & weaponOverride);
 	void LoadOverrides_Armor(TESObjectARMO * armorForm, json & armorOverride);
@@ -233,6 +432,8 @@ namespace SAKEData
 	void LoadOverrides_LeveledItem(TESLevItem * lliForm, json & llOverride);
 	void LoadOverrides_LeveledActor(TESLevCharacter * llcForm, json & llOverride);
 
+	void LoadOverrides_Container(TESObjectCONT * contForm, json & contOverride);
+
 	void LoadOverrides_Ammo(TempTESAmmo * ammoForm, json & ammoOverride);
 	void LoadOverrides_Misc(TESObjectMISC * miscForm, json & miscOverride);
 	void LoadOverrides_Key(TempTESKey * keyForm, json & miscOverride);
@@ -240,16 +441,15 @@ namespace SAKEData
 	void LoadOverrides_Ingestible(AlchemyItem * alchForm, json & alchOverride);
 
 	void LoadOverrides_Projectile(TempBGSProjectile * projForm, json & projOverride);
+	void LoadOverrides_Explosion(TempBGSExplosion * explForm, json & explOverride);
 	void LoadOverrides_EncounterZone(BGSEncounterZone * enczForm, json & enczOverride);
 
 	void LoadNamePrefix(TESForm * targetForm, const std::string & prefixStr);
 
 	void LoadGameSettings(json & settingOverrides);
-}
 
 
-namespace SAKEFileReader
-{
 	// starts the loading process
 	void LoadGameData();
 }
+

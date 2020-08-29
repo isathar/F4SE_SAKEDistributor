@@ -1,0 +1,75 @@
+{
+	"info": "Edits max active AIs, cell reset times, dead cleanup, settler population, casing, debris, arrow counts, workshop xp.",
+	
+	"gameSettings": [
+		{"name": "iHoursToRespawnCell",
+			"valueInt": 720, "info": "default: 168"
+		},
+		{"name": "iHoursToRespawnCellCleared",
+			"valueInt": 2160, "info": "default: 480"
+		},
+		{"name": "iHoursToClearCorpses",
+			"valueInt": 72, "info": "default: 24"
+		},
+		
+		{"name": "iRemoveExcessDeadCount",
+			"valueInt": 60, "info": "default: 15"
+		},
+		{"name": "iRemoveExcessDeadTotalActorCount",
+			"valueInt": 80, "info": "default: 20"
+		},
+		{"name": "iRemoveExcessDeadComplexCount",
+			"valueInt": 12, "info": "default: 3"
+		},
+		{"name": "iRemoveExcessDeadComplexTotalActorCount",
+			"valueInt": 80, "info": "default: 20"
+		},
+		
+		{"name": "iAINumberActorsComplexScene",
+			"valueInt": 40, "info": "default: 20"
+		},
+		{"name": "iNumberActorsInCombatPlayer",
+			"valueInt": 40, "info": "default: 20"
+		},
+		
+		{"name": "iDebrisMaxCount",
+			"valueInt": 100, "info": "default: 25"
+		},
+		{"name": "fGunShellLifeTime",
+			"valueFloat": 300.0, "info": "default: 5.0"
+		},
+		{"name": "fGunShellCameraDistance",
+			"valueFloat": 2048.0, "info": "default: 512.0"
+		},
+		{"name": "fGunDecalCameraDistance",
+			"valueFloat": 4096.0, "info": "default: 2048.0"
+		},
+		{"name": "fAttachedArrowAgeMax",
+			"valueFloat": 30.0, "info": "default: 10.0"
+		},
+		
+		{"name": "iArrowInventoryChance",
+			"valueInt": 0, "info": "default: 3"
+		},
+		{"name": "iProjectileMaxRefCount",
+			"valueInt": 31, "info": "default: 15"
+		},
+		
+		{"name": "iWorkshopSettlerPopulationMax",
+			"valueInt": 20, "info": "default: 10"
+		},
+		{"name": "fWorkshopWireMaxLength",
+			"valueFloat": 2800.0, "info": "default: 1100.0"
+		},
+		
+		{"name": "fWorkshopExperienceBase",
+			"valueFloat": 1.0, "info": "default: 2.0"
+		},
+		{"name": "fWorkshopExperienceMax",
+			"valueFloat": 10.0, "info": "default: 25.0"
+		},
+		{"name": "fWorkshopRepairComponentMult",
+			"valueFloat": 0.2, "info": "default: 0.1"
+		}
+	]
+}

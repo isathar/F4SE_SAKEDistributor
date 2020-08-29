@@ -1,0 +1,11 @@
+{
+	"info": "Projectile form override examples",
+	
+	"overrides": [
+		{"info": "CarExplosion - adds RadiationHazardNukaGrenade",
+			"formID": "Fallout4.esm|22496",
+			"stagger": 2,
+			"placedObject": "Fallout4.esm|215E06"
+		}
+	]
+}

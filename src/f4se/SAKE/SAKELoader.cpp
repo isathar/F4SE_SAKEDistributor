@@ -1,344 +1,192 @@
 #include "SAKELoader.h"
-#include "SimpleIni/SimpleIni.h"
+#include <chrono>
 
 
-namespace SAKEFileReader
+namespace SAKELoader
 {
-	/** the current pass
-			0: races
-			1: other forms
-			2: name prefixes **/
+	// the current pass:  0=races, 1=everything else
 	UInt8 iPassCount = 0;
 
 
 	// reads the overrides from a json file at jsonPath
-	int LoadOverride(const std::string & jsonPath)
+	void LoadOverride(const std::string & jsonPath)
 	{
 		_MESSAGE("\n  Loading Override file %s...", jsonPath.c_str());
-		if (!SAKEUtilities::IsPathValid(jsonPath)) {
-			return 4;
+		if (!IsPathValid(jsonPath)) {
+			_MESSAGE("    WARNING: Invalid path (%s)!", jsonPath.c_str());
+			return;
 		}
-
+		// get json data from file and check it
 		json otObject;
 		std::ifstream otFile(jsonPath.c_str());
 		otFile >> otObject;
 		otFile.close();
-
 		if (otObject.is_null() || otObject.empty()) {
-			return 3;
-		}
-		
-		// ---- required plugins check
-		if (!otObject["requirements"].is_null()) {
-			bool bHasReqs = true;
-			if (otObject["requirements"].is_array() && !otObject["requirements"].empty()) {
-				for (json::iterator itReqs = otObject["requirements"].begin(); itReqs != otObject["requirements"].end(); ++itReqs) {
-					std::string reqName = *itReqs;
-					if (!SAKEUtilities::IsModLoaded(reqName)) {
-						_MESSAGE("    WARNING: Missing required plugin: %s", reqName.c_str());
-						bHasReqs = false;
-					}
-				}
-			}
-			if (!bHasReqs) {
-				return 0;
-			}
+			_MESSAGE("    WARNING: Invalid json file!");
+			return;
 		}
 
-		// ---- load overrides
-		json curOverride;
-
-		// check the pass number
+		// pass 0 - GameSettings
+		// - loaded first because some settings affect automatic calculation of form stats that may be edited by other overrides
 		if (iPassCount == 0) {
-			// pass 0 - Race Overrides
-			if (otObject["raceOverrides"].is_null()) {
-				_MESSAGE("    INFO: Skipping file during first pass.");
-				return 5;
-			}
-			else {
-				if (otObject["raceOverrides"].empty() || !otObject["raceOverrides"].is_array()) {
-					return 1;
-				}
-				for (json::iterator itOverride = otObject["raceOverrides"].begin(); itOverride != otObject["raceOverrides"].end(); ++itOverride) {
-					curOverride.clear();
-					curOverride = *itOverride;
-					std::string curFormID = curOverride["formID"].is_null() ? "none" : curOverride["formID"];
-					TESForm * curForm = SAKEUtilities::GetFormFromIdentifier(curFormID);
-					if (!curForm) {
-						_MESSAGE("\n      ERROR: Form not found!  (%s)", curFormID.c_str());
-						continue;
-					}
-					if (curForm->formType == kFormType_RACE) {
-						SAKEData::LoadOverrides_Race(reinterpret_cast<TESRace*>(curForm), curOverride);
-					}
-				}
-			}
-		}
-		else if (iPassCount == 1) {
-			// pass 1 - GameSettings + Form Overrides
 			if (!otObject["gameSettings"].is_null()) {
-				SAKEData::LoadGameSettings(otObject["gameSettings"]);
+				LoadGameSettings(otObject["gameSettings"]);
 			}
-
-			if (otObject["overrides"].is_null()) {
-				return 2;
-			}
-			else {
-				if (otObject["overrides"].empty() || !otObject["overrides"].is_array()) {
-					return 1;
-				}
-				for (json::iterator itOverride = otObject["overrides"].begin(); itOverride != otObject["overrides"].end(); ++itOverride) {
-					curOverride.clear();
-					curOverride = *itOverride;
-					std::string curFormID = curOverride["formID"].is_null() ? "none" : curOverride["formID"];
-					TESForm * curForm = SAKEUtilities::GetFormFromIdentifier(curFormID);
-					if (!curForm) {
-						_MESSAGE("\n      ERROR: Form not found!  (%s)", curFormID.c_str());
-						continue;
-					}
-
-					switch (curForm->formType) {
-						case kFormType_LVLI:
-							SAKEData::LoadOverrides_LeveledItem(reinterpret_cast<TESLevItem*>(curForm), curOverride);
-							break;
-						case kFormType_LVLN:
-							SAKEData::LoadOverrides_LeveledActor(reinterpret_cast<TESLevCharacter*>(curForm), curOverride);
-							break;
-						case kFormType_ARMO:
-							SAKEData::LoadOverrides_Armor(reinterpret_cast<TESObjectARMO*>(curForm), curOverride);
-							break;
-						case kFormType_WEAP:
-							SAKEData::LoadOverrides_Weapon(reinterpret_cast<TESObjectWEAP*>(curForm), curOverride);
-							break;
-						case kFormType_NPC_:
-							SAKEData::LoadOverrides_Actor(reinterpret_cast<TESNPC*>(curForm), curOverride);
-							break;
-						case kFormType_AMMO:
-							SAKEData::LoadOverrides_Ammo(reinterpret_cast<TempTESAmmo*>(curForm), curOverride);
-							break;
-						case kFormType_MISC:
-							SAKEData::LoadOverrides_Misc(reinterpret_cast<TESObjectMISC*>(curForm), curOverride);
-							break;
-						case kFormType_KEYM:
-							SAKEData::LoadOverrides_Key(reinterpret_cast<TempTESKey*>(curForm), curOverride);
-							break;
-						case kFormType_CMPO:
-							SAKEData::LoadOverrides_Component(reinterpret_cast<BGSComponent*>(curForm), curOverride);
-							break;
-						case kFormType_ALCH:
-							SAKEData::LoadOverrides_Ingestible(reinterpret_cast<AlchemyItem*>(curForm), curOverride);
-							break;
-						case kFormType_ECZN:
-							SAKEData::LoadOverrides_EncounterZone(reinterpret_cast<BGSEncounterZone*>(curForm), curOverride);
-							break;
-						case kFormType_PROJ:
-							SAKEData::LoadOverrides_Projectile(reinterpret_cast<TempBGSProjectile*>(curForm), curOverride);
-							break;
-
-						default:
-							_MESSAGE("    WARNING: Form 0x%08X has invalid formType %i", curForm->formID, curForm->formType);
-					}
-				}
-			}
+			return;
 		}
-		else {
-			// pass 2 - name prefixes
+
+		// pass 3 - Name prefixes
+		// - loaded last to respect any name changes in other form overrides
+		if (iPassCount == 3) {
 			if (otObject["namePrefixes"].is_null()) {
-				_MESSAGE("    INFO: No Name Prefixes found.");
-				return 5;
+				_MESSAGE("\n\nFinished loading data.");
+				return;
 			}
 			if (otObject["namePrefixes"].empty() || !otObject["namePrefixes"].is_array()) {
-				_MESSAGE("    INFO: Name Prefixes found but empty.");
-				return 5;
+				_MESSAGE("    WARNING: Name Prefixes list exists but is empty.");
+				_MESSAGE("\n\nFinished loading data.");
+				return;
 			}
-
-			for (json::iterator itOverride = otObject["namePrefixes"].begin(); itOverride != otObject["namePrefixes"].end(); ++itOverride) {
-				curOverride.clear();
-				curOverride = *itOverride;
-				if (!curOverride["prefix"].is_null() && !curOverride["forms"].is_null() && curOverride["forms"].is_array() && !curOverride["forms"].empty()) {
-					std::string prefixStr = curOverride["prefix"];
-					for (json::iterator itForms = curOverride["forms"].begin(); itForms != curOverride["forms"].end(); ++itForms) {
+			json curName;
+			for (json::iterator itNames = otObject["namePrefixes"].begin(); itNames != otObject["namePrefixes"].end(); ++itNames) {
+				curName = *itNames;
+				if (!curName["prefix"].is_null() && !curName["forms"].is_null() && curName["forms"].is_array() && !curName["forms"].empty()) {
+					std::string prefixStr = curName["prefix"];
+					for (json::iterator itForms = curName["forms"].begin(); itForms != curName["forms"].end(); ++itForms) {
 						std::string curFormID = *itForms;
-						TESForm * curForm = SAKEUtilities::GetFormFromIdentifier(curFormID);
+						TESForm * curForm = GetFormFromIdentifier(curFormID);
 						if (curForm) {
-							SAKEData::LoadNamePrefix(curForm, prefixStr);
+							LoadNamePrefix(curForm, prefixStr);
 						}
 					}
 				}
 			}
-			
+			return;
 		}
 
-		return -1;
+		// passes 1 and 2 - forms
+		json curOverride;
+		if (otObject["overrides"].is_null()) {
+			_MESSAGE("    WARNING: Overrides list is missing!");
+			return;
+		}
+		if (otObject["overrides"].empty() || !otObject["overrides"].is_array()) {
+			_MESSAGE("    WARNING: Overrides list is empty or not an array!");
+			return;
+		}
+
+		// load the overrides list
+		for (json::iterator itOverride = otObject["overrides"].begin(); itOverride != otObject["overrides"].end(); ++itOverride) {
+			curOverride.clear();
+			curOverride = *itOverride;
+			std::string curFormID = curOverride["formID"].is_null() ? "none" : curOverride["formID"];
+			TESForm * curForm = GetFormFromIdentifier(curFormID);
+			if (!curForm) {
+				_MESSAGE("\n      WARNING: Form not found!  (%s)", curFormID.c_str());
+				continue;
+			}
+
+			if (iPassCount == 1) {
+				// pass 1 - Race overrides
+				// - needs to be done before actor overrides because races act as templates for actors
+				if (curForm->formType == kFormType_RACE) {
+					LoadOverrides_Race(reinterpret_cast<TESRace*>(curForm), curOverride);
+				}
+			}
+			else if (iPassCount == 2) {
+				// pass 2 - General form overrides
+				switch (curForm->formType) {
+					case kFormType_LVLI:
+						LoadOverrides_LeveledItem(reinterpret_cast<TESLevItem*>(curForm), curOverride);
+						break;
+					case kFormType_LVLN:
+						LoadOverrides_LeveledActor(reinterpret_cast<TESLevCharacter*>(curForm), curOverride);
+						break;
+					case kFormType_ARMO:
+						LoadOverrides_Armor(reinterpret_cast<TESObjectARMO*>(curForm), curOverride);
+						break;
+					case kFormType_WEAP:
+						LoadOverrides_Weapon(reinterpret_cast<TESObjectWEAP*>(curForm), curOverride);
+						break;
+					case kFormType_NPC_:
+						LoadOverrides_Actor(reinterpret_cast<TESNPC*>(curForm), curOverride);
+						break;
+					case kFormType_AMMO:
+						LoadOverrides_Ammo(reinterpret_cast<TempTESAmmo*>(curForm), curOverride);
+						break;
+					case kFormType_MISC:
+						LoadOverrides_Misc(reinterpret_cast<TESObjectMISC*>(curForm), curOverride);
+						break;
+					case kFormType_KEYM:
+						LoadOverrides_Key(reinterpret_cast<TempTESKey*>(curForm), curOverride);
+						break;
+					case kFormType_CMPO:
+						LoadOverrides_Component(reinterpret_cast<BGSComponent*>(curForm), curOverride);
+						break;
+					case kFormType_ALCH:
+						LoadOverrides_Ingestible(reinterpret_cast<AlchemyItem*>(curForm), curOverride);
+						break;
+					case kFormType_ECZN:
+						LoadOverrides_EncounterZone(reinterpret_cast<BGSEncounterZone*>(curForm), curOverride);
+						break;
+					case kFormType_PROJ:
+						LoadOverrides_Projectile(reinterpret_cast<TempBGSProjectile*>(curForm), curOverride);
+						break;
+					case kFormType_EXPL:
+						LoadOverrides_Explosion(reinterpret_cast<TempBGSExplosion*>(curForm), curOverride);
+						break;
+					case kFormType_CONT:
+						LoadOverrides_Container(reinterpret_cast<TESObjectCONT*>(curForm), curOverride);
+						break;
+						
+					case kFormType_RACE:
+						// races are done in pass 1
+						break;
+
+					default:
+						_MESSAGE("    WARNING: Form 0x%08X has invalid formType %i", curForm->formID, curForm->formType);
+				}
+			}
+		}
+		return;
 	}
 
 
-	// reads all json overrides found in the directory at jsonPath
-	int LoadOverridesFolder(const std::string & jsonPath)
+	// reads all json overrides found at jsonPath
+	void LoadOverridesFolder(const std::string & jsonPath)
 	{
 		_MESSAGE("\n\nLoading Template: %s", jsonPath.c_str());
-		if (!SAKEUtilities::IsPathValid(jsonPath)) {
-			return 0;
+		if (!IsPathValid(jsonPath)) {
+			_MESSAGE("  WARNING: Invalid Template path!");
+			return;
 		}
-
-		std::vector<std::string> templateFiles = SAKEUtilities::GetFileNames(jsonPath.c_str());
+		// get the file list
+		std::vector<std::string> templateFiles = GetFileNames(jsonPath.c_str());
 		if (templateFiles.empty()) {
-			return 1;
+			_MESSAGE("  WARNING: Template is empty!");
+			return;
 		}
-
+		// load each file
 		std::string otFilePath;
 		for (std::vector<std::string>::iterator itFile = templateFiles.begin(); itFile != templateFiles.end(); ++itFile) {
 			otFilePath.clear();
 			otFilePath.append(jsonPath.c_str());
 			otFilePath.append(itFile->c_str());
-			switch (LoadOverride(otFilePath)) {
-				case 0:
-					_MESSAGE("    WARNING: Missing required mods!");
-					break;
-				case 1:
-					_MESSAGE("    WARNING: Overrides list is empty!");
-					break;
-				case 2:
-					_MESSAGE("    WARNING: File contains no overrides!");
-					break;
-				case 3:
-					_MESSAGE("    WARNING: Invalid json file!");
-					break;
-				case 4:
-					_MESSAGE("    WARNING: Invalid Override file path %s...", otFilePath.c_str());
-					break;
-			}
+			LoadOverride(otFilePath);
 		}
 		templateFiles.clear();
-		return -1;
 	}
 
-
-	// reads the profile at activeProfile from profilesPath, loading its override files and folders found at templatesPath
-	int LoadProfile(const std::string & presetName, const std::string & basePath)
-	{
-		std::string curProfile = basePath.c_str();
-		curProfile.append("Config\\");
-		curProfile.append(presetName.c_str());
-		curProfile.append(".json");
-
-		_MESSAGE("\n\nLoading Profile: %s", curProfile.c_str());
-		if (!SAKEUtilities::IsPathValid(curProfile)) {
-			return 0;
-		}
-		json profileObject;
-		std::ifstream profileFile(curProfile.c_str());
-		profileFile >> profileObject;
-		profileFile.close();
-
-		if (profileObject.is_null() || profileObject["active"].is_null()) {
-			return 2;
-		}
-		json overridesList = profileObject["active"];
-		if (overridesList.empty()) {
-			return 1;
-		}
-
-		std::vector<std::string> templateFiles;
-		std::string otPath;
-		json templateObj, includeObj, excludeObj;
-		bool reqCheckPassed = true;
-
-		std::string overridesPath = basePath.c_str();
-		overridesPath.append("Overrides\\");
-
-		for (; iPassCount < 3; iPassCount++) {
-			_MESSAGE("\n\nStarting pass %i", iPassCount);
-			for (json::iterator itDir = overridesList.begin(); itDir != overridesList.end(); ++itDir) {
-				templateObj = *itDir;
-
-				if (templateObj["name"].is_null()) {
-					_MESSAGE("\n\nWARNING: Template name is empty!");
-					continue;
-				}
-
-				std::string otName = templateObj["name"];
-
-				reqCheckPassed = true;
-				// check for required plugins
-				if (!templateObj["includeIf"].is_null()) {
-					includeObj = templateObj["includeIf"];
-					for (json::iterator itIncl = includeObj.begin(); itIncl != includeObj.end(); ++itIncl) {
-						std::string curInclude = *itIncl;
-						if (!SAKEUtilities::IsModLoaded(curInclude)) {
-							reqCheckPassed = false;
-							_MESSAGE("\n\nWARNING: %s requires %s - skipping", otName.c_str(), curInclude.c_str());
-							break;
-						}
-					}
-					if (!reqCheckPassed) {
-						continue;
-					}
-				}
-
-				// check for incompatible plugins
-				if (!templateObj["excludeIf"].is_null()) {
-					excludeObj = templateObj["excludeIf"];
-					for (json::iterator itExcl = excludeObj.begin(); itExcl != excludeObj.end(); ++itExcl) {
-						std::string curExclude = *itExcl;
-						if (SAKEUtilities::IsModLoaded(curExclude)) {
-							reqCheckPassed = false;
-							_MESSAGE("\n\nWARNING: %s is incompatible with %s - skipping", otName.c_str(), curExclude.c_str());
-							break;
-						}
-					}
-					if (!reqCheckPassed) {
-						continue;
-					}
-				}
-				
-				otPath.clear();
-				otPath.append(overridesPath.c_str());
-				otPath.append(otName.c_str());
-
-				if (otName.find(".json") != std::string::npos) {
-					// -- Load as Override JSON file
-					_MESSAGE("\n\nLoading loose Override file:");
-					switch (LoadOverride(otPath)) {
-					case 0:
-						_MESSAGE("    WARNING: Missing required mods!");
-						break;
-					case 1:
-						_MESSAGE("    WARNING: Overrides list is empty!");
-						break;
-					case 2:
-						_MESSAGE("    WARNING: File contains no overrides!");
-						break;
-					case 3:
-						_MESSAGE("    WARNING: Invalid json file!");
-						break;
-					case 4:
-						_MESSAGE("    WARNING: Invalid Override file path %s...", otPath.c_str());
-						break;
-					}
-				}
-				else {
-					// -- Load as Template
-					otPath.append("\\");
-					switch (LoadOverridesFolder(otPath)) {
-					case 0:
-						_MESSAGE("  WARNING: Invalid Template path!");
-						break;
-					case 1:
-						_MESSAGE("  WARNING: Template is empty!");
-						break;
-					}
-				}
-			}
-		}
-		return -1;
-	}
 
 }
 
 
+void TestReadForm(UInt32 formID)
+{
+	
+}
 
-// temp form decoding + dev stuff
+// form decoding + dev stuff
 void TestingStuff()
 {
 	
@@ -346,37 +194,106 @@ void TestingStuff()
 
 
 // starts the loading process
-void SAKEFileReader::LoadGameData()
+void SAKELoader::LoadGameData()
 {
-	std::string sDataPath = ".\\Data\\F4SE\\Config\\SAKE\\";
-	std::string sConfigPreset = "Default";
-	CSimpleIniA iniBase;
+	// load timer
+	int endTime = 0;
+	int startTime = std::chrono::high_resolution_clock::now().time_since_epoch().count();
 
-	iniBase.SetUnicode();
-	if (iniBase.LoadFile(".\\Data\\F4SE\\Plugins\\SAKE.ini") > -1) {
-		sDataPath = iniBase.GetValue("Settings", "sDataPath", ".\\Data\\F4SE\\Config\\SAKE\\");
-		sConfigPreset = iniBase.GetValue("Settings", "sConfigPreset", "Default");
-		_MESSAGE("\nLoaded SAKE.ini...\n  dataPath: %s\n  configPreset: %s", sDataPath.c_str(), sConfigPreset.c_str());
+	std::string curProfile = ".\\Data\\Config\\SAKELoader\\Config.json";
+	if (!IsPathValid(curProfile)) {
+		_MESSAGE("  ERROR: Config path doesn't exist!");
+		return;
 	}
-	else {
-		_MESSAGE("\nUnable to load SAKE.ini... Using defaults.\n  dataPath: %s\n  configPreset: %s", sDataPath.c_str(), sConfigPreset.c_str());
+	json profileObject;
+	std::ifstream profileFile(curProfile.c_str());
+	profileFile >> profileObject;
+	profileFile.close();
+
+	if (profileObject.is_null()) {
+		_MESSAGE("  ERROR: Invalid/Corrupted Config.json!");
+		return;
 	}
 
-	switch (LoadProfile(sConfigPreset, sDataPath)) {
-		case -1:
-			_MESSAGE("\n\nFinished loading data.");
-			break;
-		case 0:
-			_MESSAGE("  ERROR: Invalid Config path...");
-			break;
-		case 1:
-			_MESSAGE("  ERROR: Config contains no active templates!");
-			break;
-		case 2:
-			_MESSAGE("  ERROR: Invalid/Corrupted Config file!");
-			break;
+	if (profileObject["activeOverrides"].is_null()) {
+		_MESSAGE("  ERROR: Preset contains no active overrides list!");
+		return;
 	}
-	
+	json overridesList = profileObject["activeOverrides"];
+	if (overridesList.empty()) {
+		_MESSAGE("  ERROR: Preset active overrides list is empty!");
+		return;
+	}
+
+	std::vector<std::string> templateFiles;
+	std::string otPath;
+	json templateObj;
+	bool reqCheckPassed = true;
+	std::string overridesPath = ".\\Data\\Config\\SAKELoader\\Overrides\\";
+
+	for (; iPassCount < 4; iPassCount++) {
+		_MESSAGE("\n\nStarting pass %i", iPassCount);
+		for (json::iterator itDir = overridesList.begin(); itDir != overridesList.end(); ++itDir) {
+			templateObj = *itDir;
+
+			if (templateObj["path"].is_null()) {
+				_MESSAGE("\n\nWARNING: Override path is empty!");
+				continue;
+			}
+
+			std::string otName = templateObj["path"];
+
+			reqCheckPassed = true;
+			// check for required plugins
+			if (!templateObj["includeIf"].is_null()) {
+				for (json::iterator itIncl = templateObj["includeIf"].begin(); itIncl != templateObj["includeIf"].end(); ++itIncl) {
+					std::string curInclude = *itIncl;
+					if (!IsModLoaded(curInclude)) {
+						reqCheckPassed = false;
+						_MESSAGE("\n\nWARNING: %s requires %s - skipping", otName.c_str(), curInclude.c_str());
+						break;
+					}
+				}
+				if (!reqCheckPassed) {
+					continue;
+				}
+			}
+
+			// check for incompatible plugins
+			if (!templateObj["excludeIf"].is_null()) {
+				for (json::iterator itExcl = templateObj["excludeIf"].begin(); itExcl != templateObj["excludeIf"].end(); ++itExcl) {
+					std::string curExclude = *itExcl;
+					if (IsModLoaded(curExclude)) {
+						reqCheckPassed = false;
+						_MESSAGE("\n\nWARNING: %s is incompatible with %s - skipping", otName.c_str(), curExclude.c_str());
+						break;
+					}
+				}
+				if (!reqCheckPassed) {
+					continue;
+				}
+			}
+
+			otPath.clear();
+			otPath.append(overridesPath.c_str());
+			otPath.append(otName.c_str());
+
+			if (otName.find(".json") != std::string::npos) {
+				// -- Load as Override JSON file
+				_MESSAGE("\n\nLoading Override file:");
+				LoadOverride(otPath);
+			}
+			else {
+				// -- Load as a directory
+				otPath.append("\\");
+				LoadOverridesFolder(otPath);
+			}
+		}
+	}
+
 	//TestingStuff();
+
+	endTime = std::chrono::high_resolution_clock::now().time_since_epoch().count();
+	_MESSAGE("\nFinished. Time elapsed: %.04f s\n\n", (float)(endTime - startTime) * 0.000000001);
 }
 

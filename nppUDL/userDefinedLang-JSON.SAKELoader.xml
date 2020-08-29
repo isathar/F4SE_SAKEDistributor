@@ -1,0 +1,64 @@
+<NotepadPlus>
+    <UserLang name="json_SAKE" ext="" udlVersion="2.1">
+        <Settings>
+            <Global caseIgnored="no" allowFoldOfComments="yes" foldCompact="no" forcePureLC="0" decimalSeparator="0" />
+            <Prefix Keywords1="no" Keywords2="no" Keywords3="no" Keywords4="no" Keywords5="no" Keywords6="no" Keywords7="no" Keywords8="no" />
+        </Settings>
+        <KeywordLists>
+            <Keywords name="Comments">00 01 02 03 04</Keywords>
+            <Keywords name="Numbers, prefix1"></Keywords>
+            <Keywords name="Numbers, prefix2"></Keywords>
+            <Keywords name="Numbers, extras1"></Keywords>
+            <Keywords name="Numbers, extras2"></Keywords>
+            <Keywords name="Numbers, suffix1"></Keywords>
+            <Keywords name="Numbers, suffix2"></Keywords>
+            <Keywords name="Numbers, range"></Keywords>
+            <Keywords name="Operators1">: ,</Keywords>
+            <Keywords name="Operators2"></Keywords>
+            <Keywords name="Folders in code1, open">{ [</Keywords>
+            <Keywords name="Folders in code1, middle"></Keywords>
+            <Keywords name="Folders in code1, close">} ]</Keywords>
+            <Keywords name="Folders in code2, open"></Keywords>
+            <Keywords name="Folders in code2, middle"></Keywords>
+            <Keywords name="Folders in code2, close"></Keywords>
+            <Keywords name="Folders in comment, open"></Keywords>
+            <Keywords name="Folders in comment, middle"></Keywords>
+            <Keywords name="Folders in comment, close"></Keywords>
+            <Keywords name="Keywords1">true false</Keywords>
+            <Keywords name="Keywords2"></Keywords>
+            <Keywords name="Keywords3"></Keywords>
+            <Keywords name="Keywords4"></Keywords>
+            <Keywords name="Keywords5"></Keywords>
+            <Keywords name="Keywords6"></Keywords>
+            <Keywords name="Keywords7"></Keywords>
+            <Keywords name="Keywords8"></Keywords>
+            <Keywords name="Delimiters">00&quot;activeOverrides 00&quot;gameSettings 00&quot;namePrefixes 00&quot;overrides 01 02&quot;: 02&quot;: 02&quot;: 02&quot;: 03&quot;path 03&quot;info 03&quot;excludeIf 03&quot;includeIf 03&quot;formID 03&quot;name 03&quot;shortName 03&quot;model 03&quot;keywords 03&quot;flags 03&quot;spells 03&quot;actorValues 03&quot;enchantments 03&quot;perks 03&quot;inventory 03&quot;casingModel 03&quot;bounds 04 05&quot;: 05&quot;: 05&quot;: 05&quot;: 05&quot;: 05&quot;: 05&quot;: 05&quot;: 05&quot;: 05&quot;: 05&quot;: 05&quot;: 05&quot;: 05&quot;: 05&quot;: 05&quot;: 05&quot;: 05&quot;: 05&quot;: 05&quot;: 06&quot;add 06&quot;remove 06&quot;set 06&quot;projectile 06&quot;level 06&quot;rank 06&quot;armorRating 06&quot;count 06&quot;placedObject 06&quot;components 06&quot;prefix 06&quot;spawnProjectile 06&quot;forms 06&quot;spawnX 06&quot;spawnY 06&quot;spawnZ 06&quot;spawnSpreadDeg 06&quot;spawnCount 06&quot;secondaryDamage 06&quot;force 06&quot;ammo 06&quot;npcAmmo 06&quot;apCost 06&quot;innerRadius 06&quot;outerRadius 06&quot;isRadius 06&quot;rangeMin 06&quot;rangeMax 06&quot;verticalOffset 06&quot;outOfRangeMult 06&quot;critChargeMult 06&quot;critDamageMult 06&quot;attackDelay 06&quot;speedMult 06&quot;impactDataSet 06&quot;reach 06&quot;stagger 07 08&quot;: 08&quot;: 08&quot;: 08&quot;: 08&quot;: 08&quot;: 08&quot;: 08&quot;: 08&quot;: 08&quot;: 08&quot;: 08&quot;: 08&quot;: 08&quot;: 08&quot;: 08&quot;: 08&quot;: 08&quot;: 08&quot;: 08&quot;: 08&quot;: 08&quot;: 08&quot;: 08&quot;: 08&quot;: 08&quot;: 08&quot;: 08&quot;: 08&quot;: 08&quot;: 08&quot;: 08&quot;: 08&quot;: 08&quot;: 08&quot;: 08&quot;: 08&quot;: 09&quot;aimModel 09&quot;coneOfFire 09&quot;minAngle 09&quot;maxAngle 09&quot;increasePerShot 09&quot;decreasePerSec 09&quot;decreaseDelayMS 09&quot;sneakMult 09&quot;ironSightsMult 09&quot;recoil 09&quot;arcDegrees 09&quot;arcRotate 09&quot;diminishS 09&quot;maxPerShot 09&quot;minPerShot 09&quot;hipMult 09&quot;runawayRec 09&quot;baseStability 10 11&quot;: 11&quot;: 11&quot;: 11&quot;: 11&quot;: 11&quot;: 11&quot;: 11&quot;: 11&quot;: 11&quot;: 11&quot;: 11&quot;: 11&quot;: 11&quot;: 11&quot;: 11&quot;: 11&quot;: 11&quot;: 12&quot;scrapScalarGlobal 12&quot;instanceNamingRules 12&quot;scrapMiscItem 12&quot;npcClass 12&quot;clear 12&quot;health 12&quot;weight 12&quot;damage 12&quot;delevel 12&quot;value 12&quot;x1 12&quot;y1 12&quot;z1 12&quot;x2 12&quot;y2 12&quot;z2 12&quot;owner 12&quot;condition 12&quot;type 12&quot;speed 12&quot;range 12&quot;light 12&quot;explosion 12&quot;sound 12&quot;impactForce 12&quot;weaponSource 12&quot;collision 12&quot;vatsProjectile 12&quot;muzFlash 12&quot;imageSpaceModifier 12&quot;impactData 13 14&quot;: 14&quot;: 14&quot;: 14&quot;: 14&quot;: 14&quot;: 14&quot;: 14&quot;: 14&quot;: 14&quot;: 14&quot;: 14&quot;: 14&quot;: 14&quot;: 14&quot;: 14&quot;: 14&quot;: 14&quot;: 14&quot;: 14&quot;: 14&quot;: 14&quot;: 14&quot;: 14&quot;: 14&quot;: 14&quot;: 14&quot;: 14&quot;: 14&quot;: 14&quot;: 14&quot;: 15&quot;Fallout4.esm 15&quot;DLCCoast.esm 15&quot;none 15&quot;DLCNukaWorld.esm 15&quot;DLCRobot.esm 15&quot;DLCworkshop0 15&quot;TweaksFramework.esm 15&quot;BetterCriticals.esp 16 17&quot; 17&quot; 17&quot; 17&quot; 17&quot; 17&quot; 17&quot; 17&quot; 18 19 20 21&quot; 22 23&quot;</Keywords>
+        </KeywordLists>
+        <Styles>
+            <WordsStyle name="DEFAULT" fgColor="000000" bgColor="FFFFFF" fontName="" fontStyle="0" nesting="0" />
+            <WordsStyle name="COMMENTS" fgColor="008000" bgColor="FFFFFF" fontName="" fontStyle="0" nesting="0" />
+            <WordsStyle name="LINE COMMENTS" fgColor="008000" bgColor="FFFFFF" fontName="" fontStyle="0" nesting="0" />
+            <WordsStyle name="NUMBERS" fgColor="BB0000" bgColor="FFFFFF" fontName="" fontStyle="3" nesting="0" />
+            <WordsStyle name="KEYWORDS1" fgColor="004080" bgColor="FFFFFF" fontName="" fontStyle="3" nesting="0" />
+            <WordsStyle name="KEYWORDS2" fgColor="000000" bgColor="FFFFFF" fontName="" fontStyle="0" nesting="0" />
+            <WordsStyle name="KEYWORDS3" fgColor="000000" bgColor="FFFFFF" fontName="" fontStyle="0" nesting="0" />
+            <WordsStyle name="KEYWORDS4" fgColor="000000" bgColor="FFFFFF" fontName="" fontStyle="0" nesting="0" />
+            <WordsStyle name="KEYWORDS5" fgColor="000000" bgColor="FFFFFF" fontName="" fontStyle="0" nesting="0" />
+            <WordsStyle name="KEYWORDS6" fgColor="000000" bgColor="FFFFFF" fontName="" fontStyle="0" nesting="0" />
+            <WordsStyle name="KEYWORDS7" fgColor="000000" bgColor="FFFFFF" fontName="" fontStyle="0" nesting="0" />
+            <WordsStyle name="KEYWORDS8" fgColor="000000" bgColor="FFFFFF" fontName="" fontStyle="0" nesting="0" />
+            <WordsStyle name="OPERATORS" fgColor="800000" bgColor="FFFFFF" fontName="" fontStyle="1" nesting="0" />
+            <WordsStyle name="FOLDER IN CODE1" fgColor="800000" bgColor="FFFFFF" fontName="" fontStyle="1" nesting="0" />
+            <WordsStyle name="FOLDER IN CODE2" fgColor="000000" bgColor="FFFFFF" fontName="" fontStyle="0" nesting="0" />
+            <WordsStyle name="FOLDER IN COMMENT" fgColor="000000" bgColor="FFFFFF" fontName="" fontStyle="0" nesting="0" />
+            <WordsStyle name="DELIMITERS1" fgColor="000000" bgColor="FFFFFF" fontName="" fontStyle="5" nesting="0" />
+            <WordsStyle name="DELIMITERS2" fgColor="000000" bgColor="FFFFFF" fontName="" fontStyle="1" nesting="0" />
+            <WordsStyle name="DELIMITERS3" fgColor="000000" bgColor="FFFFFF" fontName="" fontStyle="1" nesting="0" />
+            <WordsStyle name="DELIMITERS4" fgColor="000000" bgColor="FFFFFF" fontName="" fontStyle="1" nesting="0" />
+            <WordsStyle name="DELIMITERS5" fgColor="000000" bgColor="FFFFFF" fontName="" fontStyle="1" nesting="0" />
+            <WordsStyle name="DELIMITERS6" fgColor="646431" bgColor="FFFFFF" fontName="" fontStyle="3" nesting="0" />
+            <WordsStyle name="DELIMITERS7" fgColor="000000" bgColor="FFFFFF" fontName="" fontStyle="0" nesting="0" />
+            <WordsStyle name="DELIMITERS8" fgColor="414141" bgColor="FFFFFF" fontName="" fontStyle="2" nesting="0" />
+        </Styles>
+    </UserLang>
+</NotepadPlus>

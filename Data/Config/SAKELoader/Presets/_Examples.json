@@ -1,0 +1,25 @@
+{
+	"info": "Example Preset - not meant to be loaded",
+	
+	"activeOverrides": [
+		{"path": "AFolderName", 
+			"info": "Loads all override files in sDataPath/Overrides/AFolderName"
+		},
+		
+		{"path": "AFolderName\\AFileName.json", 
+			"info": "Loads the specified override file"
+		},
+		
+		{"path": "AFolderName", "includeIf": ["blah.esm", "rtfm.esp"],
+			"info": "Loads all overrides in sDataPath/Overrides/AFolderName if blah.esm and rtfm.esp are loaded"
+		},
+		
+		{"path": "AFolderName", "excludeIf": ["blah.esm", "rtfm.esp"],
+			"info": "Loads all overrides in sDataPath/Overrides/AFolderName unless either blah.esm or rtfm.esp is loaded"
+		},
+		
+		{"path": "AFolderName", "includeIf": ["blah.esm"], "excludeIf": ["rtfm.esp"],
+			"info": "Loads all overrides in sDataPath/Overrides/AFolderName if blah.esm is loaded and rtfm.esp is not loaded"
+		}
+	]
+}

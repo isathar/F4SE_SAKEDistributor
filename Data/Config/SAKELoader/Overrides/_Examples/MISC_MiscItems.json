@@ -1,0 +1,48 @@
+{
+	"info": "MiscItem/Junk override examples",
+	
+	"overrides": [
+		{
+			"info": [
+				"MiscItem (Desk Fan)",
+				"Removes 1 steel and adds 2 screws to its components list"
+			],
+			"formID": "Fallout4.esm|1F905",
+			"components": {
+				"clearList": false,
+				"add": [
+					{"formID": "Fallout4.esm|3D294", "count": 2, "info": "screws"}
+				],
+				"remove": [
+					{"formID": "Fallout4.esm|1FABD", "count": 1, "info": "steel"}
+				]
+			}
+		},
+		
+		{
+			"info": [
+				"MiscItem (Fuse)",
+				"Disables use as Junk Jet ammo"
+			],
+			"formID": "Fallout4.esm|59ACC",
+			"keywords": {
+				"add": [
+					{"formID": "Fallout4.esm|E9447", "info": "NotJunkJetAmmo"}
+				]
+			}
+		},
+		
+		{
+			"info": "MiscItem (Wakemaster Alarm Clock) - Increases weight and value",
+			"formID": "Fallout4.esm|1C9E92",
+			"value": 20,
+			"weight": 2.0
+		},
+		
+		{
+			"info": "MiscItem (Adhesive) - Name edit example",
+			"formID": "Fallout4.esm|1BF72E",
+			"name": "Glue"
+		}
+	]
+}

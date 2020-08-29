@@ -1,0 +1,33 @@
+{
+	"info": [
+		"Increases the maximum level difference between the player and NPCs/Items.",
+		"Doubles the max level of some encounter zones (WIP)."
+	],
+	
+	"gameSettings": [
+		{"name": "iLevCharLevelDifferenceMax", "valueInt": 4, "info": "default: 0"},
+		{"name": "iLevItemLevelDifferenceMax", "valueInt": 4, "info": "default: 0"},
+		{"name": "iLowLevelNPCMaxLevel", "valueInt": 6, "info": "default: 3"}
+	],
+	
+	"overrides": [
+		{"formID": "Fallout4.esm|1B3496", "levelMin": 25, "levelMax": 70, "info": "35CourtZone - lvl: 25-70 - def: 25-35"},
+		{"formID": "Fallout4.esm|22CD48", "levelMin": 1, "levelMax": 20, "info": "AbernathyFarmZone - lvl: 1-20 - def: 1-10"},
+		{"formID": "Fallout4.esm|807EB", "levelMin": 6, "levelMax": 28, "info": "ArcjetSystemsZone - lvl: 6-28 - def: 6-14"},
+		{"formID": "Fallout4.esm|252EB", "levelMin": 20, "levelMax": 60, "info": "AtomatoysCorporateHQZone - lvl: 20-60 - def: 20-30"},
+		{"formID": "Fallout4.esm|4E4D8", "levelMin": 6, "levelMax": 28, "info": "BackStreetApparelZone - lvl: 6-28 - def: 6-14"},
+		{"formID": "Fallout4.esm|317EB", "levelMin": 15, "levelMax": 50, "info": "BADTFLZone lvl: 15-50 - def: 15-25"},
+		{"formID": "Fallout4.esm|3A509", "levelMin": 6, "levelMax": 28, "info": "BeantownBreweryZone lvl: 6-28 - def: 6-14"},
+		{"formID": "Fallout4.esm|46872", "levelMin": 20, "levelMax": 60, "info": "BostonAirportRuinsZone lvl: 20-60 - def: 20-30"},
+		{"formID": "Fallout4.esm|47072", "levelMin": 10, "levelMax": 30, "info": "BostonCommonZone lvl: 10-30 - def: 10-15"},
+		{"formID": "Fallout4.esm|48DE7", "levelMin": 15, "levelMax": 50, "info": "BostonMayoralShelterZone lvl: 15-50 - def: 15-25"},
+		{"formID": "Fallout4.esm|90849", "levelMin": 15, "levelMax": 50, "info": "BostonPublicLibraryZone lvl: 15-50 - def: 15-25"},
+		{"formID": "Fallout4.esm|1AD740", "levelMin": 20, "levelMax": 60, "info": "BoylstonClubZone lvl: 20-60 - def: 20-30"},
+		{"formID": "Fallout4.esm|249D51", "levelMin": 20, "levelMax": 48, "info": "BrokenMonorailZone lvl: 20-48 - def: 20-24"},
+		{"formID": "Fallout4.esm|20C2B6", "levelMin": 15, "levelMax": 50, "info": "BunkerHillZone lvl: 15-50 - def: 15-25"},
+		{"formID": "Fallout4.esm|1680C2", "levelMin": 6, "levelMax": 28, "info": "CambridgeCraterZone lvl: 6-28 - def: 6-14"},
+		{"formID": "Fallout4.esm|1FA50", "levelMin": 6, "levelMax": 28, "info": "CambridgePDZone lvl: 6-28 - def: 6-14"},
+		{"formID": "Fallout4.esm|2555F", "levelMin": 6, "levelMax": 28, "info": "CambridgePolymerLabsZone lvl: 6-28 - def: 6-14"}
+		
+	]
+}

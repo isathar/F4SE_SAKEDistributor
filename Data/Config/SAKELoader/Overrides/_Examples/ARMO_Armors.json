@@ -1,0 +1,62 @@
+{
+	"info": "Armor override examples",
+	
+	"overrides": [
+		{
+			"info": [
+				"Armor (Vault 101 Suit)",
+				"Changes base name to Vault Dweller's Uniform and removes its instance naming rules"
+			],
+			"formID": "Fallout4.esm|1EED7",
+			"name": "Vault Dweller's Uniform",
+			"instanceNamingRules": "none"
+		},
+		
+		{
+			"info": [
+				"Armor (Gas Mask)",
+				"Adds 35 poison resistance and removes its existing radiation resistance"
+			],
+			"formID": "Fallout4.esm|1184C1",
+			"clearExistingDR": true,
+			"damageTypes": [
+				{"formID": "Fallout4.esm|60A84", "set": 10, "add": 25, "info": "dtPoison"}
+			]
+		},
+		
+		{
+			"info": [
+				"Armor (X-01 Torso)",
+				"Increases armor rating, weight, value, and health/condition",
+				"Also adds the Photovoltaic Coating enchantment"
+			],
+			"formID": "Fallout4.esm|154AC8",
+			"value": 650,
+			"weight": 35.0,
+			"health": 750,
+			"armorRating": 640,
+			"enchantments": [
+				{"formID": "Fallout4.esm|7C712", "info": "EnchPA_PhotovotaicCoating"}
+			]
+		},
+		
+		{
+			"info": "Armor (Cage Armor) - Makes it unscrappable",
+			"formID": "Fallout4.esm|B2D8E",
+			"keywords": {
+				"add": [
+					{"formID": "Fallout4.esm|1CC46A", "info": "UnscrappableObject"}
+				]
+			}
+		},
+		
+		{
+			"info": "Armor (Heavy Dog Armor) - Adds 35 armor rating and sets strength to 10",
+			"formID": "Fallout4.esm|1C32C7",
+			"armorRating": 35,
+			"actorValues": [
+				{"formID": "Fallout4.esm|2C2", "set": 5, "add": 5, "info": "Strength"}
+			]
+		}
+	]
+}

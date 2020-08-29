@@ -1,0 +1,14 @@
+{
+	"info": "Container form override examples",
+	
+	"overrides": [
+		{"info": "Loot_Raider_Safe_Floor_Boss - Adds some more loot",
+			"formID": "Fallout4.esm|58814",
+			"inventory": {
+				"add": [
+					{"formID": "Fallout4.esm|6D4B0", "count": 1, "info": "LeveledItem - Container_Loot_Raider_Boss"}
+				]
+			}
+		}
+	]
+}

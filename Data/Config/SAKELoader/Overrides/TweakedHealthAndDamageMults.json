@@ -1,0 +1,24 @@
+{
+	"info": [
+		"Sets per-difficulty damage multipliers to 1.0.",
+		"Removes extra health NPCs gain per level and NPC/PC base health multipliers."
+	],
+	
+	"gameSettings": [
+		{"name": "fDiffMultHPByPCVE", "valueFloat": 1.0, "info": "Damage by player - very easy - default: 2.0"},
+		{"name": "fDiffMultHPToPCVE", "valueFloat": 1.0, "info": "Damage to player - very easy - default: 0.5"},
+		{"name": "fDiffMultHPByPCE", "valueFloat": 1.0, "info": "Damage by player - easy - default: 1.5"},
+		{"name": "fDiffMultHPToPCE", "valueFloat": 1.0, "info": "Damage to player - easy - default: 0.75"},
+		{"name": "fDiffMultHPByPCH", "valueFloat": 1.0, "info": "Damage by player - hard - default: 0.75"},
+		{"name": "fDiffMultHPToPCH", "valueFloat": 1.0, "info": "Damage to player - hard - default: 1.5"},
+		{"name": "fDiffMultHPByPCVH", "valueFloat": 1.0, "info": "Damage by player - very hard - default: 0.5"},
+		{"name": "fDiffMultHPToPCVH", "valueFloat": 1.0, "info": "Damage to player - very hard - default: 2.0"},
+		
+		{"name": "fNPCAttributeHealthMult", "valueFloat": 1.0, "info": "multiplier for NPC base health - default: 0.5"},
+		{"name": "fPCAttributeHealthMult", "valueFloat": 1.0, "info": "multiplier for player base health - default: 2.0"},
+		{"name": "fNPCHealthLevelBonus", "valueFloat": 0.0, "info": "NPC health gain per level - default: 5.0"},
+		
+		{"name": "iNPCBasePerLevelHealthMult", "valueInt": 1, "info": "NPC base health mult per level - default: 4"}
+		
+	]
+}

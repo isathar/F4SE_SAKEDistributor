@@ -1,0 +1,50 @@
+{
+	"info": "Ammo form override examples",
+	
+	"overrides": [
+		{
+			"info": "Ammo (.38 Round) - Changes the projectile to Bloatfly larvae and adds unused extra damage",
+			"formID": "Fallout4.esm|4CE87",
+			"projectile": "Fallout4.esm|314EB",
+			"damage": 1.0
+		},
+		
+		{
+			"info": "Ammo (Fusion Core) - Increases charges to 1000 and doubles the weight",
+			"formID": "Fallout4.esm|75FE4",
+			"weight": 8.0,
+			"health": 1000
+		},
+		
+		{
+			"info": [
+				"Ammo (Fusion Cell) - Makes them work like Fusion Cores with 30 charges",
+				"(NOTE - makes the power armor battery insert animation fail due to the isPowerarmorBattery keyword)"
+			],
+			"formID": "Fallout4.esm|C1897",
+			"weight": 0.9,
+			"health": 30,
+			"keywords": {
+				"add": [
+					{"formID": "Fallout4.esm|5BDAA", "info": "isPowerArmorBattery"}
+				]
+			}
+		},
+		
+		{
+			"info": "Ammo (.308 Round) - Makes it slightly heavier and more expensive",
+			"formID": "Fallout4.esm|1F66B",
+			"value": 9,
+			"weight": 0.055
+		},
+		
+		{
+			"info": "Ammo (10mm) - Name and Model edits",
+			"formID": "Fallout4.esm|1F276",
+			"name": "10mm round, FMJ",
+			"shortName": "10mm FMJ",
+			"model": "Ammo\\10mm\\10mmAmmo.nif",
+			"casingModel": "AmmoTweaks\\Ammo\\Casings\\CasingSpent_10mm.nif"
+		}
+	]
+}

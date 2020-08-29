@@ -1,0 +1,24 @@
+{
+	"info": "NPCs Use Ammo - Thrown Weapons - no need to add mines",
+	
+	"overrides": [
+		{"info": "Frag Grenade", "formID": "Fallout4.esm|EEBED", 
+			"flags": {"NPCsUseAmmo": true}
+		},
+		{"info": "Molotov Cocktail", "formID": "Fallout4.esm|10C3C6", 
+			"flags": {"NPCsUseAmmo": true}
+		},
+		{"info": "Cryo Grenade", "formID": "Fallout4.esm|FF21D", 
+			"flags": {"NPCsUseAmmo": true}
+		},
+		{"info": "Nuka Grenade", "formID": "Fallout4.esm|E5750", 
+			"flags": {"NPCsUseAmmo": true}
+		},
+		{"info": "Plasma Grenade", "formID": "Fallout4.esm|10A33D", 
+			"flags": {"NPCsUseAmmo": true}
+		},
+		{"info": "Pulse Grenade", "formID": "Fallout4.esm|FF21F", 
+			"flags": {"NPCsUseAmmo": true}
+		}
+	]
+}

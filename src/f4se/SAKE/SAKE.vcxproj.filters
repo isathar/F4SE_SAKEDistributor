@@ -39,9 +39,6 @@
     <ClInclude Include="SAKEShared.h">
       <Filter>Plugin Files\Header</Filter>
     </ClInclude>
-    <ClInclude Include="SimpleIni\SimpleIni.h">
-      <Filter>Resource Files</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">

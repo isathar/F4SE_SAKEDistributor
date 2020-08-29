@@ -4,9 +4,9 @@
 //-----------------------
 // Plugin Information
 //-----------------------
-#define PLUGIN_VERSION				0x0009000A
-#define PLUGIN_VERSION_STRING		"0.9.10"
-#define PLUGIN_NAME_SHORT			"SAKE"
-#define PLUGIN_NAME_LONG			"SAKE Distributor"
+#define PLUGIN_VERSION				0x000A0000
+#define PLUGIN_VERSION_STRING		"0.10.0"
+#define PLUGIN_NAME_SHORT			"SAKELoader"
+#define PLUGIN_NAME_LONG			"SAKE Loader"
 #define SUPPORTED_RUNTIME_VERSION   CURRENT_RELEASE_RUNTIME
 #define MINIMUM_RUNTIME_VERSION     CURRENT_RELEASE_RUNTIME
